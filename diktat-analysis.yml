@@ -1,7 +1,7 @@
 - name: DIKTAT_COMMON
   enabled: true
   configuration:
-    domainName: org.jetbrains.reflekt
+    domainName: org.jetbrains.research.code.submissions.clustering
     kotlinVersion: 1.6
     srcDirectories: "main"
     testDirs: "test,nativeTest,commonTest"
