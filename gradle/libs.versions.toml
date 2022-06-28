@@ -1,0 +1,22 @@
+[versions]
+
+kotlin = "1.6.20"
+
+detekt = "1.20.0"
+diktat = "1.1.0"
+buildconfig = "3.0.3"
+dokka = "1.7.0"
+intellij = "1.5.2"
+
+[libraries]
+detekt-gradle-plugin = { module = "io.gitlab.arturbosch.detekt:detekt-gradle-plugin", version.ref = "detekt" }
+diktat-gradle-plugin = { module = "org.cqfn.diktat:diktat-gradle-plugin", version.ref = "diktat" }
+kotlin-gradle-plugin = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", version.ref = "kotlin" }
+
+[plugins]
+buildconfig = { id = "com.github.gmazzo.buildconfig", version.ref = "buildconfig" }
+dokka = { id = "org.jetbrains.dokka", version.ref = "dokka" }
+kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
+intellij = { id = "org.jetbrains.intellij", version.ref = "intellij" }
+
+
