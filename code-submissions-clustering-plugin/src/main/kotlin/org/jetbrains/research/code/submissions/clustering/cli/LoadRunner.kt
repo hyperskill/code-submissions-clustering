@@ -32,6 +32,7 @@ object LoadRunner : ApplicationStarter {
         )
     }
 
+    @Suppress("TooGenericExceptionCaught")
     override fun main(args: MutableList<String>) {
         try {
             ArgParser(args.drop(1).toTypedArray()).parseInto(::TransformationsRunnerArgs).run {
