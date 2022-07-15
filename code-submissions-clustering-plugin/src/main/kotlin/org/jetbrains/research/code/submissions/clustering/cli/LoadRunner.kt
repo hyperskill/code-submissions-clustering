@@ -15,22 +15,11 @@ import java.nio.file.Paths
 import kotlin.system.exitProcess
 
 object LoadRunner : ApplicationStarter {
+    private val logger = Logger.getInstance(this::class.java)
     private lateinit var inputFile: String
     private lateinit var outputDir: String
 
-    private val logger = Logger.getInstance(this::class.java)
-
     override fun getCommandName(): String = "load"
-
-    class TransformationsRunnerArgs(parser: ArgParser) {
-        val input by parser.storing(
-            "-i", "--input_file", help = "Input .csv file with code submissions"
-        )
-
-        val output by parser.storing(
-            "-o", "--output_path", help = "Output directory"
-        )
-    }
 
     @Suppress("TooGenericExceptionCaught")
     override fun main(args: MutableList<String>) {
@@ -61,5 +50,14 @@ object LoadRunner : ApplicationStarter {
         } finally {
             exitProcess(0)
         }
+    }
+
+    data class TransformationsRunnerArgs(private val parser: ArgParser) {
+        val input by parser.storing(
+            "-i", "--input_file", help = "Input .csv file with code submissions"
+        )
+        val output by parser.storing(
+            "-o", "--output_path", help = "Output directory"
+        )
     }
 }

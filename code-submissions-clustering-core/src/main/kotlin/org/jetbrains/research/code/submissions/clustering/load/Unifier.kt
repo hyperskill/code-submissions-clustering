@@ -30,27 +30,36 @@ private const val MAX_ITERATIONS: Int = 5
  * Class for unifying code solutions using ast transformations.
  */
 class Unifier {
-
     private val project: Project = ProjectUtil.openOrImport(getTmpProjectDir(), null, true)
         ?: error("Internal error: the temp project was not created")
     private val psiManager: PsiManager = PsiManager.getInstance(project)
+    private val allTransformations: List<Transformation> = listOf(
+        AnonymizationTransformation,
+        AugmentedAssignmentTransformation,
+        CommentsRemovalTransformation,
+        ComparisonUnificationTransformation,
+        ConstantFoldingTransformation,
+        DeadCodeRemovalTransformation,
+        ExpressionUnificationTransformation,
+        IfRedundantLinesRemovalTransformation,
+        MultipleOperatorComparisonTransformation,
+        MultipleTargetAssignmentTransformation,
+        OuterNotEliminationTransformation,
+    )
 
     init {
         setSdkToProject(project, getTmpProjectDir())
     }
 
-    private fun String.createPsiFile(id: Int): PsiFile {
-        return ApplicationManager.getApplication().runWriteAction<PsiFile> {
-            val basePath = getTmpProjectDir(toCreateFolder = false)
-            val fileName = "dummy$id." + PythonFileType.INSTANCE.defaultExtension
-            val file = addPyFileToProject(basePath, fileName, fileContext = this)
-            val virtualFile = LocalFileSystem.getInstance().refreshAndFindFileByIoFile(file)
-            psiManager.findFile(virtualFile!!)
-        }
+    private fun String.createPsiFile(id: Int): PsiFile = ApplicationManager.getApplication().runWriteAction<PsiFile> {
+        val basePath = getTmpProjectDir(toCreateFolder = false)
+        val fileName = "dummy$id.${PythonFileType.INSTANCE.defaultExtension}"
+        val file = addPyFileToProject(basePath, fileName, fileContext = this)
+        val virtualFile = LocalFileSystem.getInstance().refreshAndFindFileByIoFile(file)
+        psiManager.findFile(virtualFile!!)
     }
 
-    private fun PsiFile.applyTransformations(transformations: List<Transformation>): Boolean {
-        val prevPsi = this.copy()
+    private fun PsiFile.applyTransformations(transformations: List<Transformation>) {
         ApplicationManager.getApplication().invokeAndWait {
             ApplicationManager.getApplication().runWriteAction {
                 transformations.forEach {
@@ -58,23 +67,13 @@ class Unifier {
                 }
             }
         }
-        return prevPsi.text != this.text
     }
 
-    private val allTransformations: List<Transformation>
-        get() = listOf(
-            AnonymizationTransformation,
-            AugmentedAssignmentTransformation,
-            CommentsRemovalTransformation,
-            ComparisonUnificationTransformation,
-            ConstantFoldingTransformation,
-            DeadCodeRemovalTransformation,
-            ExpressionUnificationTransformation,
-            IfRedundantLinesRemovalTransformation,
-            MultipleOperatorComparisonTransformation,
-            MultipleTargetAssignmentTransformation,
-            OuterNotEliminationTransformation,
-        )
+    private fun PsiFile.hasChangedAfterTransformations(transformations: List<Transformation>): Boolean {
+        val prevPsi = this.copy()
+        this.applyTransformations(transformations)
+        return prevPsi.text != this.text
+    }
 
     fun Submission.unify(): Submission {
         val psi = this.code.createPsiFile(this.id)
@@ -82,7 +81,7 @@ class Unifier {
         var iterationsCounter = 0
         do {
             iterationsCounter += 1
-            if (!psi.applyTransformations(allTransformations)) {
+            if (!psi.hasChangedAfterTransformations(allTransformations)) {
                 break
             }
         } while (iterationsCounter <= MAX_ITERATIONS)

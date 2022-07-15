@@ -6,13 +6,11 @@ import org.jgrapht.Graph
 import org.jgrapht.graph.DefaultWeightedEdge
 import org.jgrapht.graph.SimpleDirectedWeightedGraph
 
-
 class SubmissionsGraph(private val graph: Graph<Submission, DefaultWeightedEdge>) {
     fun print() = graph.printToString()
 }
 
 class GraphBuilder(private val unifier: Unifier) {
-
     private val graph: Graph<Submission, DefaultWeightedEdge> =
         SimpleDirectedWeightedGraph(DefaultWeightedEdge::class.java)
 
@@ -22,9 +20,7 @@ class GraphBuilder(private val unifier: Unifier) {
         }
     }
 
-    fun build(): SubmissionsGraph {
-        return SubmissionsGraph(graph)
-    }
+    fun build(): SubmissionsGraph = SubmissionsGraph(graph)
 }
 
 fun buildGraph(unifier: Unifier, block: GraphBuilder.() -> Unit): SubmissionsGraph {
