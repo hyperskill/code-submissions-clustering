@@ -1,5 +1,8 @@
 import java.net.URI
 
+val utilitiesRepo = "https://github.com/JetBrains-Research/plugin-utilities.git"
+val utilitiesProjectName = "org.jetbrains.research.pluginUtilities"
+
 rootProject.name = "code-submissions-clustering"
 
 pluginManagement {
@@ -13,7 +16,15 @@ sourceControl {
     gitRepository(URI.create("https://github.com/JetBrains-Research/ast-transformations.git")) {
         producesModule("org.jetbrains.research.ml.ast.transformations:ast-transformations-core")
     }
+
+    gitRepository(URI.create(utilitiesRepo)) {
+        producesModule("$utilitiesProjectName:plugin-utilities-core")
+        producesModule("$utilitiesProjectName:plugin-utilities-python")
+        producesModule("$utilitiesProjectName:plugin-utilities-test")
+    }
 }
 
-include("code-submissions-clustering-core")
-include("code-submissions-clustering-plugin")
+include(
+    "code-submissions-clustering-core",
+    "code-submissions-clustering-plugin"
+)

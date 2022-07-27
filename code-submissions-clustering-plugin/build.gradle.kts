@@ -8,6 +8,11 @@ dependencies {
     // Need for CLI
     implementation("com.xenomachina:kotlin-argparser:2.0.7")
     implementation("org.jetbrains.kotlinx:dataframe:0.8.0")
+    // Need for tests
+    testImplementation("org.junit.jupiter:junit-jupiter-api:5.8.2")
+    testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.8.2")
+    testImplementation("org.junit.jupiter:junit-jupiter-params:5.8.2")
+    testRuntimeOnly("org.junit.platform:junit-platform-console:1.8.2")
 }
 
 open class BaseCLITask : RunIdeTask() {
@@ -28,5 +33,8 @@ tasks {
             input?.let { "--input_file=$it" },
             output?.let { "--output_path=$it" }
         )
+    }
+    test {
+        useJUnitPlatform()
     }
 }

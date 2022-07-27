@@ -22,7 +22,7 @@ fun getTmpProjectDir(toCreateFolder: Boolean = true): String {
     return path
 }
 
-fun addPyFileToProject(
+fun addFileToProject(
     projectPath: String,
     fileName: String,
     fileContext: String = ""

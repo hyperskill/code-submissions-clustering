@@ -1,16 +1,15 @@
-package org.jetbrains.research.code.submissions.clustering
+package org.jetbrains.research.code.submissions.clustering.model
 
-import com.jetbrains.rd.util.string.printToString
-import org.jetbrains.research.code.submissions.clustering.load.Unifier
+import org.jetbrains.research.code.submissions.clustering.load.AbstractUnifier
 import org.jgrapht.Graph
 import org.jgrapht.graph.DefaultWeightedEdge
 import org.jgrapht.graph.SimpleDirectedWeightedGraph
 
-class SubmissionsGraph(private val graph: Graph<Submission, DefaultWeightedEdge>) {
-    fun print() = graph.printToString()
+data class SubmissionsGraph(private val graph: Graph<Submission, DefaultWeightedEdge>) {
+    fun buildStringRepresentation() = graph.toString()
 }
 
-class GraphBuilder(private val unifier: Unifier) {
+class GraphBuilder(private val unifier: AbstractUnifier) {
     private val graph: Graph<Submission, DefaultWeightedEdge> =
         SimpleDirectedWeightedGraph(DefaultWeightedEdge::class.java)
 
@@ -23,7 +22,7 @@ class GraphBuilder(private val unifier: Unifier) {
     fun build(): SubmissionsGraph = SubmissionsGraph(graph)
 }
 
-fun buildGraph(unifier: Unifier, block: GraphBuilder.() -> Unit): SubmissionsGraph {
+fun buildGraph(unifier: AbstractUnifier, block: GraphBuilder.() -> Unit): SubmissionsGraph {
     val builder = GraphBuilder(unifier)
     return builder.apply(block).build()
 }

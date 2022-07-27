@@ -1,4 +1,4 @@
-package org.jetbrains.research.code.submissions.clustering
+package org.jetbrains.research.code.submissions.clustering.model
 
 /**
  * Data class representing basic information about code submission.
