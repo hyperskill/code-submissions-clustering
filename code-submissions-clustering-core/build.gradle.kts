@@ -7,4 +7,5 @@ dependencies {
             branch = "master"
         }
     }
+    implementation("org.jgrapht:jgrapht-core:1.5.1")
 }
