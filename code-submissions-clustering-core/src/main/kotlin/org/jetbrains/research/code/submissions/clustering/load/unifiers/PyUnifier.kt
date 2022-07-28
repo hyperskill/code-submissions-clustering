@@ -21,14 +21,12 @@ import org.jetbrains.research.ml.ast.util.sdk.setSdkToProject
 
 /**
  * Python-specific unifier.
- * @property project project to use (creates new by default)
- * @property psiManager PSI manager to use (gets instance from new project by default)
  */
 class PyUnifier(
-    override val project: Project = createTempProject(),
-    override val psiManager: PsiManager = PsiManager.getInstance(project),
+    project: Project = createTempProject(),
+    psiManager: PsiManager = PsiManager.getInstance(project),
     isSdkSet: Boolean = false
-) : AbstractUnifier() {
+) : AbstractUnifier(project, psiManager) {
     override val language = Language.PYTHON
     override val transformations = listOf(
         AnonymizationTransformation,

@@ -9,7 +9,6 @@ import org.jetbrains.research.code.submissions.clustering.load.AbstractUnifier
 import org.jetbrains.research.code.submissions.clustering.load.unifiers.PyUnifier
 import org.jetbrains.research.code.submissions.clustering.util.getTmpProjectDir
 import org.jetbrains.research.pluginUtilities.util.ParametrizedBaseWithPythonSdkTest
-import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.Arguments
 import org.junit.jupiter.params.provider.MethodSource
@@ -31,9 +30,9 @@ class LoadRunnerTest : ParametrizedBaseWithPythonSdkTest(getTmpProjectDir()) {
     @MethodSource("getTestData")
     fun testLoadGraphFromDataFrame(dataFrame: DataFrame<*>, expectedGraphRepresentation: String) {
         WriteCommandAction.runWriteCommandAction(mockProject) {
-            Assertions.assertEquals(
+            assertEquals(
                 expectedGraphRepresentation,
-                loadGraphFromDataFrame(dataFrame, unifier!!).buildStringRepresentation()
+                loadGraphFromDataFrame(dataFrame, unifier).buildStringRepresentation()
             )
         }
     }
@@ -41,7 +40,7 @@ class LoadRunnerTest : ParametrizedBaseWithPythonSdkTest(getTmpProjectDir()) {
     companion object {
         private var mockProject: Project? = null
         private var mockPsiManager: PsiManager? = null
-        private var unifier: AbstractUnifier? = null
+        private lateinit var unifier: AbstractUnifier
 
         @Suppress("WRONG_NEWLINES")
         @JvmStatic
