@@ -53,17 +53,35 @@ class LoadRunnerTest : ParametrizedBaseWithPythonSdkTest(getTmpProjectDir()) {
                 dataFrameOf("id", "step_id", "code")(
                     1, 1000, "print(1)",
                 ),
-                "([Submission(id=1, stepId=1000, code=print(1))], [])"
+                "([\n" +
+                    "SubmissionsNode(code = \n" +
+                    "print(1), \n" +
+                    "idList = [1])], [])"
             ),
+            // Test with transformations working incorrectly
+            // Arguments.of(
+            // dataFrameOf("id", "step_id", "code")(
+            // 2, 1000, "for x in [1, 2, 3]:\n    print(x)\n",
+            // 3, 1000, "l = [1, 2, 3]\nfor i in l:\n    print(i)\n",
+            // ),
+            // "([\n" +
+            // "SubmissionsNode(code = \n" +
+            // "for v1 in [1,2,3]:\n    print(v1)\n, \n" +
+            // "idList = [2]), \n" +
+            // "SubmissionsNode(code = \n" +
+            // "v1 = [1,2,3]\nfor v2 in v1:\n    print(v2)\n, \n" +
+            // "idList = [3])], [])"
+            // ),
             Arguments.of(
                 dataFrameOf("id", "step_id", "code")(
-                    2, 1000, "y = 1\n",
-                    3, 1000, "var = 1\n",
-                    4, 1000, "a=1\n",
+                    4, 1000, "y = 1\n",
+                    5, 1000, "var = 1\n",
+                    6, 1000, "a=1\n",
                 ),
-                "([Submission(id=2, stepId=1000, code=v1 = 1\n), " +
-                    "Submission(id=3, stepId=1000, code=v1 = 1\n), " +
-                    "Submission(id=4, stepId=1000, code=v1 = 1\n)], [])"
+                "([\n" +
+                    "SubmissionsNode(code = \n" +
+                    "v1 = 1\n, \n" +
+                    "idList = [4, 5, 6])], [])"
             ),
         )
     }
