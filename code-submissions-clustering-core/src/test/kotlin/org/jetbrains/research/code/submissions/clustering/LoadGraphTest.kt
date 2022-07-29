@@ -54,7 +54,10 @@ class LoadGraphTest : ParametrizedBaseWithPythonSdkTest(getTmpProjectDir()) {
                 dataFrameOf("id", "step_id", "code")(
                     1, 1000, "print(1)",
                 ),
-                "([Submission(id=1, stepId=1000, code=print(1)\n)], [])"
+                "([\n" +
+                        "SubmissionsNode(code = \n" +
+                        "print(1)\n, \n" +
+                        "idList = [1])], [])"
             ),
             Arguments.of(
                 dataFrameOf("id", "step_id", "code")(
@@ -62,19 +65,21 @@ class LoadGraphTest : ParametrizedBaseWithPythonSdkTest(getTmpProjectDir()) {
                     3, 1000, "var = 1\n",
                     4, 1000, "a=1\n",
                 ),
-                "([Submission(id=2, stepId=1000, code=v1 = 1\n), " +
-                    "Submission(id=3, stepId=1000, code=v1 = 1\n), " +
-                    "Submission(id=4, stepId=1000, code=v1 = 1\n)], [])"
+                "([\n" +
+                        "SubmissionsNode(code = \n" +
+                        "v1 = 1\n, \n" +
+                        "idList = [2, 3, 4])], [])"
             ),
             Arguments.of(
                 dataFrameOf("id", "step_id", "code")(
-                    2, 1000, "y =         1\n",
-                    3, 1000, "var       = 1\n",
-                    4, 1000, "a=1\n",
+                    5, 1000, "y =         1\n",
+                    6, 1000, "var       = 1\n",
+                    7, 1000, "a=1\n",
                 ),
-                "([Submission(id=2, stepId=1000, code=v1 = 1\n), " +
-                    "Submission(id=3, stepId=1000, code=v1 = 1\n), " +
-                    "Submission(id=4, stepId=1000, code=v1 = 1\n)], [])"
+                "([\n" +
+                        "SubmissionsNode(code = \n" +
+                        "v1 = 1\n, \n" +
+                        "idList = [5, 6, 7])], [])"
             ),
         )
     }
