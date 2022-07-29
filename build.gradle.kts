@@ -14,6 +14,8 @@ plugins {
     alias(libs.plugins.dokka)
 }
 
+val utilitiesProjectName = "org.jetbrains.research.pluginUtilities"
+
 allprojects {
     apply {
         apply {
@@ -37,6 +39,21 @@ allprojects {
 
     dependencies {
         implementation(kotlin("stdlib-jdk8"))
+        testImplementation("$utilitiesProjectName:plugin-utilities-core") {
+            version {
+                branch = "main"
+            }
+        }
+        testImplementation("$utilitiesProjectName:plugin-utilities-python") {
+            version {
+                branch = "main"
+            }
+        }
+        testImplementation("$utilitiesProjectName:plugin-utilities-test") {
+            version {
+                branch = "main"
+            }
+        }
     }
 
     tasks {
