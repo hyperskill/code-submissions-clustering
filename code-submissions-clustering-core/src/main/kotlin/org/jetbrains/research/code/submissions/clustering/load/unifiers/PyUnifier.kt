@@ -25,7 +25,7 @@ import org.jetbrains.research.ml.ast.util.sdk.setSdkToProject
 class PyUnifier(
     project: Project = createTempProject(),
     psiManager: PsiManager = PsiManager.getInstance(project),
-    toSetSdk: Boolean = false
+    toSetSdk: Boolean = true
 ) : AbstractUnifier(project, psiManager) {
     override val language = Language.PYTHON
     override val transformations = listOf(
@@ -43,7 +43,7 @@ class PyUnifier(
     )
 
     init {
-        if (!toSetSdk) {
+        if (toSetSdk) {
             setSdkToProject(project, getTmpProjectDir())
         }
     }

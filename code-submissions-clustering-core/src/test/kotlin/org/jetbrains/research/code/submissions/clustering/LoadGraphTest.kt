@@ -23,7 +23,7 @@ class LoadGraphTest : ParametrizedBaseWithPythonSdkTest(getTmpProjectDir()) {
             }
             mockProject = project
             mockPsiManager = psiManager
-            unifier = PyUnifier(mockProject!!, mockPsiManager!!, toSetSdk = true)
+            unifier = PyUnifier(mockProject!!, mockPsiManager!!, toSetSdk = false)
         }
     }
 
