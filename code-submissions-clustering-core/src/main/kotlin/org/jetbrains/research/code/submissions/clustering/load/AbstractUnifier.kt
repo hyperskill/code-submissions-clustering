@@ -33,7 +33,7 @@ abstract class AbstractUnifier(val project: Project, val psiManager: PsiManager)
     private fun String.createPsiFile(id: Int): PsiFile = ApplicationManager.getApplication().runWriteAction<PsiFile> {
         val basePath = getTmpProjectDir(toCreateFolder = false)
         val fileName = "dummy$id.${language.extension}"
-        val file = addFileToProject(basePath, fileName, fileContext = this)
+        val file = addFileToProject(basePath, fileName, fileContent = this)
         val virtualFile = LocalFileSystem.getInstance().refreshAndFindFileByIoFile(file) ?: throw NoSuchFileException(
             file, reason = "Virtual file cannot be created because file was not found in the local file system"
         )

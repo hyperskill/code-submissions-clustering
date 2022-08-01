@@ -8,11 +8,6 @@ dependencies {
     // Need for CLI
     implementation(libs.kotlin.argparser)
     implementation(libs.dataframe)
-    // Need for tests
-    testImplementation(libs.junit.jupiter.api)
-    testRuntimeOnly(libs.junit.jupiter.engine)
-    testImplementation(libs.junit.jupiter.params)
-    testRuntimeOnly(libs.junit.platform.console)
 }
 
 open class BaseCLITask : RunIdeTask() {
@@ -33,8 +28,5 @@ tasks {
             input?.let { "--input_file=$it" },
             output?.let { "--output_path=$it" }
         )
-    }
-    test {
-        useJUnitPlatform()
     }
 }

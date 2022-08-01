@@ -7,5 +7,17 @@ dependencies {
             branch = "master"
         }
     }
-    implementation("org.jgrapht:jgrapht-core:1.5.1")
+    implementation(libs.dataframe)
+    implementation(libs.jgrapht.core)
+    // Need for tests
+    testImplementation(libs.junit.jupiter.api)
+    testRuntimeOnly(libs.junit.jupiter.engine)
+    testImplementation(libs.junit.jupiter.params)
+    testRuntimeOnly(libs.junit.platform.console)
+}
+
+tasks {
+    test {
+        useJUnitPlatform()
+    }
 }

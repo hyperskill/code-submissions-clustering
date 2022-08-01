@@ -1,4 +1,4 @@
-package org.jetbrains.research.code.submissions.clustering.cli
+package org.jetbrains.research.code.submissions.clustering
 
 import com.intellij.openapi.command.WriteCommandAction
 import com.intellij.openapi.project.Project
@@ -8,13 +8,14 @@ import org.jetbrains.kotlinx.dataframe.api.dataFrameOf
 import org.jetbrains.research.code.submissions.clustering.load.AbstractUnifier
 import org.jetbrains.research.code.submissions.clustering.load.unifiers.PyUnifier
 import org.jetbrains.research.code.submissions.clustering.util.getTmpProjectDir
+import org.jetbrains.research.code.submissions.clustering.util.loadGraph
 import org.jetbrains.research.pluginUtilities.util.ParametrizedBaseWithPythonSdkTest
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.Arguments
 import org.junit.jupiter.params.provider.MethodSource
 import java.awt.EventQueue
 
-class LoadRunnerTest : ParametrizedBaseWithPythonSdkTest(getTmpProjectDir()) {
+class LoadGraphTest : ParametrizedBaseWithPythonSdkTest(getTmpProjectDir()) {
     init {
         mockProject ?: run {
             EventQueue.invokeAndWait {
@@ -22,7 +23,7 @@ class LoadRunnerTest : ParametrizedBaseWithPythonSdkTest(getTmpProjectDir()) {
             }
             mockProject = project
             mockPsiManager = psiManager
-            unifier = PyUnifier(mockProject!!, mockPsiManager!!, isSdkSet = true)
+            unifier = PyUnifier(mockProject!!, mockPsiManager!!, toSetSdk = true)
         }
     }
 
@@ -32,7 +33,7 @@ class LoadRunnerTest : ParametrizedBaseWithPythonSdkTest(getTmpProjectDir()) {
         WriteCommandAction.runWriteCommandAction(mockProject) {
             assertEquals(
                 expectedGraphRepresentation,
-                loadGraphFromDataFrame(dataFrame, unifier).buildStringRepresentation()
+                dataFrame.loadGraph(unifier).buildStringRepresentation()
             )
         }
     }

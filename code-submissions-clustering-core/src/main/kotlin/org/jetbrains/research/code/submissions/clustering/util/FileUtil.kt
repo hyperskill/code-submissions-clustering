@@ -25,7 +25,7 @@ fun getTmpProjectDir(toCreateFolder: Boolean = true): String {
 fun addFileToProject(
     projectPath: String,
     fileName: String,
-    fileContext: String = ""
+    fileContent: String = ""
 ): File {
     val filePath = "$projectPath/$fileName"
     val file = File(filePath)
@@ -33,6 +33,6 @@ fun addFileToProject(
         file.delete()
     }
     file.createNewFile()
-    file.writeText(fileContext)
+    file.writeText(fileContent)
     return file
 }
