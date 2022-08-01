@@ -26,10 +26,9 @@ class PyUnifier(
     project: Project = createTempProject(),
     psiManager: PsiManager = PsiManager.getInstance(project),
     toSetSdk: Boolean = true
-) : AbstractUnifier(project, psiManager) {
+) : AbstractUnifier(project, psiManager, AnonymizationTransformation) {
     override val language = Language.PYTHON
     override val transformations = listOf(
-        AnonymizationTransformation,
         AugmentedAssignmentTransformation,
         CommentsRemovalTransformation,
         ComparisonUnificationTransformation,

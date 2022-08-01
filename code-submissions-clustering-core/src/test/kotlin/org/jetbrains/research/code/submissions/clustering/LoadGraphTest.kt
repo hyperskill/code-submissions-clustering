@@ -54,12 +54,22 @@ class LoadGraphTest : ParametrizedBaseWithPythonSdkTest(getTmpProjectDir()) {
                 dataFrameOf("id", "step_id", "code")(
                     1, 1000, "print(1)",
                 ),
-                "([Submission(id=1, stepId=1000, code=print(1))], [])"
+                "([Submission(id=1, stepId=1000, code=print(1)\n)], [])"
             ),
             Arguments.of(
                 dataFrameOf("id", "step_id", "code")(
                     2, 1000, "y = 1\n",
                     3, 1000, "var = 1\n",
+                    4, 1000, "a=1\n",
+                ),
+                "([Submission(id=2, stepId=1000, code=v1 = 1\n), " +
+                    "Submission(id=3, stepId=1000, code=v1 = 1\n), " +
+                    "Submission(id=4, stepId=1000, code=v1 = 1\n)], [])"
+            ),
+            Arguments.of(
+                dataFrameOf("id", "step_id", "code")(
+                    2, 1000, "y =         1\n",
+                    3, 1000, "var       = 1\n",
                     4, 1000, "a=1\n",
                 ),
                 "([Submission(id=2, stepId=1000, code=v1 = 1\n), " +
