@@ -13,17 +13,23 @@ class GraphBuilder(private val unifier: AbstractUnifier) {
     private val graph: Graph<SubmissionsNode, DefaultWeightedEdge> =
         SimpleDirectedWeightedGraph(DefaultWeightedEdge::class.java)
 
+    private val vertexByCode = HashMap<String, SubmissionsNode>()
+
     fun add(submission: Submission) {
         unifier.run {
             val unifiedSubmission = submission.unify()
-            // Check if suitable vertex already exists
-            val vertex = graph.vertexSet().find { it.code == unifiedSubmission.code }
-            vertex?.let {
-                // Update vertex
-                graph.removeVertex(vertex)
-                graph.addVertex(SubmissionsNode(vertex, unifiedSubmission))
-            } ?:  // Add new vertex with single id
-            graph.addVertex(SubmissionsNode(unifiedSubmission))
+            vertexByCode.compute(unifiedSubmission.code) { _, vertex ->
+                if (vertex == null) {
+                    // Add new vertex with single id
+                    SubmissionsNode(unifiedSubmission).also {
+                        graph.addVertex(it)
+                    }
+                } else {
+                    // Update existing vertex
+                    vertex.idList.add(unifiedSubmission.id)
+                    vertex
+                }
+            }
         }
     }
 
