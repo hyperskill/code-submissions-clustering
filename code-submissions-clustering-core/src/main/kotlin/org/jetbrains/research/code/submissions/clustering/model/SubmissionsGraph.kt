@@ -12,22 +12,19 @@ data class SubmissionsGraph(private val graph: Graph<SubmissionsNode, DefaultWei
 class GraphBuilder(private val unifier: AbstractUnifier) {
     private val graph: Graph<SubmissionsNode, DefaultWeightedEdge> =
         SimpleDirectedWeightedGraph(DefaultWeightedEdge::class.java)
-
     private val vertexByCode = HashMap<String, SubmissionsNode>()
 
     fun add(submission: Submission) {
         unifier.run {
             val unifiedSubmission = submission.unify()
             vertexByCode.compute(unifiedSubmission.code) { _, vertex ->
-                if (vertex == null) {
-                    // Add new vertex with single id
-                    SubmissionsNode(unifiedSubmission).also {
-                        graph.addVertex(it)
-                    }
-                } else {
+                vertex?.let {
                     // Update existing vertex
                     vertex.idList.add(unifiedSubmission.id)
                     vertex
+                } ?:  // Add new vertex with single id
+                SubmissionsNode(unifiedSubmission).also {
+                    graph.addVertex(it)
                 }
             }
         }

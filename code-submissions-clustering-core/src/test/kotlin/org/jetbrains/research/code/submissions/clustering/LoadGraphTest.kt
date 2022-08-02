@@ -43,7 +43,7 @@ class LoadGraphTest : ParametrizedBaseWithPythonSdkTest(getTmpProjectDir()) {
         private var mockPsiManager: PsiManager? = null
         private lateinit var unifier: AbstractUnifier
 
-        @Suppress("WRONG_NEWLINES")
+        @Suppress("WRONG_NEWLINES", "TOO_LONG_FUNCTION")
         @JvmStatic
         fun getTestData(): List<Arguments> = listOf(
             Arguments.of(
@@ -55,9 +55,9 @@ class LoadGraphTest : ParametrizedBaseWithPythonSdkTest(getTmpProjectDir()) {
                     1, 1000, "print(1)",
                 ),
                 "([\n" +
-                        "SubmissionsNode(code = \n" +
-                        "print(1)\n, \n" +
-                        "idList = [1])], [])"
+                    "SubmissionsNode(code = \n" +
+                    "print(1)\n, \n" +
+                    "idList = [1])], [])"
             ),
             Arguments.of(
                 dataFrameOf("id", "step_id", "code")(
@@ -66,9 +66,9 @@ class LoadGraphTest : ParametrizedBaseWithPythonSdkTest(getTmpProjectDir()) {
                     4, 1000, "a=1\n",
                 ),
                 "([\n" +
-                        "SubmissionsNode(code = \n" +
-                        "v1 = 1\n, \n" +
-                        "idList = [2, 3, 4])], [])"
+                    "SubmissionsNode(code = \n" +
+                    "v1 = 1\n, \n" +
+                    "idList = [2, 3, 4])], [])"
             ),
             Arguments.of(
                 dataFrameOf("id", "step_id", "code")(
@@ -77,9 +77,9 @@ class LoadGraphTest : ParametrizedBaseWithPythonSdkTest(getTmpProjectDir()) {
                     7, 1000, "a=1\n",
                 ),
                 "([\n" +
-                        "SubmissionsNode(code = \n" +
-                        "v1 = 1\n, \n" +
-                        "idList = [5, 6, 7])], [])"
+                    "SubmissionsNode(code = \n" +
+                    "v1 = 1\n, \n" +
+                    "idList = [5, 6, 7])], [])"
             ),
         )
     }
