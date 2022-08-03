@@ -15,6 +15,7 @@ import org.jetbrains.research.code.submissions.clustering.util.addFileToProject
 import org.jetbrains.research.code.submissions.clustering.util.getTmpProjectDir
 import org.jetbrains.research.code.submissions.clustering.util.reformatInWriteAction
 import org.jetbrains.research.ml.ast.transformations.Transformation
+import java.io.File
 import java.util.logging.Logger
 
 /**
@@ -39,6 +40,22 @@ abstract class AbstractUnifier(
     private val logger = Logger.getLogger(javaClass.name)
     abstract val language: Language
     abstract val transformations: List<Transformation>
+
+    fun release(projectPath: String) {
+        File(projectPath).walkBottomUp().forEach {
+            it.deleteFromProject()
+        }
+    }
+
+    private fun File.deleteFromProject() {
+        ApplicationManager.getApplication().runWriteAction {
+            val virtualFile = LocalFileSystem.getInstance().findFileByIoFile(this)!!
+            val psiFile = psiManager.findFile(virtualFile)
+            virtualFile.delete(null)
+            psiFile?.delete()
+            delete()
+        }
+    }
 
     private fun String.createPsiFile(id: Int): PsiFile = ApplicationManager.getApplication().runWriteAction<PsiFile> {
         val basePath = getTmpProjectDir(toCreateFolder = false)

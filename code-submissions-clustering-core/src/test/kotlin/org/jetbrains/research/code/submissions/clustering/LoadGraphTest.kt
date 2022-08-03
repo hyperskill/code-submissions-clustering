@@ -10,6 +10,7 @@ import org.jetbrains.research.code.submissions.clustering.load.unifiers.PyUnifie
 import org.jetbrains.research.code.submissions.clustering.util.getTmpProjectDir
 import org.jetbrains.research.code.submissions.clustering.util.loadGraph
 import org.jetbrains.research.pluginUtilities.util.ParametrizedBaseWithPythonSdkTest
+import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.Arguments
 import org.junit.jupiter.params.provider.MethodSource
@@ -24,6 +25,13 @@ class LoadGraphTest : ParametrizedBaseWithPythonSdkTest(getTmpProjectDir()) {
             mockProject = project
             mockPsiManager = psiManager
             unifier = PyUnifier(mockProject!!, mockPsiManager!!, toSetSdk = false)
+        }
+    }
+
+    @AfterEach
+    override fun tearDown() {
+        WriteCommandAction.runWriteCommandAction(mockProject) {
+            unifier.release(getTmpProjectDir(toCreateFolder = false))
         }
     }
 
@@ -61,25 +69,25 @@ class LoadGraphTest : ParametrizedBaseWithPythonSdkTest(getTmpProjectDir()) {
             ),
             Arguments.of(
                 dataFrameOf("id", "step_id", "code")(
-                    2, 1000, "y = 1\n",
-                    3, 1000, "var = 1\n",
-                    4, 1000, "a=1\n",
+                    1, 1000, "y = 1\n",
+                    2, 1000, "var = 1\n",
+                    3, 1000, "a=1\n",
                 ),
                 "([\n" +
                     "SubmissionsNode(code = \n" +
                     "v1 = 1\n, \n" +
-                    "idList = [2, 3, 4])], [])"
+                    "idList = [1, 2, 3])], [])"
             ),
             Arguments.of(
                 dataFrameOf("id", "step_id", "code")(
-                    5, 1000, "y =         1\n",
-                    6, 1000, "var       = 1\n",
-                    7, 1000, "a=1\n",
+                    1, 1000, "y =         1\n",
+                    2, 1000, "var       = 1\n",
+                    3, 1000, "a=1\n",
                 ),
                 "([\n" +
                     "SubmissionsNode(code = \n" +
                     "v1 = 1\n, \n" +
-                    "idList = [5, 6, 7])], [])"
+                    "idList = [1, 2, 3])], [])"
             ),
         )
     }
