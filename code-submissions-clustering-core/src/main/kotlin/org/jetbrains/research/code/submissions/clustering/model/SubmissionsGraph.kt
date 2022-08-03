@@ -5,7 +5,10 @@ import org.jgrapht.Graph
 import org.jgrapht.graph.DefaultWeightedEdge
 import org.jgrapht.graph.SimpleDirectedWeightedGraph
 
-data class SubmissionsGraph(private val graph: Graph<SubmissionsNode, DefaultWeightedEdge>) {
+/**
+ * @property graph inner representation of submissions graph
+ */
+data class SubmissionsGraph(val graph: Graph<SubmissionsNode, DefaultWeightedEdge>) {
     fun buildStringRepresentation() = graph.toString()
 }
 
