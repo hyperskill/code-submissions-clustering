@@ -23,10 +23,12 @@ tasks {
         dependsOn(build)
         val input: String? by project
         val output: String? by project
+        val csv: String? by project
         args = listOfNotNull(
             "load",
             input?.let { "--input_file=$it" },
-            output?.let { "--output_path=$it" }
+            output?.let { "--output_file=$it" },
+            csv?.let { "--csv_file=$it" }
         )
     }
 }

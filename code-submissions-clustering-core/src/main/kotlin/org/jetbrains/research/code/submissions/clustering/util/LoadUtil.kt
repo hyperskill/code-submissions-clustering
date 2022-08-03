@@ -1,9 +1,7 @@
 package org.jetbrains.research.code.submissions.clustering.util
 
 import org.jetbrains.kotlinx.dataframe.DataFrame
-import org.jetbrains.kotlinx.dataframe.api.column
-import org.jetbrains.kotlinx.dataframe.api.forEach
-import org.jetbrains.kotlinx.dataframe.api.getValue
+import org.jetbrains.kotlinx.dataframe.api.*
 import org.jetbrains.research.code.submissions.clustering.load.AbstractUnifier
 import org.jetbrains.research.code.submissions.clustering.model.Submission
 import org.jetbrains.research.code.submissions.clustering.model.SubmissionsGraph
@@ -28,4 +26,11 @@ fun DataFrame<*>.loadGraph(unifier: AbstractUnifier): SubmissionsGraph {
         }
     }
     return graph
+}
+
+fun SubmissionsGraph.toDataFrame(): DataFrame<*> {
+    val vertices = graph.vertexSet()
+    val code = vertices.map { it.code }.toColumn() named "code"
+    val idList = vertices.map { it.idList }.toColumn() named "idList"
+    return dataFrameOf(code, idList)
 }
