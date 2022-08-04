@@ -23,12 +23,16 @@ tasks {
         dependsOn(build)
         val input: String? by project
         val output: String? by project
-        val csv: String? by project
-        args = listOfNotNull(
-            "load",
-            input?.let { "--input_file=$it" },
-            output?.let { "--output_file=$it" },
-            csv?.let { "--csv_file=$it" }
-        )
+        args = mutableListOf<String>().apply {
+            add("load")
+            input?.let { add("--input_file=$it") }
+            output?.let { add("--output_path=$it") }
+            if (project.hasProperty("serialize")) {
+                add("--serialize")
+            }
+            if (project.hasProperty("saveCSV")) {
+                add("--saveCSV")
+            }
+        }
     }
 }

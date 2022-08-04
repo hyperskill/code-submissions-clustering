@@ -3,23 +3,19 @@ package org.jetbrains.research.code.submissions.clustering.cli
 import com.intellij.openapi.application.ApplicationStarter
 import com.intellij.openapi.diagnostic.Logger
 import com.xenomachina.argparser.ArgParser
-import com.xenomachina.argparser.default
 import org.jetbrains.kotlinx.dataframe.DataFrame
 import org.jetbrains.kotlinx.dataframe.io.readCSV
-import org.jetbrains.kotlinx.dataframe.io.writeCSV
 import org.jetbrains.research.code.submissions.clustering.load.unifiers.PyUnifier
-import org.jetbrains.research.code.submissions.clustering.util.loadGraph
-import org.jetbrains.research.code.submissions.clustering.util.toDataFrame
-import org.jetbrains.research.code.submissions.clustering.util.toProto
-import java.io.File
+import org.jetbrains.research.code.submissions.clustering.util.*
 import java.nio.file.Paths
 import kotlin.system.exitProcess
 
 object LoadRunner : ApplicationStarter {
     private val logger = Logger.getInstance(this::class.java)
-    private var outputFilename: String? = null
-    private var csvFilename: String? = null
+    private var toBinary: Boolean = false
+    private var toCSV: Boolean = false
     private lateinit var inputFilename: String
+    private lateinit var outputPath: String
 
     override fun getCommandName(): String = "load"
 
@@ -28,23 +24,25 @@ object LoadRunner : ApplicationStarter {
         try {
             ArgParser(args.drop(1).toTypedArray()).parseInto(::TransformationsRunnerArgs).run {
                 inputFilename = Paths.get(input).toString()
-                outputFilename = output?.let { Paths.get(it).toString() }
-                csvFilename = outputCSV?.let { Paths.get(it).toString() }
+                outputPath = Paths.get(output).toString()
+                toBinary = serialize
+                toCSV = saveCSV
             }
 
             val df = DataFrame.readCSV(inputFilename)
             val unifier = PyUnifier()
             val submissionsGraph = df.loadGraph(unifier)
 
-            outputFilename?.let {
-                val outputFile = File(it)
-                submissionsGraph.toProto().writeTo(outputFile.outputStream())
+            createFolder(outputPath)
+            submissionsGraph.writeToString(outputPath)
+            if (toBinary) {
+                submissionsGraph.writeToBinary(outputPath)
             }
-            csvFilename?.let {
-                submissionsGraph.toDataFrame().writeCSV(it)
+            if (toCSV) {
+                submissionsGraph.writeToCsv(outputPath)
             }
         } catch (ex: Throwable) {
-            logger.error(ex)
+            logger.error(ex.message)
         } finally {
             exitProcess(0)
         }
@@ -56,12 +54,16 @@ object LoadRunner : ApplicationStarter {
             help = "Input .csv file with code submissions"
         )
         val output by parser.storing(
-            "-o", "--output_file",
-            help = "Output binary file to store submissions graph",
-        ).default(null)
-        val outputCSV by parser.storing(
-            "-c", "--csv_file",
-            help = "Output .csv file to store unified code submissions"
-        ).default(null)
+            "-o", "--output_path",
+            help = "Directory to store all output files",
+        )
+        val serialize by parser.flagging(
+            "--serialize",
+            help = "Save submissions graph to binary file"
+        )
+        val saveCSV by parser.flagging(
+            "--saveCSV",
+            help = "Save unified solutions to .csv file"
+        )
     }
 }
