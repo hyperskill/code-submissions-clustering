@@ -32,7 +32,6 @@ object LoadRunner : ApplicationStarter {
                 csvFilename = outputCSV?.let { Paths.get(it).toString() }
             }
 
-            println(csvFilename)
             val df = DataFrame.readCSV(inputFilename)
             val unifier = PyUnifier()
             val submissionsGraph = df.loadGraph(unifier)

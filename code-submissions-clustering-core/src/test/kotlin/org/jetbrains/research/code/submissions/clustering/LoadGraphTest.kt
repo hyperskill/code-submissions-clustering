@@ -7,6 +7,7 @@ import org.jetbrains.kotlinx.dataframe.DataFrame
 import org.jetbrains.kotlinx.dataframe.api.dataFrameOf
 import org.jetbrains.research.code.submissions.clustering.load.AbstractUnifier
 import org.jetbrains.research.code.submissions.clustering.load.unifiers.PyUnifier
+import org.jetbrains.research.code.submissions.clustering.util.deleteTmpProjectFiles
 import org.jetbrains.research.code.submissions.clustering.util.getTmpProjectDir
 import org.jetbrains.research.code.submissions.clustering.util.loadGraph
 import org.jetbrains.research.pluginUtilities.util.ParametrizedBaseWithPythonSdkTest
@@ -31,7 +32,7 @@ class LoadGraphTest : ParametrizedBaseWithPythonSdkTest(getTmpProjectDir()) {
     @AfterEach
     override fun tearDown() {
         WriteCommandAction.runWriteCommandAction(mockProject) {
-            unifier.release(getTmpProjectDir(toCreateFolder = false))
+            deleteTmpProjectFiles(getTmpProjectDir(toCreateFolder = false))
         }
     }
 
