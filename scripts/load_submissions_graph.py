@@ -85,17 +85,28 @@ if __name__ == "__main__":
 
     logger.info(f"Start parsing {args.input_file}...")
     start = time.time()
-    step_ids = parse_solutions(args.input_file, args.output_path)
+    try:
+        step_ids = parse_solutions(args.input_file, args.output_path)
+    except Exception as e:
+        logger.error(e)
+        logger.info("Parsing is stopped due to above exception. Quiting program...")
+        sys.exit(1)
     end = time.time()
     logger.info(f"Parsing finished in {time.strftime('%Hh %Mm %Ss', time.gmtime(end - start))}")
     total_execution_time += end - start
+
     for i, step_id in enumerate(step_ids):
         logger.info(f"Progress status: {i}/{len(step_ids)}")
         logger.info(f"Operating step {step_id}...")
         start = time.time()
-        run_submissions_graph_load(step_id, args.output_path, args.serialize, args.saveCSV)
-        end = time.time()
-        logger.info(f"Step {step_id} operated in {time.strftime('%Hh %Mm %Ss', time.gmtime(end - start))}")
-        total_execution_time += end - start
+        try:
+            run_submissions_graph_load(step_id, args.output_path, args.serialize, args.saveCSV)
+        except Exception as e:
+            logger.error(e)
+            logger.info(f"Operating step {step_id} is stopped due to above exception")
+        else:
+            end = time.time()
+            logger.info(f"Step {step_id} operated in {time.strftime('%Hh %Mm %Ss', time.gmtime(end - start))}")
+            total_execution_time += end - start
     logger.info(f"All steps operated. "
                 f"Loading is finished in {time.strftime('%Hh %Mm %Ss', time.gmtime(total_execution_time))}")
