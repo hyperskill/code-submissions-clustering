@@ -15,6 +15,7 @@ plugins {
 }
 
 val utilitiesProjectName = "org.jetbrains.research.pluginUtilities"
+val protobufRuntime = libs.protobuf.runtime
 
 allprojects {
     apply {
@@ -39,6 +40,8 @@ allprojects {
 
     dependencies {
         implementation(kotlin("stdlib-jdk8"))
+        implementation(protobufRuntime)
+
         testImplementation("$utilitiesProjectName:plugin-utilities-core") {
             version {
                 branch = "main"
@@ -70,6 +73,7 @@ allprojects {
             .forEach { it.enabled = false }
     }
 
+    configureProtobuf()
     configureDiktat()
     configureDetekt()
 }

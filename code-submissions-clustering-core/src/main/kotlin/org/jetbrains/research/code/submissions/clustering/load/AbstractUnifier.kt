@@ -87,7 +87,7 @@ abstract class AbstractUnifier(
                     psi.applyTransformations(transformations, previousTree)
                     logger.finer { "Previous text[$iterationNumber]:\n${previousTree.text}\n" }
                     logger.finer { "Current text[$iterationNumber]:\n${psi.text}\n\n" }
-                } while (!previousTree.textMatches(psi.text) || iterationNumber <= MAX_ITERATIONS)
+                } while (!previousTree.textMatches(psi.text) && iterationNumber <= MAX_ITERATIONS)
                 logger.fine { "Tree Ended[[$iterationNumber]]: ${psi.text}\n\n\n" }
             }
         }

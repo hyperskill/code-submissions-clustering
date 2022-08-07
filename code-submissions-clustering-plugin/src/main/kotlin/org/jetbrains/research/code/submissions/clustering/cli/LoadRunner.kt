@@ -6,13 +6,16 @@ import com.xenomachina.argparser.ArgParser
 import org.jetbrains.kotlinx.dataframe.DataFrame
 import org.jetbrains.kotlinx.dataframe.io.readCSV
 import org.jetbrains.research.code.submissions.clustering.load.unifiers.PyUnifier
-import org.jetbrains.research.code.submissions.clustering.util.loadGraph
+import org.jetbrains.research.code.submissions.clustering.util.*
 import java.nio.file.Paths
 import kotlin.system.exitProcess
 
 object LoadRunner : ApplicationStarter {
     private val logger = Logger.getInstance(this::class.java)
-    private lateinit var inputFile: String
+    private var toBinary: Boolean = false
+    private var toCSV: Boolean = false
+    private lateinit var inputFilename: String
+    private lateinit var outputPath: String
 
     override fun getCommandName(): String = "load"
 
@@ -20,15 +23,26 @@ object LoadRunner : ApplicationStarter {
     override fun main(args: MutableList<String>) {
         try {
             ArgParser(args.drop(1).toTypedArray()).parseInto(::TransformationsRunnerArgs).run {
-                inputFile = Paths.get(input).toString()
+                inputFilename = Paths.get(input).toString()
+                outputPath = Paths.get(output).toString()
+                toBinary = serialize
+                toCSV = saveCSV
             }
 
-            val df = DataFrame.readCSV(inputFile)
+            val df = DataFrame.readCSV(inputFilename)
             val unifier = PyUnifier()
             val submissionsGraph = df.loadGraph(unifier)
-            println(submissionsGraph.buildStringRepresentation())
+
+            createFolder(outputPath)
+            submissionsGraph.writeToString(outputPath)
+            if (toBinary) {
+                submissionsGraph.writeToBinary(outputPath)
+            }
+            if (toCSV) {
+                submissionsGraph.writeToCsv(outputPath)
+            }
         } catch (ex: Throwable) {
-            logger.error(ex)
+            logger.error(ex.message)
         } finally {
             exitProcess(0)
         }
@@ -36,7 +50,20 @@ object LoadRunner : ApplicationStarter {
 
     data class TransformationsRunnerArgs(private val parser: ArgParser) {
         val input by parser.storing(
-            "-i", "--input_file", help = "Input .csv file with code submissions"
+            "-i", "--input_file",
+            help = "Input .csv file with code submissions"
+        )
+        val output by parser.storing(
+            "-o", "--output_path",
+            help = "Directory to store all output files",
+        )
+        val serialize by parser.flagging(
+            "--serialize",
+            help = "Save submissions graph to binary file"
+        )
+        val saveCSV by parser.flagging(
+            "--saveCSV",
+            help = "Save unified solutions to .csv file"
         )
     }
 }

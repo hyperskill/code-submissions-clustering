@@ -1,6 +1,16 @@
 package org.jetbrains.research.code.submissions.clustering.util
 
+import com.intellij.openapi.application.ApplicationManager
+import com.intellij.openapi.vfs.LocalFileSystem
 import java.io.File
+
+fun File.deleteFromProject() {
+    ApplicationManager.getApplication().runWriteAction {
+        val virtualFile = LocalFileSystem.getInstance().findFileByIoFile(this)
+        virtualFile?.delete(null)
+        delete()
+    }
+}
 
 fun createFolder(path: String) {
     val file = File(path)
@@ -35,4 +45,10 @@ fun addFileToProject(
     file.createNewFile()
     file.writeText(fileContent)
     return file
+}
+
+fun deleteTmpProjectFiles(projectPath: String) {
+    File(projectPath).walkBottomUp().forEach {
+        it.deleteFromProject()
+    }
 }

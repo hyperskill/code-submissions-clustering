@@ -12,6 +12,8 @@ kotlinx = "0.8.0"
 junit-jupiter = "5.8.2"
 junit-platform = "1.8.2"
 jgrapht = "1.5.1"
+protobuf-plugin = "0.8.19"
+protobuf-runtime = "3.21.4"
 
 [libraries]
 detekt-gradle-plugin = { module = "io.gitlab.arturbosch.detekt:detekt-gradle-plugin", version.ref = "detekt" }
@@ -24,6 +26,8 @@ junit-jupiter-engine = { module = "org.junit.jupiter:junit-jupiter-engine", vers
 junit-jupiter-params = { module = "org.junit.jupiter:junit-jupiter-params", version.ref = "junit-jupiter" }
 junit-platform-console = { module = "org.junit.platform:junit-platform-console", version.ref = "junit-platform" }
 jgrapht-core = { module = "org.jgrapht:jgrapht-core", version.ref = "jgrapht" }
+protobuf-plugin = { module = "com.google.protobuf:protobuf-gradle-plugin", version.ref = "protobuf-plugin" }
+protobuf-runtime = { module = "com.google.protobuf:protobuf-java", version.ref = "protobuf-runtime" }
 
 [plugins]
 buildconfig = { id = "com.github.gmazzo.buildconfig", version.ref = "buildconfig" }
