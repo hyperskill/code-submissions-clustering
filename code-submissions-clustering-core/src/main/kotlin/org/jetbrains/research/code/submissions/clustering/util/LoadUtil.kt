@@ -3,19 +3,18 @@ package org.jetbrains.research.code.submissions.clustering.util
 import org.jetbrains.kotlinx.dataframe.DataFrame
 import org.jetbrains.kotlinx.dataframe.api.*
 import org.jetbrains.kotlinx.dataframe.io.writeCSV
-import org.jetbrains.research.code.submissions.clustering.load.AbstractUnifier
 import org.jetbrains.research.code.submissions.clustering.model.Submission
 import org.jetbrains.research.code.submissions.clustering.model.SubmissionsGraph
 import org.jetbrains.research.code.submissions.clustering.model.buildGraph
 import java.io.File
 
 @Suppress("VariableNaming")
-fun DataFrame<*>.loadGraph(unifier: AbstractUnifier): SubmissionsGraph {
+fun DataFrame<*>.loadGraph(language: Language): SubmissionsGraph {
     val id by column<Int>()
     val step_id by column<Int>()
     val code by column<String>()
     val graph = let { dataFrame ->
-        buildGraph(unifier) {
+        buildGraph(language) {
             dataFrame.forEach {
                 add(
                     Submission(
@@ -25,6 +24,7 @@ fun DataFrame<*>.loadGraph(unifier: AbstractUnifier): SubmissionsGraph {
                     )
                 )
             }
+            makeComplete()
         }
     }
     return graph

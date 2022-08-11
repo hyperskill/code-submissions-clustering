@@ -3,8 +3,8 @@ package org.jetbrains.research.code.submissions.clustering.load.unifiers
 import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiManager
 import org.jetbrains.research.code.submissions.clustering.load.AbstractUnifier
-import org.jetbrains.research.code.submissions.clustering.load.Language
 import org.jetbrains.research.code.submissions.clustering.load.createTempProject
+import org.jetbrains.research.code.submissions.clustering.util.Language
 import org.jetbrains.research.code.submissions.clustering.util.getTmpProjectDir
 import org.jetbrains.research.ml.ast.transformations.anonymization.AnonymizationTransformation
 import org.jetbrains.research.ml.ast.transformations.augmentedAssignment.AugmentedAssignmentTransformation

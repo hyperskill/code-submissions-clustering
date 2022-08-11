@@ -9,22 +9,10 @@ import com.intellij.psi.PsiDocumentManager
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
 import com.intellij.psi.PsiManager
-import com.jetbrains.python.PythonFileType
 import org.jetbrains.research.code.submissions.clustering.model.Submission
-import org.jetbrains.research.code.submissions.clustering.util.addFileToProject
-import org.jetbrains.research.code.submissions.clustering.util.getTmpProjectDir
-import org.jetbrains.research.code.submissions.clustering.util.reformatInWriteAction
+import org.jetbrains.research.code.submissions.clustering.util.*
 import org.jetbrains.research.ml.ast.transformations.Transformation
 import java.util.logging.Logger
-
-/**
- * Enum class for possible code submissions' languages.
- * @property extension corresponding file extension
- */
-enum class Language(val extension: String) {
-    PYTHON(PythonFileType.INSTANCE.defaultExtension),
-    ;
-}
 
 /**
  * Abstract unifier producing unifying transformations over code submissions.

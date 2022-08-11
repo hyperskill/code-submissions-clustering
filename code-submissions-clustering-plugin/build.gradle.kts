@@ -1,4 +1,5 @@
 import org.jetbrains.intellij.tasks.RunIdeTask
+import java.nio.file.Paths
 
 group = rootProject.group
 version = rootProject.version
@@ -12,7 +13,12 @@ dependencies {
 
 open class BaseCLITask : RunIdeTask() {
     init {
-        jvmArgs = listOf("-Djava.awt.headless=true", "--add-exports", "java.base/jdk.internal.vm=ALL-UNNAMED")
+        jvmArgs = listOf(
+            "-Dgt.pp.path=${Paths.get(project.parent!!.projectDir.toString(), "libs", "pythonparser")}",
+            "-Djava.awt.headless=true",
+            "--add-exports",
+            "java.base/jdk.internal.vm=ALL-UNNAMED"
+        )
         standardInput = System.`in`
         standardOutput = System.`out`
     }
