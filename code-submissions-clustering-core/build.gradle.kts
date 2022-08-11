@@ -1,3 +1,5 @@
+import java.nio.file.Paths
+
 group = rootProject.group
 version = rootProject.version
 
@@ -21,5 +23,8 @@ dependencies {
 tasks {
     test {
         useJUnitPlatform()
+        jvmArgs = listOf(
+            "-Dgt.pp.path=${Paths.get(project.parent!!.projectDir.toString(), "libs", "pythonparser")}"
+        )
     }
 }

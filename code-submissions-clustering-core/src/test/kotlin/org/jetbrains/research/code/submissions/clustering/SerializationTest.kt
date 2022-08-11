@@ -12,7 +12,7 @@ class SerializationTest : ParametrizedBaseWithUnifierTest(getTmpProjectDir()) {
     @MethodSource("getTestData")
     fun testSerializeGraph(dataFrame: DataFrame<*>) {
         WriteCommandAction.runWriteCommandAction(mockProject) {
-            val graph = dataFrame.loadGraph(unifier)
+            val graph = dataFrame.loadGraph(mockContext)
             val bytes = graph.toProto().toByteArray()
             val deserializedGraph = ProtoSubmissionsGraph.parseFrom(bytes).toGraph()
             assertEquals(

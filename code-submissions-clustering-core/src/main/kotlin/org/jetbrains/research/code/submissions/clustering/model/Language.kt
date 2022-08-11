@@ -1,4 +1,4 @@
-package org.jetbrains.research.code.submissions.clustering.util
+package org.jetbrains.research.code.submissions.clustering.model
 
 import com.jetbrains.python.PythonFileType
 

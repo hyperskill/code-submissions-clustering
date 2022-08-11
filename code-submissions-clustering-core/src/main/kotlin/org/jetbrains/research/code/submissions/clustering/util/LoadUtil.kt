@@ -3,18 +3,19 @@ package org.jetbrains.research.code.submissions.clustering.util
 import org.jetbrains.kotlinx.dataframe.DataFrame
 import org.jetbrains.kotlinx.dataframe.api.*
 import org.jetbrains.kotlinx.dataframe.io.writeCSV
+import org.jetbrains.research.code.submissions.clustering.load.SubmissionsGraphContext
 import org.jetbrains.research.code.submissions.clustering.model.Submission
 import org.jetbrains.research.code.submissions.clustering.model.SubmissionsGraph
 import org.jetbrains.research.code.submissions.clustering.model.buildGraph
 import java.io.File
 
 @Suppress("VariableNaming")
-fun DataFrame<*>.loadGraph(language: Language): SubmissionsGraph {
+fun DataFrame<*>.loadGraph(context: SubmissionsGraphContext): SubmissionsGraph {
     val id by column<Int>()
     val step_id by column<Int>()
     val code by column<String>()
     val graph = let { dataFrame ->
-        buildGraph(language) {
+        buildGraph(context) {
             dataFrame.forEach {
                 add(
                     Submission(

@@ -8,11 +8,11 @@ import com.github.gumtreediff.matchers.MappingStore
 import com.github.gumtreediff.matchers.Matcher
 import com.github.gumtreediff.matchers.Matchers
 import com.github.gumtreediff.tree.Tree
+import org.jetbrains.research.code.submissions.clustering.load.SubmissionsGraphContext
+import org.jetbrains.research.code.submissions.clustering.util.toProto
 import org.jgrapht.Graph
 import org.jgrapht.graph.DefaultWeightedEdge
 import org.jgrapht.graph.SimpleDirectedWeightedGraph
-import org.jetbrains.research.code.submissions.clustering.util.Language
-import org.jetbrains.research.code.submissions.clustering.util.toProto
 
 /**
  * @property graph inner representation of submissions graph
@@ -68,8 +68,7 @@ class GraphBuilder(private val submissionsGraphContext: SubmissionsGraphContext)
     }
 }
 
-fun buildGraph(language: Language, block: GraphBuilder.() -> Unit): SubmissionsGraph {
-    val submissionsGraphContext = SubmissionsGraphContext(language)
-    val builder = GraphBuilder(submissionsGraphContext)
+fun buildGraph(context: SubmissionsGraphContext, block: GraphBuilder.() -> Unit): SubmissionsGraph {
+    val builder = GraphBuilder(context)
     return builder.apply(block).build()
 }

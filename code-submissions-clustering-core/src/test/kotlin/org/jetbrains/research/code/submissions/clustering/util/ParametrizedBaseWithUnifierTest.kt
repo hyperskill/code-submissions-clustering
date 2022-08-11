@@ -1,9 +1,10 @@
 package org.jetbrains.research.code.submissions.clustering.util
 
+import com.github.gumtreediff.gen.python.PythonTreeGenerator
 import com.intellij.openapi.command.WriteCommandAction
 import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiManager
-import org.jetbrains.research.code.submissions.clustering.load.AbstractUnifier
+import org.jetbrains.research.code.submissions.clustering.load.SubmissionsGraphContext
 import org.jetbrains.research.code.submissions.clustering.load.unifiers.PyUnifier
 import org.jetbrains.research.pluginUtilities.util.ParametrizedBaseWithPythonSdkTest
 import org.junit.Ignore
@@ -19,7 +20,10 @@ open class ParametrizedBaseWithUnifierTest(testDataRoot: String) : ParametrizedB
             }
             mockProject = project
             mockPsiManager = psiManager
-            unifier = PyUnifier(mockProject!!, mockPsiManager!!, toSetSdk = false)
+            mockContext = SubmissionsGraphContext(
+                PyUnifier(mockProject!!, mockPsiManager!!, toSetSdk = false),
+                PythonTreeGenerator()
+            )
         }
     }
 
@@ -33,6 +37,6 @@ open class ParametrizedBaseWithUnifierTest(testDataRoot: String) : ParametrizedB
     companion object {
         var mockProject: Project? = null
         var mockPsiManager: PsiManager? = null
-        lateinit var unifier: AbstractUnifier
+        lateinit var mockContext: SubmissionsGraphContext
     }
 }
