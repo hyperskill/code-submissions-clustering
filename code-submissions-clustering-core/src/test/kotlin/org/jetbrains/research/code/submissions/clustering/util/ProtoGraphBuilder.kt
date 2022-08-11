@@ -5,7 +5,7 @@ import org.jetbrains.research.code.submissions.clustering.ProtoSubmissionsGraph
 import org.jetbrains.research.code.submissions.clustering.ProtoSubmissionsNode
 import kotlin.properties.Delegates
 
-@Suppress("SINGLE_CONSTRUCTOR_SHOULD_BE_PRIMARY")
+@Suppress("EMPTY_PRIMARY_CONSTRUCTOR")
 class ProtoGraphBuilder() {
     private var edges = mutableListOf<ProtoSubmissionsEdge>()
     private var nodes = HashMap<Int, ProtoSubmissionsNode>()
