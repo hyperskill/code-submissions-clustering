@@ -1,0 +1,48 @@
+[flake8]
+ignore =
+# You shouldn`t assign value to variable if it will be use only as return value
+  R504,
+# Found backslash that is used for line breaking
+  N400,
+# Possibly misspelt word
+  SC200,
+# H601 class has low cohesion
+  H601,
+# WPS inspections
+  WPS,
+
+exclude = .git, */data, env/, venv/
+
+max-line-length = 100
+max-doc-length = 100
+
+import-order-style = smarkets
+application-import-names = review
+app-import-names = review
+
+inline-quotes = '
+max-annotations-complexity = 4
+min-coverage-percents = 100
+max-function-length = 117
+max-parameters-amount = 9
+dictionaries = en_US,python,technical
+
+ignore-names =
+  failureException,
+  longMessage,
+  maxDiff,
+  setUp,
+  setUpClass,
+  setUpTestData,
+  tearDown,
+  tearDownClass,
+classmethod-decorators =
+  classmethod,
+  classonlymethod,
+  classproperty,
+
+max-expression-complexity = 13
+
+unused-arguments-ignore-abstract-functions = true
+unused-arguments-ignore-stub-functions = true
+unused-arguments-ignore-variadic-names = true
