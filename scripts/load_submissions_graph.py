@@ -17,6 +17,7 @@ OUTPUT_DIR_NAME = 'output'
 def build_solutions_file_name(step_id: int, output_path: str) -> str:
     """
     Build .csv file name to store submissions for step step_id.
+
     :param step_id: step id
     :param output_path: output directory to store all output files and directories
     :return: built .csv file name
@@ -27,6 +28,7 @@ def build_solutions_file_name(step_id: int, output_path: str) -> str:
 def build_output_dir_name(step_id: int, output_path: str) -> str:
     """
     Build directory name to store submissions graph output files for step step_id.
+
     :param step_id: step id
     :param output_path: output directory to store all output files and directories
     :return: built directory name
@@ -37,6 +39,7 @@ def build_output_dir_name(step_id: int, output_path: str) -> str:
 def configure_load_cmd(input_file: str, output_dir: str, serialize: bool, save_csv: bool) -> str:
     """
     Build command to execute to run submissions graph loading.
+
     :param input_file: input .csv file with code submissions
     :param output_dir: directory to store all output files for input_file
     :param serialize: true in case of saving submissions graph to binary file
@@ -55,6 +58,7 @@ def configure_load_cmd(input_file: str, output_dir: str, serialize: bool, save_c
 def create_directories(output_path: str):
     """
     Create missing output directories.
+
     :param output_path: root output directory
     """
     if not os.path.exists(output_path):
@@ -70,6 +74,7 @@ def create_directories(output_path: str):
 def parse_solutions(input_file: str, output_path: str) -> List[int]:
     """
     Read input .csv file input_file and write submissions for every step in separate .csv file.
+
     :param input_file: input .csv file with all submissions
     :param output_path: output directory to store all output files and directories
     :return: list of contained step ids
@@ -86,6 +91,7 @@ def parse_solutions(input_file: str, output_path: str) -> List[int]:
 def run_submissions_graph_load(step_id: int, output_path: str, serialize: bool, save_csv: bool):
     """
     Run submissions graph load for a single step.
+
     :param step_id: step id
     :param output_path: output directory to store all output files and directories
     :param serialize: true in case of saving submissions graph to binary file
