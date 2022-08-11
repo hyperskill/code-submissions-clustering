@@ -6,8 +6,18 @@ ignore =
   N400,
 # Possibly misspelt word
   SC200,
-# H601 class has low cohesion
+# Class has low cohesion
   H601,
+# Missing docstring in public module
+  D100,
+# Missing docstring in public class
+  D101,
+# Missing docstring in public function
+  D103,
+# Consider possible security implications associated with the subprocess module
+  S404,
+# Subprocess call - check for execution of untrusted input
+  S603,
 # WPS inspections
   WPS,
 
