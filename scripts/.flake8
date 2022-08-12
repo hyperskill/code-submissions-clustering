@@ -1,0 +1,62 @@
+[flake8]
+ignore =
+# You shouldn`t assign value to variable if it will be use only as return value
+  R504,
+# Found backslash that is used for line breaking
+  N400,
+# Possibly misspelt word
+  SC200,
+# Class has low cohesion
+  H601,
+# Missing docstring in public module
+  D100,
+# Missing docstring in public class
+  D101,
+# Missing docstring in public function
+  D103,
+# Missing parameter(s) in Docstring
+  DAR101,
+# Missing "Returns" in Docstring
+  DAR201,
+# Consider possible security implications associated with the subprocess module
+  S404,
+# Subprocess call - check for execution of untrusted input
+  S603,
+# WPS inspections
+  WPS,
+
+exclude = .git, */data, env/, venv/
+
+max-line-length = 100
+max-doc-length = 100
+
+import-order-style = smarkets
+application-import-names = review
+app-import-names = review
+
+inline-quotes = '
+max-annotations-complexity = 4
+min-coverage-percents = 100
+max-function-length = 117
+max-parameters-amount = 9
+dictionaries = en_US,python,technical
+
+ignore-names =
+  failureException,
+  longMessage,
+  maxDiff,
+  setUp,
+  setUpClass,
+  setUpTestData,
+  tearDown,
+  tearDownClass,
+classmethod-decorators =
+  classmethod,
+  classonlymethod,
+  classproperty,
+
+max-expression-complexity = 13
+
+unused-arguments-ignore-abstract-functions = true
+unused-arguments-ignore-stub-functions = true
+unused-arguments-ignore-variadic-names = true
