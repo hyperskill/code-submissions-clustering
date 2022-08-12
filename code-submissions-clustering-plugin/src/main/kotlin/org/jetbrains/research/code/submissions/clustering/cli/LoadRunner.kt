@@ -5,7 +5,7 @@ import com.intellij.openapi.diagnostic.Logger
 import com.xenomachina.argparser.ArgParser
 import org.jetbrains.kotlinx.dataframe.DataFrame
 import org.jetbrains.kotlinx.dataframe.io.readCSV
-import org.jetbrains.research.code.submissions.clustering.load.SubmissionsGraphContextBuilder
+import org.jetbrains.research.code.submissions.clustering.load.graph.context.builders.GumTreeGraphContextBuilder
 import org.jetbrains.research.code.submissions.clustering.model.Language
 import org.jetbrains.research.code.submissions.clustering.util.*
 import java.nio.file.Paths
@@ -32,7 +32,7 @@ object LoadRunner : ApplicationStarter {
 
             val df = DataFrame.readCSV(inputFilename)
             val language = Language.PYTHON
-            val context = SubmissionsGraphContextBuilder.getContext(language)
+            val context = GumTreeGraphContextBuilder.getContext(language)
             val submissionsGraph = df.loadGraph(context)
 
             createFolder(outputPath)
