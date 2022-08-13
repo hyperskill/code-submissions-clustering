@@ -1,12 +1,5 @@
 package org.jetbrains.research.code.submissions.clustering.model
 
-import com.github.gumtreediff.actions.EditScript
-import com.github.gumtreediff.actions.EditScriptGenerator
-import com.github.gumtreediff.actions.SimplifiedChawatheScriptGenerator
-import com.github.gumtreediff.gen.TreeGenerator
-import com.github.gumtreediff.matchers.MappingStore
-import com.github.gumtreediff.matchers.Matcher
-import com.github.gumtreediff.matchers.Matchers
 import org.jetbrains.research.code.submissions.clustering.load.SubmissionsGraphContext
 import org.jetbrains.research.code.submissions.clustering.util.toProto
 import org.jgrapht.Graph
@@ -48,26 +41,13 @@ class GraphBuilder(private val submissionsGraphContext: SubmissionsGraphContext)
                     return@innerLoop
                 }
                 val edge: DefaultWeightedEdge = graph.addEdge(vertex, otherVertex)
-                val dist = computeDistance(code, otherCode, submissionsGraphContext.treeGenerator)
+                val dist = submissionsGraphContext.codeDistanceMeasurer.computeDistance(code, otherCode)
                 graph.setEdgeWeight(edge, dist.toDouble())
             }
         }
     }
 
     fun build(): SubmissionsGraph = SubmissionsGraph(graph)
-
-    private fun String.parseTree(treeGenerator: TreeGenerator) =
-        treeGenerator.generateFrom().string(this)?.root ?: error("Can not parse code: $this")
-
-    private fun computeDistance(code: String, otherCode: String, treeGenerator: TreeGenerator): Int {
-        val source = code.parseTree(treeGenerator)
-        val destination = otherCode.parseTree(treeGenerator)
-        val defaultMatcher: Matcher = Matchers.getInstance().matcher
-        val mappings: MappingStore = defaultMatcher.match(source, destination)
-        val editScriptGenerator: EditScriptGenerator = SimplifiedChawatheScriptGenerator()
-        val actions: EditScript = editScriptGenerator.computeActions(mappings)
-        return actions.size()
-    }
 }
 
 fun buildGraph(context: SubmissionsGraphContext, block: GraphBuilder.() -> Unit): SubmissionsGraph {
