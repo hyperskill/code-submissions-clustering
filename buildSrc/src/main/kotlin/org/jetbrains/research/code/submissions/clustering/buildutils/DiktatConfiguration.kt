@@ -18,7 +18,6 @@ fun Project.configureDiktat() {
     configure<DiktatExtension> {
         inputs {
             include("src/main/**/*.kt")
-            exclude("src/main/resources/**/*.kt")
         }
     }
 }
@@ -34,7 +33,6 @@ fun Project.createDiktatTask() {
             inputs {
                 include("./*.kts")
                 include("./buildSrc/**/*.kt")
-                exclude("./resources/**/*.kt")
             }
         }
     }
