@@ -4,6 +4,7 @@ import com.github.gumtreediff.gen.TreeGenerator
 import com.github.gumtreediff.gen.python.PythonTreeGenerator
 import org.jetbrains.research.code.submissions.clustering.load.unifiers.PyUnifier
 import org.jetbrains.research.code.submissions.clustering.model.Language
+import org.jetbrains.research.code.submissions.clustering.util.GumTreeParserUtil
 
 /**
  * @property unifier unifier to use while operating submissions graph
@@ -18,9 +19,14 @@ object SubmissionsGraphContextBuilder {
     private val unifierByLanguage = mapOf<Language, () -> AbstractUnifier>(
         Language.PYTHON to { PyUnifier() },
     )
-    private val treeGeneratorByLanguage = mapOf<Language, () -> TreeGenerator>(
-        Language.PYTHON to { PythonTreeGenerator() },
+    private val treeGeneratorByLanguage = mapOf(
+        Language.PYTHON to { getPythonTreeGenerator() },
     )
+
+    fun getPythonTreeGenerator(): TreeGenerator {
+        GumTreeParserUtil.checkSetup()
+        return PythonTreeGenerator()
+    }
 
     fun getContext(language: Language) =
         SubmissionsGraphContext(

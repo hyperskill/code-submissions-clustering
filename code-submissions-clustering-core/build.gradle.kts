@@ -13,6 +13,7 @@ dependencies {
     implementation(libs.jgrapht.core)
     implementation(libs.gumtreediff.core)
     implementation(libs.gumtreediff.gen.python)
+    implementation(libs.zip4j)
     // Need for tests
     testImplementation(libs.junit.jupiter.api)
     testRuntimeOnly(libs.junit.jupiter.engine)

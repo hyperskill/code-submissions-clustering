@@ -7,7 +7,6 @@ import com.github.gumtreediff.gen.TreeGenerator
 import com.github.gumtreediff.matchers.MappingStore
 import com.github.gumtreediff.matchers.Matcher
 import com.github.gumtreediff.matchers.Matchers
-import com.github.gumtreediff.tree.Tree
 import org.jetbrains.research.code.submissions.clustering.load.SubmissionsGraphContext
 import org.jetbrains.research.code.submissions.clustering.util.toProto
 import org.jgrapht.Graph
@@ -57,9 +56,12 @@ class GraphBuilder(private val submissionsGraphContext: SubmissionsGraphContext)
 
     fun build(): SubmissionsGraph = SubmissionsGraph(graph)
 
+    private fun String.parseTree(treeGenerator: TreeGenerator) =
+        treeGenerator.generateFrom().string(this)?.root ?: error("Can not parse code: $this")
+
     private fun computeDistance(code: String, otherCode: String, treeGenerator: TreeGenerator): Int {
-        val source: Tree = treeGenerator.generateFrom().string(code).root
-        val destination: Tree = treeGenerator.generateFrom().string(otherCode).root
+        val source = code.parseTree(treeGenerator)
+        val destination = otherCode.parseTree(treeGenerator)
         val defaultMatcher: Matcher = Matchers.getInstance().matcher
         val mappings: MappingStore = defaultMatcher.match(source, destination)
         val editScriptGenerator: EditScriptGenerator = SimplifiedChawatheScriptGenerator()

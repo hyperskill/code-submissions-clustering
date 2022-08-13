@@ -15,6 +15,7 @@ jgrapht = "1.5.1"
 protobuf-plugin = "0.8.19"
 protobuf-runtime = "3.21.4"
 gumtreediff = "3.0.0"
+zip4j = "2.11.1"
 
 [libraries]
 detekt-gradle-plugin = { module = "io.gitlab.arturbosch.detekt:detekt-gradle-plugin", version.ref = "detekt" }
@@ -31,6 +32,7 @@ protobuf-plugin = { module = "com.google.protobuf:protobuf-gradle-plugin", versi
 protobuf-runtime = { module = "com.google.protobuf:protobuf-java", version.ref = "protobuf-runtime" }
 gumtreediff-core = { module = "com.github.gumtreediff:core", version.ref = "gumtreediff" }
 gumtreediff-gen-python = { module = "com.github.gumtreediff:gen.python", version.ref = "gumtreediff" }
+zip4j = { module = "net.lingala.zip4j:zip4j", version.ref = "zip4j" }
 
 [plugins]
 buildconfig = { id = "com.github.gmazzo.buildconfig", version.ref = "buildconfig" }
