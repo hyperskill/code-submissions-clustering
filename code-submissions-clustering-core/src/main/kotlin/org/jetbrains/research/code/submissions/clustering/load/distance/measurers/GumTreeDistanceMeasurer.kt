@@ -11,9 +11,11 @@ import com.github.gumtreediff.tree.Tree
 import org.jetbrains.research.code.submissions.clustering.load.CodeDistanceMeasurer
 
 class GumTreeDistanceMeasurer(private val treeGenerator: TreeGenerator) : CodeDistanceMeasurer {
+    private fun String.parseTree(treeGenerator: TreeGenerator) =
+        treeGenerator.generateFrom().string(this)?.root ?: error("Can not parse code: $this")
     override fun computeDistance(code: String, otherCode: String): Int {
-        val source: Tree = treeGenerator.generateFrom().string(code).root
-        val destination: Tree = treeGenerator.generateFrom().string(otherCode).root
+        val source = code.parseTree(treeGenerator)
+        val destination = otherCode.parseTree(treeGenerator)
         val defaultMatcher: Matcher = Matchers.getInstance().matcher
         val mappings: MappingStore = defaultMatcher.match(source, destination)
         val editScriptGenerator: EditScriptGenerator = SimplifiedChawatheScriptGenerator()

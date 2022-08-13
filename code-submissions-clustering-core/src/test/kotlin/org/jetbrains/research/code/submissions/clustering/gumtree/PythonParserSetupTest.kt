@@ -2,7 +2,7 @@ package org.jetbrains.research.code.submissions.clustering.gumtree
 
 import com.github.gumtreediff.gen.python.PythonTreeGenerator
 import com.github.gumtreediff.tree.TreeContext
-import org.jetbrains.research.code.submissions.clustering.util.GumTreeParserUtil
+import org.jetbrains.research.code.submissions.clustering.load.graph.context.builders.GumTreeParserUtil
 import org.junit.jupiter.api.Assertions.assertDoesNotThrow
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test

@@ -11,6 +11,12 @@ object GumTreeGraphContextBuilder : AbstractGraphContextBuilder() {
     private val treeGeneratorByLanguage = mapOf<Language, () -> TreeGenerator>(
         Language.PYTHON to { PythonTreeGenerator() },
     )
+
+    fun getPythonTreeGenerator(): PythonTreeGenerator {
+        GumTreeParserUtil.checkSetup()
+        return PythonTreeGenerator()
+    }
+
     override fun getContext(language: Language): SubmissionsGraphContext = SubmissionsGraphContext(
         unifierByLanguage.getValue(language)(),
         GumTreeDistanceMeasurer(treeGeneratorByLanguage.getValue(language)())
