@@ -1,9 +1,6 @@
 package org.jetbrains.research.code.submissions.clustering.gumtree
 
-import com.github.gumtreediff.gen.python.PythonTreeGenerator
-import com.github.gumtreediff.tree.TreeContext
 import org.jetbrains.research.code.submissions.clustering.load.graph.context.builders.GumTreeParserUtil
-import org.junit.jupiter.api.Assertions.assertDoesNotThrow
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 import java.io.File
@@ -12,14 +9,9 @@ import java.io.File
 * Check if python parser setup works correctly
 * */
 internal class PythonParserSetupTest : PythonGumTreeBaseTest() {
-    private val srcFile: String = javaClass.getResource("source.py")?.path
-        ?: error("Can not find \"source.py\" resources for PythonParserSetupTest class")
     private val parserRepoFile = File(GumTreeParserUtil.parserRepoPath)
     private val parserZipFile = File(GumTreeParserUtil.parserZipPath)
     private val targetParserFile = File(GumTreeParserUtil.targetParserPath)
-
-    // Parse a python file via GumTree
-    private fun getTreeContext(): TreeContext = PythonTreeGenerator().generateFrom().string(File(srcFile).readText())
 
     private fun getLastModified() = listOf(parserZipFile, parserRepoFile, targetParserFile).map { it.lastModified() }
 
@@ -31,7 +23,6 @@ internal class PythonParserSetupTest : PythonGumTreeBaseTest() {
         GumTreeParserUtil.checkSetup()
         // Parser zip file should be updated and parser repo should be unzipped
         assertParserFies()
-        assertDoesNotThrow(::getTreeContext)
     }
 
     @Test
@@ -47,7 +38,6 @@ internal class PythonParserSetupTest : PythonGumTreeBaseTest() {
         // Parser repo file should be unzipped from existing zip file, which shouldn't be changed
         assert(parserRepoFile.exists()) { PARSER_REPO_FILE_EXIST_ERROR }
         assert(expectedLastModified == actualLastModified)
-        assertDoesNotThrow(::getTreeContext)
     }
 
     @Test
@@ -63,7 +53,6 @@ internal class PythonParserSetupTest : PythonGumTreeBaseTest() {
         // Parser zip file shouldn't exist if there was parser repo, which shouldn't be changed
         assert(!parserZipFile.exists())
         assert(expectedLastModified == actualLastModified)
-        assertDoesNotThrow(::getTreeContext)
     }
 
     @Test
@@ -77,7 +66,6 @@ internal class PythonParserSetupTest : PythonGumTreeBaseTest() {
         // Parser zip file and repo should exist and should be changed together with targetParserFile
         assertParserFies()
         assert(lastModifiedBeforeSetup.zip(lastModifiedAfterSetup).all { it.first != it.second })
-        assertDoesNotThrow(::getTreeContext)
     }
 
     private fun assertParserFies() {
