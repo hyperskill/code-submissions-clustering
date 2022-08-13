@@ -9,7 +9,7 @@ import org.jetbrains.research.code.submissions.clustering.model.Language
 
 object GumTreeGraphContextBuilder : AbstractGraphContextBuilder() {
     private val treeGeneratorByLanguage = mapOf<Language, () -> TreeGenerator>(
-        Language.PYTHON to { PythonTreeGenerator() },
+        Language.PYTHON to { getPythonTreeGenerator() },
     )
 
     fun getPythonTreeGenerator(): PythonTreeGenerator {
