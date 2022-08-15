@@ -9,12 +9,12 @@ typealias SubmissionNodeId = Int
  * @property id
  */
 data class SubmissionsNode(
-    val id: SubmissionNodeID,
+    val id: SubmissionNodeId,
     val code: String,
     val stepId: Int,
     val idList: MutableSet<Int>
 ) {
-    constructor(submission: Submission, id: SubmissionNodeID) : this(
+    constructor(submission: Submission, id: SubmissionNodeId) : this(
         id,
         submission.code,
         submission.stepId,
