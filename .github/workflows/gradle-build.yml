@@ -18,3 +18,10 @@ jobs:
       - uses: gradle/gradle-build-action@v2.1.5
         with:
           arguments: build --stacktrace
+      - name: Upload Test Report
+        uses: actions/upload-artifact@v2
+        if: ${{ always() }}
+        with:
+          name: test-report
+          path: |
+            code-submissions-clustering-core/build/reports/tests/**/*
