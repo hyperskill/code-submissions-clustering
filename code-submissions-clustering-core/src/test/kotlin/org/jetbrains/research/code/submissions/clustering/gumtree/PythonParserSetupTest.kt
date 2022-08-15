@@ -1,6 +1,6 @@
 package org.jetbrains.research.code.submissions.clustering.gumtree
 
-import org.jetbrains.research.code.submissions.clustering.load.graph.context.builders.GumTreeParserUtil
+import org.jetbrains.research.code.submissions.clustering.load.context.builder.gumtree.GumTreeParserUtil
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 import java.io.File

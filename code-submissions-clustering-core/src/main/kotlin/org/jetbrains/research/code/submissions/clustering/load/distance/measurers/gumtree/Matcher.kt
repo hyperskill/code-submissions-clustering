@@ -1,4 +1,4 @@
-package org.jetbrains.research.code.submissions.clustering.load.distance.measurers
+package org.jetbrains.research.code.submissions.clustering.load.distance.measurers.gumtree
 
 import com.github.gumtreediff.actions.ActionGenerator
 import com.github.gumtreediff.actions.model.Action

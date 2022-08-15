@@ -13,10 +13,7 @@ class LoadGraphTest : ParametrizedBaseWithUnifierTest(getTmpProjectDir()) {
     @MethodSource("getTestData")
     fun testLoadGraphFromDataFrame(dataFrame: DataFrame<*>, expectedProtoGraph: ProtoSubmissionsGraph) {
         WriteCommandAction.runWriteCommandAction(mockProject) {
-            assertEquals(
-                expectedProtoGraph,
-                dataFrame.loadGraph(mockContext).toProto()
-            )
+            expectedProtoGraph.assertEquals(dataFrame.loadGraph(mockContext).toProto())
         }
     }
 
@@ -80,6 +77,7 @@ class LoadGraphTest : ParametrizedBaseWithUnifierTest(getTmpProjectDir()) {
                         addIdList(2)
                     }
                     .addEdge(0, 1, 3.0)
+                    .addEdge(1, 0, 3.0)
                     .build()
             )
         )

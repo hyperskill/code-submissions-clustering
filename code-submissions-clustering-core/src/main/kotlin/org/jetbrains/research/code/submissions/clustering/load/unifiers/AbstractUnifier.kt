@@ -1,4 +1,4 @@
-package org.jetbrains.research.code.submissions.clustering.load
+package org.jetbrains.research.code.submissions.clustering.load.unifiers
 
 import com.intellij.ide.impl.ProjectUtil
 import com.intellij.openapi.application.ApplicationManager

@@ -1,4 +1,4 @@
-package org.jetbrains.research.code.submissions.clustering.load.graph.context.builders
+package org.jetbrains.research.code.submissions.clustering.load.context.builder.gumtree
 
 import java.io.InputStream
 import java.net.URL
