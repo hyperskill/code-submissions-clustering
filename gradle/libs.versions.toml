@@ -14,7 +14,7 @@ junit-platform = "1.8.2"
 jgrapht = "1.5.1"
 protobuf-plugin = "0.8.19"
 protobuf-runtime = "3.21.4"
-gumtreediff = "3.0.0"
+gumtreediff = "2.1.2"
 zip4j = "2.11.1"
 
 [libraries]
