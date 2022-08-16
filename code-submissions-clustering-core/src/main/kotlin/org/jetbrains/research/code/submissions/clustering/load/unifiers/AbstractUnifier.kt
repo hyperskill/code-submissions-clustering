@@ -4,7 +4,6 @@ import com.intellij.ide.impl.ProjectUtil
 import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.components.service
 import com.intellij.openapi.project.Project
-import com.intellij.openapi.vfs.LocalFileSystem
 import com.intellij.psi.PsiDocumentManager
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
@@ -28,16 +27,6 @@ abstract class AbstractUnifier(
     private val logger = Logger.getLogger(javaClass.name)
     abstract val language: Language
     abstract val transformations: List<Transformation>
-
-    private fun String.createPsiFile(id: Int): PsiFile = ApplicationManager.getApplication().runWriteAction<PsiFile> {
-        val basePath = getTmpProjectDir(toCreateFolder = false)
-        val fileName = "dummy$id.${language.extension}"
-        val file = addFileToProject(basePath, fileName, fileContent = this)
-        val virtualFile = LocalFileSystem.getInstance().refreshAndFindFileByIoFile(file) ?: throw NoSuchFileException(
-            file, reason = "Virtual file cannot be created because file was not found in the local file system"
-        )
-        psiManager.findFile(virtualFile)
-    }
 
     @Suppress("TooGenericExceptionCaught")
     private fun PsiFile.applyTransformations(transformations: List<Transformation>, previousTree: PsiElement? = null) {
@@ -66,7 +55,7 @@ abstract class AbstractUnifier(
     }
 
     fun Submission.unify(): Submission {
-        val psi = this.code.createPsiFile(this.id)
+        val psi = this.code.createPsiFile(this.id, language, psiManager)
         ApplicationManager.getApplication().invokeAndWait {
             ApplicationManager.getApplication().runWriteAction {
                 var iterationNumber = 0

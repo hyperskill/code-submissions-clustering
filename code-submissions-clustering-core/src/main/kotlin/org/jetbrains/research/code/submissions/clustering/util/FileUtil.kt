@@ -25,7 +25,8 @@ fun createFolder(path: String) {
 fun getTmpDirPath() = System.getProperty("java.io.tmpdir").removeSuffix("/")
 
 fun getTmpProjectDir(toCreateFolder: Boolean = true): String {
-    val path = "${getTmpDirPath()}/codeSubmissionsClusteringTmp"
+    val folderName = "codeSubmissionsClusteringTmp"
+    val path = "${getTmpDirPath()}/$folderName"
     if (toCreateFolder) {
         createFolder(path)
     }

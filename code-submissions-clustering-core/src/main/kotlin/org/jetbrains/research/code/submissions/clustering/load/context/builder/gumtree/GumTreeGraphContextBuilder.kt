@@ -4,7 +4,7 @@ import com.github.gumtreediff.actions.model.Action
 import com.github.gumtreediff.gen.TreeGenerator
 import com.github.gumtreediff.gen.python.PythonTreeGenerator
 import org.jetbrains.research.code.submissions.clustering.load.context.SubmissionsGraphContext
-import org.jetbrains.research.code.submissions.clustering.load.distance.measurers.gumtree.GumTreeDistanceMeasurer
+import org.jetbrains.research.code.submissions.clustering.load.distance.measurers.gumtree.GumTreeDistanceMeasurerByParser
 import org.jetbrains.research.code.submissions.clustering.load.context.builder.AbstractGraphContextBuilder
 import org.jetbrains.research.code.submissions.clustering.model.Language
 
@@ -22,6 +22,6 @@ object GumTreeGraphContextBuilder : AbstractGraphContextBuilder<List<Action>>() 
 
     override fun getContext(language: Language): GumTreeGraphContext = SubmissionsGraphContext(
         unifierByLanguage.getValue(language)(),
-        GumTreeDistanceMeasurer(treeGeneratorByLanguage.getValue(language)())
+        GumTreeDistanceMeasurerByParser(treeGeneratorByLanguage.getValue(language)())
     )
 }

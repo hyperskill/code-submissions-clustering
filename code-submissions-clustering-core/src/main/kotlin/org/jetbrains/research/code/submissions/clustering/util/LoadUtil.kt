@@ -25,7 +25,7 @@ fun <T> DataFrame<*>.loadGraph(context: SubmissionsGraphContext<T>): Submissions
                     )
                 )
             }
-            makeComplete()
+            calculateDistances()
         }
     }
     return graph
