@@ -18,10 +18,18 @@ data class SubmissionsGraph(val graph: SubmissionsGraphAlias) {
     fun buildStringRepresentation() = toProto().toString()
 }
 
-class GraphBuilder<T>(private val submissionsGraphContext: SubmissionsGraphContext<T>) {
-    private val graph: SubmissionsGraphAlias = SimpleDirectedWeightedGraph(SubmissionsGraphEdge::class.java)
+class GraphBuilder<T>(
+    private val submissionsGraphContext: SubmissionsGraphContext<T>,
+    private val graph: SubmissionsGraphAlias
+) {
     private val vertexByCode = HashMap<String, SubmissionsNode>()
     private val idFactory = IdentifierFactoryImpl()
+
+    init {
+        graph.vertexSet().forEach {
+            vertexByCode[it.code] = it
+        }
+    }
 
     fun add(submission: Submission) {
         submissionsGraphContext.unifier.run {
@@ -55,7 +63,11 @@ class GraphBuilder<T>(private val submissionsGraphContext: SubmissionsGraphConte
     fun build(): SubmissionsGraph = SubmissionsGraph(graph)
 }
 
-fun <T> buildGraph(context: SubmissionsGraphContext<T>, block: GraphBuilder<T>.() -> Unit): SubmissionsGraph {
-    val builder = GraphBuilder(context)
+fun <T> buildGraph(
+    context: SubmissionsGraphContext<T>,
+    graph: SubmissionsGraphAlias = SimpleDirectedWeightedGraph(SubmissionsGraphEdge::class.java),
+    block: GraphBuilder<T>.() -> Unit
+): SubmissionsGraph {
+    val builder = GraphBuilder(context, graph)
     return builder.apply(block).build()
 }

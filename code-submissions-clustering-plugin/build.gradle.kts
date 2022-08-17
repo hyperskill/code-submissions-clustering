@@ -41,4 +41,17 @@ tasks {
             }
         }
     }
+    register("calculate-dist", BaseCLITask::class) {
+        dependsOn(build)
+        val input: String? by project
+        val output: String? by project
+        args = mutableListOf<String>().apply {
+            add("calculate-dist")
+            input?.let { add("--input_file=$it") }
+            output?.let { add("--output_path=$it") }
+            if (project.hasProperty("serialize")) {
+                add("--serialize")
+            }
+        }
+    }
 }
