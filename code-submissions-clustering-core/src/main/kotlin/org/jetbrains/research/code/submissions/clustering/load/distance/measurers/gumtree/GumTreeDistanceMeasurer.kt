@@ -5,14 +5,13 @@ import com.github.gumtreediff.gen.TreeGenerator
 import com.github.gumtreediff.tree.TreeContext
 import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiManager
-import org.jetbrains.research.code.submissions.clustering.load.context.builder.IdentifierFactoryImpl
 import org.jetbrains.research.code.submissions.clustering.load.context.builder.gumtree.converter.getTreeContext
 import org.jetbrains.research.code.submissions.clustering.load.distance.measurers.CodeDistanceMeasurerBase
 import org.jetbrains.research.code.submissions.clustering.load.unifiers.createTempProject
 import org.jetbrains.research.code.submissions.clustering.model.Language
 import org.jetbrains.research.code.submissions.clustering.model.SubmissionsGraphAlias
 import org.jetbrains.research.code.submissions.clustering.model.SubmissionsGraphEdge
-import org.jetbrains.research.code.submissions.clustering.util.createPsiFile
+import org.jetbrains.research.code.submissions.clustering.util.asPsiFile
 
 abstract class GumTreeDistanceMeasurerBase : CodeDistanceMeasurerBase<List<Action>>() {
     override fun List<Action>.calculateWeight() = this.size
@@ -44,9 +43,8 @@ class GumTreeDistanceMeasurerByPsi(
     project: Project = createTempProject(),
     private val psiManager: PsiManager = PsiManager.getInstance(project),
 ) : GumTreeDistanceMeasurerBase() {
-    // TODO: fix it. We have to be sure that we use unique ids for all dummy files
-    @Suppress("MagicNumber", "MAGIC_NUMBER")
-    private val idFactory = IdentifierFactoryImpl(2000)
-    override fun String.parseTree() =
-        getTreeContext(this.createPsiFile(idFactory.uniqueIdentifier(), Language.PYTHON, psiManager))
+    override fun String.parseTree(): TreeContext =
+        this.asPsiFile(Language.PYTHON, psiManager) {
+            getTreeContext(it)
+        }
 }

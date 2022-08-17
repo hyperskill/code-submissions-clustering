@@ -54,23 +54,24 @@ abstract class AbstractUnifier(
         }
     }
 
-    fun Submission.unify(): Submission {
-        val psi = this.code.createPsiFile(this.id, language, psiManager)
-        ApplicationManager.getApplication().invokeAndWait {
-            ApplicationManager.getApplication().runWriteAction {
-                var iterationNumber = 0
-                do {
-                    ++iterationNumber
-                    val previousTree = psi.copy()
-                    psi.applyTransformations(transformations, previousTree)
-                    logger.finer { "Previous text[$iterationNumber]:\n${previousTree.text}\n" }
-                    logger.finer { "Current text[$iterationNumber]:\n${psi.text}\n\n" }
-                } while (!previousTree.textMatches(psi.text) && iterationNumber <= MAX_ITERATIONS)
-                logger.fine { "Tree Ended[[$iterationNumber]]: ${psi.text}\n\n\n" }
+    @Suppress("TOO_MANY_LINES_IN_LAMBDA")
+    fun Submission.unify(): Submission =
+        this.code.asPsiFile(language, psiManager) {
+            ApplicationManager.getApplication().invokeAndWait {
+                ApplicationManager.getApplication().runWriteAction {
+                    var iterationNumber = 0
+                    do {
+                        ++iterationNumber
+                        val previousTree = it.copy()
+                        it.applyTransformations(transformations, previousTree)
+                        logger.finer { "Previous text[$iterationNumber]:\n${previousTree.text}\n" }
+                        logger.finer { "Current text[$iterationNumber]:\n${it.text}\n\n" }
+                    } while (!previousTree.textMatches(it.text) && iterationNumber <= MAX_ITERATIONS)
+                    logger.fine { "Tree Ended[[$iterationNumber]]: ${it.text}\n\n\n" }
+                }
             }
+            this.copy(code = it.reformatInWriteAction().text)
         }
-        return this.copy(code = psi.reformatInWriteAction().text)
-    }
 
     companion object {
         const val MAX_ITERATIONS = 100

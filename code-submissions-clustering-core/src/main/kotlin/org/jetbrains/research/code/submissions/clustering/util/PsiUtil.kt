@@ -7,7 +7,6 @@ import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.vfs.LocalFileSystem
 import com.intellij.psi.PsiFile
 import com.intellij.psi.PsiManager
-import com.jetbrains.python.psi.impl.*
 import org.jetbrains.research.code.submissions.clustering.load.context.builder.gumtree.converter.PsiToGumTreeConverter.filterWhiteSpaces
 import org.jetbrains.research.code.submissions.clustering.model.Language
 
@@ -28,12 +27,17 @@ fun PsiElement.getElementChildren(toIgnoreWhiteSpaces: Boolean): List<PsiElement
     this.children.toList()
 }
 
-fun String.createPsiFile(id: Int, language: Language, psiManager: PsiManager): PsiFile = ApplicationManager.getApplication().runWriteAction<PsiFile> {
+inline fun <reified T> String.asPsiFile(language: Language, psiManager: PsiManager, block: (PsiFile) -> T): T {
     val basePath = getTmpProjectDir(toCreateFolder = false)
-    val fileName = "dummy$id.${language.extension}"
+    val fileName = "dummy.${language.extension}"
     val file = addFileToProject(basePath, fileName, fileContent = this)
-    val virtualFile = LocalFileSystem.getInstance().refreshAndFindFileByIoFile(file) ?: throw NoSuchFileException(
-        file, reason = "Virtual file cannot be created because file was not found in the local file system"
-    )
-    psiManager.findFile(virtualFile)
+    val psi = ApplicationManager.getApplication().runWriteAction<PsiFile> {
+        val virtualFile = LocalFileSystem.getInstance().refreshAndFindFileByIoFile(file) ?: throw NoSuchFileException(
+            file, reason = "Virtual file cannot be created because file was not found in the local file system"
+        )
+        psiManager.findFile(virtualFile)
+    }
+    val result = block(psi)
+    file.deleteFromProject()
+    return result
 }
