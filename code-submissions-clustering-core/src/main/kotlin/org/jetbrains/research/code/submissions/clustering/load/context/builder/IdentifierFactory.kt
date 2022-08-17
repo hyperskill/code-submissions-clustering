@@ -14,6 +14,6 @@ interface IdentifierFactory {
     fun uniqueIdentifier(): Identifier
 }
 
-class IdentifierFactoryImpl(private var counter: Int = 0) : IdentifierFactory {
+class IdentifierFactoryImpl(private var counter: Int = 1) : IdentifierFactory {
     override fun uniqueIdentifier(): Identifier = counter++
 }

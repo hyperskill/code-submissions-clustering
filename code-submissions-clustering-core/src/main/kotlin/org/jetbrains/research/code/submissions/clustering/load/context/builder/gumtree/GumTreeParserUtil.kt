@@ -34,12 +34,7 @@ object GumTreeParserUtil {
     /**
      * Get a parent folder of parser repository, which is stored in this project in the resources folder
      */
-    private fun getParserRepoParentFolder(): String {
-        val parserParentLocation =
-            javaClass.getResource("README.md")?.path ?: error("Can not find resource for $PARSER_NAME")
-        // TODO: find a better way for it
-        return File(parserParentLocation).parent.replace("build/resources/main/", "src/main/resources/")
-    }
+    private fun getParserRepoParentFolder(): String = getTmpDirPath()
 
     /**
      * Update parser zip file

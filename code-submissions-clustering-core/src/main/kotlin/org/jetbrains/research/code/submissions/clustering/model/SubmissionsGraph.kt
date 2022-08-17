@@ -42,7 +42,7 @@ class GraphBuilder<T>(private val submissionsGraphContext: SubmissionsGraphConte
     fun calculateDistances() {
         val vertices = graph.vertexSet()
         vertices.forEach { first ->
-            vertices.forEach {second ->
+            vertices.forEach { second ->
                 if (first.id != second.id && !graph.containsEdge(first, second)) {
                     val edge: SubmissionsGraphEdge = graph.addEdge(first, second)
                     val dist = submissionsGraphContext.codeDistanceMeasurer.computeDistanceWeight(edge, graph)
