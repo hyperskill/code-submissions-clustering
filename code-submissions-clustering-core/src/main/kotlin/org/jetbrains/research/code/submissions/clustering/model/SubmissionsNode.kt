@@ -1,6 +1,6 @@
 package org.jetbrains.research.code.submissions.clustering.model
 
-typealias SubmissionNodeId = Int
+import org.jetbrains.research.code.submissions.clustering.load.context.builder.Identifier
 
 /**
  * @property code submissions code
@@ -9,12 +9,12 @@ typealias SubmissionNodeId = Int
  * @property id
  */
 data class SubmissionsNode(
-    val id: SubmissionNodeId,
+    val id: Identifier,
     val code: String,
     val stepId: Int,
     val idList: MutableSet<Int>
 ) {
-    constructor(submission: Submission, id: SubmissionNodeId) : this(
+    constructor(submission: Submission, id: Identifier) : this(
         id,
         submission.code,
         submission.stepId,

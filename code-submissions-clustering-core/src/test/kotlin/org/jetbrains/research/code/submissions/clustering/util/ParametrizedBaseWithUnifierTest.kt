@@ -1,18 +1,16 @@
 package org.jetbrains.research.code.submissions.clustering.util
 
-import com.intellij.openapi.command.WriteCommandAction
 import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiManager
+import com.intellij.testFramework.fixtures.CodeInsightTestFixture
 import org.jetbrains.research.code.submissions.clustering.ProtoSubmissionsEdge
 import org.jetbrains.research.code.submissions.clustering.ProtoSubmissionsGraph
 import org.jetbrains.research.code.submissions.clustering.ProtoSubmissionsNode
 import org.jetbrains.research.code.submissions.clustering.load.context.SubmissionsGraphContext
-import org.jetbrains.research.code.submissions.clustering.load.context.builder.gumtree.GumTreeGraphContextBuilder
-import org.jetbrains.research.code.submissions.clustering.load.distance.measurers.gumtree.GumTreeDistanceMeasurer
+import org.jetbrains.research.code.submissions.clustering.load.distance.measurers.gumtree.GumTreeDistanceMeasurerByPsi
 import org.jetbrains.research.code.submissions.clustering.load.unifiers.PyUnifier
 import org.jetbrains.research.pluginUtilities.util.ParametrizedBaseWithPythonSdkTest
 import org.junit.Ignore
-import org.junit.jupiter.api.AfterEach
 import java.awt.EventQueue
 
 @Ignore
@@ -24,17 +22,11 @@ open class ParametrizedBaseWithUnifierTest(testDataRoot: String) : ParametrizedB
             }
             mockProject = project
             mockPsiManager = psiManager
+            mockFixture = myFixture
             mockContext = SubmissionsGraphContext(
                 PyUnifier(mockProject!!, mockPsiManager!!, toSetSdk = false),
-                GumTreeDistanceMeasurer(GumTreeGraphContextBuilder.getPythonTreeGenerator())
+                GumTreeDistanceMeasurerByPsi(mockProject!!)
             )
-        }
-    }
-
-    @AfterEach
-    override fun tearDown() {
-        WriteCommandAction.runWriteCommandAction(mockProject) {
-            deleteTmpProjectFiles(getTmpProjectDir(toCreateFolder = false))
         }
     }
 
@@ -50,6 +42,7 @@ open class ParametrizedBaseWithUnifierTest(testDataRoot: String) : ParametrizedB
     companion object {
         var mockProject: Project? = null
         var mockPsiManager: PsiManager? = null
+        var mockFixture: CodeInsightTestFixture? = null
         lateinit var mockContext: SubmissionsGraphContext<out Any>
     }
 }
