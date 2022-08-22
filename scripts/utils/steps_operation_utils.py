@@ -14,8 +14,7 @@ def operate_steps(
         logger: Logger,
         **kwargs,
 ):
-    """
-    Run task_runner for every step from step_ids using arguments from script_arguments
+    """Run task_runner for every step from step_ids using arguments from script_arguments.
 
     :param step_ids: list of step ids to operate
     :param task_runner: runs specified gradle task
