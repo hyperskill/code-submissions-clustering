@@ -1,4 +1,4 @@
-"""Distance calculation script
+"""Distance calculation script.
 
 This script allows user to modify already serialized submissions graph(s) stored in [input_path]
 by calculating distances between every pair of submissions nodes and adding edges according to

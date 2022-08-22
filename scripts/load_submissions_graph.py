@@ -1,4 +1,4 @@
-"""Load submissions graph script
+"""Load submissions graph script.
 
 This script allows user to load submissions graph(s) from .csv file [input_file] with
 submissions for specified step(s).

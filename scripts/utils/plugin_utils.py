@@ -18,7 +18,7 @@ class TaskFlagArgs(Enum):
 
 
 class AbstractTaskRunner(ABC):
-    """Abstract gradle task runner"""
+    """Abstract gradle task runner."""
 
     task_name: str
     task_prefix = ':code-submissions-clustering-plugin:'
@@ -26,7 +26,7 @@ class AbstractTaskRunner(ABC):
     @abstractmethod
     def build_arguments(self, *args, **kwargs) \
             -> Tuple[Dict[TaskNamedArgs, Any], Dict[TaskFlagArgs, bool]]:
-        """Build arguments for task CLI"""
+        """Build arguments for task CLI."""
         pass
 
     def configure_cmd(
@@ -34,7 +34,7 @@ class AbstractTaskRunner(ABC):
             named_args: Dict[TaskNamedArgs, Any],
             flag_args: Dict[TaskFlagArgs, bool],
     ) -> str:
-        """Build command to execute"""
+        """Build command to execute."""
         cmd = f'./gradlew {self.task_prefix}{self.task_name}'
         for arg_name, arg_value in named_args.items():
             cmd = cmd + f' -P{arg_name.value}={str(arg_value)} '
@@ -44,14 +44,14 @@ class AbstractTaskRunner(ABC):
         return cmd
 
     def run(self, *args, **kwargs):
-        """Run task"""
+        """Run task."""
         named_args, flag_args = self.build_arguments(*args, **kwargs)
         cmd = self.configure_cmd(named_args, flag_args)
         subprocess.run(cmd.split(), stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
 
 
 class LoadRunner(AbstractTaskRunner):
-    """'load' task runner"""
+    """'load' task runner."""
 
     task_name = 'load'
 
@@ -61,6 +61,7 @@ class LoadRunner(AbstractTaskRunner):
             script_arguments: Namespace,
             **kwargs,
     ) -> Tuple[Dict[TaskNamedArgs, Any], Dict[TaskFlagArgs, bool]]:
+        """Build arguments for 'load' CLI."""
         named_args = {
             TaskNamedArgs.INPUT_FILE:
                 kwargs['build_solutions_file_name'](step_id, script_arguments),
@@ -75,7 +76,7 @@ class LoadRunner(AbstractTaskRunner):
 
 
 class CalculateDistRunner(AbstractTaskRunner):
-    """'calculate-dist' task runner"""
+    """'calculate-dist' task runner."""
 
     task_name = 'calculate-dist'
 
@@ -85,6 +86,7 @@ class CalculateDistRunner(AbstractTaskRunner):
             script_arguments,
             **kwargs,
     ) -> Tuple[Dict[TaskNamedArgs, Any], Dict[TaskFlagArgs, bool]]:
+        """Build arguments for 'calculate-dist' CLI."""
         named_args = {
             TaskNamedArgs.INPUT_FILE:
                 kwargs['build_initial_graph_filename'](step_id, script_arguments),
