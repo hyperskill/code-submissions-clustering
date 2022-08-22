@@ -1,9 +1,8 @@
 import time
+from argparse import Namespace
 from logging import Logger
-
 from typing import List
 
-from argparse import Namespace
 from utils.plugin_utils import AbstractTaskRunner
 from utils.time_utils import time_to_str
 
@@ -13,7 +12,7 @@ def operate_steps(
         task_runner: AbstractTaskRunner,
         script_arguments: Namespace,
         logger: Logger,
-        **kwargs
+        **kwargs,
 ):
     """
     Run task_runner for every step from step_ids using arguments from script_arguments

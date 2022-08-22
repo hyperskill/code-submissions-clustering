@@ -1,8 +1,8 @@
 import subprocess
 from abc import ABC, abstractmethod
+from argparse import Namespace
 from enum import Enum, unique
 from typing import Any, Dict, Tuple
-from argparse import Namespace
 
 
 @unique
@@ -24,11 +24,16 @@ class AbstractTaskRunner(ABC):
     task_prefix = ':code-submissions-clustering-plugin:'
 
     @abstractmethod
-    def build_arguments(self, *args, **kwargs) -> Tuple[Dict[TaskNamedArgs, Any], Dict[TaskFlagArgs, bool]]:
+    def build_arguments(self, *args, **kwargs) \
+            -> Tuple[Dict[TaskNamedArgs, Any], Dict[TaskFlagArgs, bool]]:
         """Build arguments for task CLI"""
         pass
 
-    def configure_cmd(self, named_args: Dict[TaskNamedArgs, Any], flag_args: Dict[TaskFlagArgs, bool]) -> str:
+    def configure_cmd(
+            self,
+            named_args: Dict[TaskNamedArgs, Any],
+            flag_args: Dict[TaskFlagArgs, bool],
+    ) -> str:
         """Build command to execute"""
         cmd = f'./gradlew {self.task_prefix}{self.task_name}'
         for arg_name, arg_value in named_args.items():
@@ -54,11 +59,13 @@ class LoadRunner(AbstractTaskRunner):
             self,
             step_id: int,
             script_arguments: Namespace,
-            **kwargs
+            **kwargs,
     ) -> Tuple[Dict[TaskNamedArgs, Any], Dict[TaskFlagArgs, bool]]:
         named_args = {
-            TaskNamedArgs.INPUT_FILE: kwargs['build_solutions_file_name'](step_id, script_arguments),
-            TaskNamedArgs.OUTPUT_PATH: kwargs['build_output_dir_name'](step_id, script_arguments),
+            TaskNamedArgs.INPUT_FILE:
+                kwargs['build_solutions_file_name'](step_id, script_arguments),
+            TaskNamedArgs.OUTPUT_PATH:
+                kwargs['build_output_dir_name'](step_id, script_arguments),
         }
         flag_args = {
             TaskFlagArgs.SERIALIZE: script_arguments.serialize,
@@ -76,13 +83,15 @@ class CalculateDistRunner(AbstractTaskRunner):
             self,
             step_id,
             script_arguments,
-            **kwargs
+            **kwargs,
     ) -> Tuple[Dict[TaskNamedArgs, Any], Dict[TaskFlagArgs, bool]]:
         named_args = {
-            TaskNamedArgs.INPUT_FILE: kwargs['build_initial_graph_filename'](step_id, script_arguments),
-            TaskNamedArgs.OUTPUT_PATH: kwargs['build_output_dir_name'](step_id, script_arguments),
+            TaskNamedArgs.INPUT_FILE:
+                kwargs['build_initial_graph_filename'](step_id, script_arguments),
+            TaskNamedArgs.OUTPUT_PATH:
+                kwargs['build_output_dir_name'](step_id, script_arguments),
         }
         flag_args = {
-            TaskFlagArgs.SERIALIZE: script_arguments.serialize
+            TaskFlagArgs.SERIALIZE: script_arguments.serialize,
         }
         return named_args, flag_args

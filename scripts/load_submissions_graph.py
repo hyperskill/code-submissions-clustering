@@ -1,12 +1,16 @@
 """Load submissions graph script
 
-This script allows user to load submissions graph(s) from .csv file [input_file] with submissions for specified step(s).
+This script allows user to load submissions graph(s) from .csv file [input_file] with
+submissions for specified step(s).
 By default, script creates 2 files for every step:
 * [output_path]/solutions/[step_id].csv containing all solutions for step [step_id]
-* [output_path]/output/[step_id]/graph.txt containing string representation of built submissions graph
+* [output_path]/output/[step_id]/graph.txt containing string representation of built
+submissions graph
 Optional arguments:
-* --serialize: additionally creates [output_path]/output/[step_id]/graph.bin containing serialized submissions graph
-* --saveCSV: additionally creates [output_path]/output/[step_id]/graph.csv containing result of submissions unification
+* --serialize: additionally creates [output_path]/output/[step_id]/graph.bin containing
+serialized submissions graph
+* --saveCSV: additionally creates [output_path]/output/[step_id]/graph.csv containing
+result of submissions unification
 """
 
 import argparse
@@ -122,5 +126,5 @@ if __name__ == '__main__':
     operate_steps(
         step_ids, task_runner, args, logger,
         build_solutions_file_name=build_solutions_file_name,
-        build_output_dir_name=build_output_dir_name
+        build_output_dir_name=build_output_dir_name,
     )

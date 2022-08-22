@@ -1,11 +1,13 @@
 """Distance calculation script
 
 This script allows user to modify already serialized submissions graph(s) stored in [input_path]
-by calculating distances between every pair of submissions nodes and adding edges according to calculated distances.
+by calculating distances between every pair of submissions nodes and adding edges according to
+calculated distances.
 By default, script creates 1 file for every serialized graph:
 * [output_path]/[step_id]/graph.txt containing string representation of modified submissions graph
 Optional arguments:
-* --serialize: additionally creates [output_path]/[step_id]/graph.bin containing new serialized submissions graph
+* --serialize: additionally creates [output_path]/[step_id]/graph.bin containing new serialized
+submissions graph
 """
 
 import argparse
@@ -66,5 +68,5 @@ if __name__ == '__main__':
     operate_steps(
         step_ids, task_runner, args, logger,
         build_initial_graph_filename=build_initial_graph_filename,
-        build_output_dir_name=build_output_dir_name
+        build_output_dir_name=build_output_dir_name,
     )
