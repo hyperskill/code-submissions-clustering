@@ -23,7 +23,7 @@ from utils.df_utils import read_df, write_df
 from utils.file_utils import create_dir
 from utils.logger_utils import set_logger
 from utils.plugin_utils import LoadRunner
-from utils.steps_operation_utils import operate_steps
+from utils.steps_processing_utils import process_steps
 from utils.time_utils import time_to_str
 
 SOLUTIONS_DIR_NAME = 'solutions'
@@ -123,7 +123,7 @@ if __name__ == '__main__':
 
     task_runner = LoadRunner()
 
-    operate_steps(
+    process_steps(
         step_ids, task_runner, args, logger,
         build_solutions_file_name=build_solutions_file_name,
         build_output_dir_name=build_output_dir_name,

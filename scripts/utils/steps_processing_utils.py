@@ -7,7 +7,7 @@ from utils.plugin_utils import AbstractTaskRunner
 from utils.time_utils import time_to_str
 
 
-def operate_steps(
+def process_steps(
         step_ids: List[int],
         task_runner: AbstractTaskRunner,
         script_arguments: Namespace,
@@ -22,7 +22,6 @@ def operate_steps(
     :param logger: logger
     """
     total_execution_time = 0
-    start, end = time.time(), time.time()
     for i, step_id in enumerate(step_ids):
         logger.info(f'Progress status: {i}/{len(step_ids)}')
         logger.info(f'Operating step {step_id}...')
@@ -36,4 +35,4 @@ def operate_steps(
             end = time.time()
             logger.info(f'Step {step_id} operated in {time_to_str(end - start)}')
             total_execution_time += end - start
-    logger.info(f'All steps operated in {time_to_str(end - start)}')
+    logger.info(f'All steps operated in {time_to_str(total_execution_time)}')

@@ -15,7 +15,7 @@ import argparse
 from utils.file_utils import create_dir, list_dirs
 from utils.logger_utils import set_logger
 from utils.plugin_utils import CalculateDistRunner
-from utils.steps_operation_utils import operate_steps
+from utils.steps_processing_utils import process_steps
 
 
 def build_initial_graph_filename(step_id: int, args: argparse.Namespace) -> str:
@@ -65,7 +65,7 @@ if __name__ == '__main__':
     step_ids = [int(d) for d in list_dirs(args.input_path)]
     task_runner = CalculateDistRunner()
 
-    operate_steps(
+    process_steps(
         step_ids, task_runner, args, logger,
         build_initial_graph_filename=build_initial_graph_filename,
         build_output_dir_name=build_output_dir_name,
