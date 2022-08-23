@@ -1,6 +1,7 @@
-package org.jetbrains.research.code.submissions.clustering
+package org.jetbrains.research.code.submissions.clustering.load.distance
 
 import com.intellij.openapi.command.WriteCommandAction
+import org.jetbrains.research.code.submissions.clustering.ProtoSubmissionsGraph
 import org.jetbrains.research.code.submissions.clustering.util.*
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.Arguments
