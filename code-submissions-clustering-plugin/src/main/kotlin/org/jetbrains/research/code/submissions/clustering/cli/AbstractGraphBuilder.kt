@@ -36,17 +36,17 @@ abstract class AbstractGraphBuilder : ApplicationStarter {
 
     protected fun SubmissionsGraph.writeOutputData() {
         createFolder(outputPath)
-        tryToWrite { writeToString(it) }
+        tryToWrite(::writeToString)
         if (toBinary) {
-            tryToWrite { writeToBinary(it) }
+            tryToWrite(::writeToBinary)
         }
         if (toCSV) {
-            tryToWrite { writeToCsv(it) }
+            tryToWrite(::writeToCsv)
         }
     }
 
     @Suppress("TooGenericExceptionCaught")
-    private inline fun SubmissionsGraph.tryToWrite(write: SubmissionsGraph.(String) -> Unit) {
+    private fun tryToWrite(write: (String) -> Unit) {
         try {
             write(outputPath)
         } catch (ex: Throwable) {
