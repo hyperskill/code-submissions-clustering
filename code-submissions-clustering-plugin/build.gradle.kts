@@ -28,10 +28,30 @@ tasks {
     register("load", BaseCLITask::class) {
         dependsOn(build)
         val input: String? by project
+        val lang: String? by project
         val output: String? by project
         args = mutableListOf<String>().apply {
             add("load")
             input?.let { add("--input_file=$it") }
+            lang?.let { add("--language=$it") }
+            output?.let { add("--output_path=$it") }
+            if (project.hasProperty("serialize")) {
+                add("--serialize")
+            }
+            if (project.hasProperty("saveCSV")) {
+                add("--saveCSV")
+            }
+        }
+    }
+    register("calculate-dist", BaseCLITask::class) {
+        dependsOn(build)
+        val input: String? by project
+        val lang: String? by project
+        val output: String? by project
+        args = mutableListOf<String>().apply {
+            add("calculate-dist")
+            input?.let { add("--input_file=$it") }
+            lang?.let { add("--language=$it") }
             output?.let { add("--output_path=$it") }
             if (project.hasProperty("serialize")) {
                 add("--serialize")

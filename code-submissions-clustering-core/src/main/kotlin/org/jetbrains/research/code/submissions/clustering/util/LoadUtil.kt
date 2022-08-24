@@ -6,7 +6,7 @@ import org.jetbrains.kotlinx.dataframe.io.writeCSV
 import org.jetbrains.research.code.submissions.clustering.load.context.SubmissionsGraphContext
 import org.jetbrains.research.code.submissions.clustering.model.Submission
 import org.jetbrains.research.code.submissions.clustering.model.SubmissionsGraph
-import org.jetbrains.research.code.submissions.clustering.model.buildGraph
+import org.jetbrains.research.code.submissions.clustering.model.transformGraph
 import java.io.File
 
 @Suppress("VariableNaming")
@@ -15,7 +15,7 @@ fun <T> DataFrame<*>.loadGraph(context: SubmissionsGraphContext<T>): Submissions
     val step_id by column<Int>()
     val code by column<String>()
     val graph = let { dataFrame ->
-        buildGraph(context) {
+        transformGraph(context) {
             dataFrame.forEach {
                 add(
                     Submission(
