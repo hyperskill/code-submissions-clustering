@@ -22,7 +22,7 @@ abstract class AbstractGraphBuilder : ApplicationStarter {
     protected fun <T : AbstractGraphBuilderArgs> parseArgs(
         args: MutableList<String>,
         argsClassConstructor: (ArgParser) -> T
-    ) : T {
+    ): T {
         val parser = ArgParser(args.drop(1).toTypedArray())
         return parser.parseInto(argsClassConstructor).apply {
             language = Language.valueOf(Paths.get(lang).toString())
