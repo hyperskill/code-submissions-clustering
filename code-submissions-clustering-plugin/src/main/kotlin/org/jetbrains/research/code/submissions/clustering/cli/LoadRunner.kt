@@ -5,7 +5,7 @@ import com.intellij.openapi.diagnostic.Logger
 import com.xenomachina.argparser.ArgParser
 import org.jetbrains.kotlinx.dataframe.DataFrame
 import org.jetbrains.kotlinx.dataframe.io.readCSV
-import org.jetbrains.research.code.submissions.clustering.load.graph.context.builders.GumTreeGraphContextBuilder
+import org.jetbrains.research.code.submissions.clustering.load.context.builder.gumtree.GumTreeGraphContextBuilder
 import org.jetbrains.research.code.submissions.clustering.model.Language
 import org.jetbrains.research.code.submissions.clustering.util.*
 import java.nio.file.Paths
