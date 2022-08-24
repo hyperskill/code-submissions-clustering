@@ -8,6 +8,7 @@ message ProtoSubmissionsNode {
   string code = 1;
   int32 stepId = 2;
   repeated int32 idList = 3;
+  int32 id = 4;
 }
 
 message ProtoSubmissionsEdge {

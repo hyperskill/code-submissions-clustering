@@ -1,24 +1,38 @@
 package org.jetbrains.research.code.submissions.clustering.model
 
-import org.jetbrains.research.code.submissions.clustering.load.AbstractUnifier
+import org.jetbrains.research.code.submissions.clustering.load.context.SubmissionsGraphContext
+import org.jetbrains.research.code.submissions.clustering.load.context.builder.IdentifierFactoryImpl
+import org.jetbrains.research.code.submissions.clustering.util.toProto
 import org.jgrapht.Graph
 import org.jgrapht.graph.DefaultWeightedEdge
 import org.jgrapht.graph.SimpleDirectedWeightedGraph
 
+typealias SubmissionsGraphEdge = DefaultWeightedEdge
+
+typealias SubmissionsGraphAlias = Graph<SubmissionsNode, SubmissionsGraphEdge>
+
 /**
  * @property graph inner representation of submissions graph
  */
-data class SubmissionsGraph(val graph: Graph<SubmissionsNode, DefaultWeightedEdge>) {
-    fun buildStringRepresentation() = graph.toString()
+data class SubmissionsGraph(val graph: SubmissionsGraphAlias) {
+    fun buildStringRepresentation() = toProto().toString()
 }
 
-class GraphBuilder(private val unifier: AbstractUnifier) {
-    private val graph: Graph<SubmissionsNode, DefaultWeightedEdge> =
-        SimpleDirectedWeightedGraph(DefaultWeightedEdge::class.java)
+class GraphTransformer<T>(
+    private val submissionsGraphContext: SubmissionsGraphContext<T>,
+    private val graph: SubmissionsGraphAlias
+) {
     private val vertexByCode = HashMap<String, SubmissionsNode>()
+    private val idFactory = IdentifierFactoryImpl()
+
+    init {
+        graph.vertexSet().forEach {
+            vertexByCode[it.code] = it
+        }
+    }
 
     fun add(submission: Submission) {
-        unifier.run {
+        submissionsGraphContext.unifier.run {
             val unifiedSubmission = submission.unify()
             vertexByCode.compute(unifiedSubmission.code) { _, vertex ->
                 vertex?.let {
@@ -26,8 +40,21 @@ class GraphBuilder(private val unifier: AbstractUnifier) {
                     vertex.idList.add(unifiedSubmission.id)
                     vertex
                 } ?:  // Add new vertex with single id
-                SubmissionsNode(unifiedSubmission).also {
+                SubmissionsNode(unifiedSubmission, idFactory.uniqueIdentifier()).also {
                     graph.addVertex(it)
+                }
+            }
+        }
+    }
+
+    fun calculateDistances() {
+        val vertices = graph.vertexSet()
+        vertices.forEach { first ->
+            vertices.forEach { second ->
+                if (first.id != second.id && !graph.containsEdge(first, second)) {
+                    val edge: SubmissionsGraphEdge = graph.addEdge(first, second)
+                    val dist = submissionsGraphContext.codeDistanceMeasurer.computeDistanceWeight(edge, graph)
+                    graph.setEdgeWeight(edge, dist.toDouble())
                 }
             }
         }
@@ -36,7 +63,11 @@ class GraphBuilder(private val unifier: AbstractUnifier) {
     fun build(): SubmissionsGraph = SubmissionsGraph(graph)
 }
 
-fun buildGraph(unifier: AbstractUnifier, block: GraphBuilder.() -> Unit): SubmissionsGraph {
-    val builder = GraphBuilder(unifier)
-    return builder.apply(block).build()
+fun <T> transformGraph(
+    context: SubmissionsGraphContext<T>,
+    graph: SubmissionsGraphAlias = SimpleDirectedWeightedGraph(SubmissionsGraphEdge::class.java),
+    transformation: GraphTransformer<T>.() -> Unit
+): SubmissionsGraph {
+    val builder = GraphTransformer(context, graph)
+    return builder.apply(transformation).build()
 }
