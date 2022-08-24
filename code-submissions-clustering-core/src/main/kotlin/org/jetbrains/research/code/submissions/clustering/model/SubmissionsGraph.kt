@@ -18,7 +18,7 @@ data class SubmissionsGraph(val graph: SubmissionsGraphAlias) {
     fun buildStringRepresentation() = toProto().toString()
 }
 
-class GraphOperator<T>(
+class GraphTransformer<T>(
     private val submissionsGraphContext: SubmissionsGraphContext<T>,
     private val graph: SubmissionsGraphAlias
 ) {
@@ -63,11 +63,11 @@ class GraphOperator<T>(
     fun build(): SubmissionsGraph = SubmissionsGraph(graph)
 }
 
-fun <T> operateGraph(
+fun <T> transformGraph(
     context: SubmissionsGraphContext<T>,
     graph: SubmissionsGraphAlias = SimpleDirectedWeightedGraph(SubmissionsGraphEdge::class.java),
-    block: GraphOperator<T>.() -> Unit
+    transformation: GraphTransformer<T>.() -> Unit
 ): SubmissionsGraph {
-    val builder = GraphOperator(context, graph)
-    return builder.apply(block).build()
+    val builder = GraphTransformer(context, graph)
+    return builder.apply(transformation).build()
 }

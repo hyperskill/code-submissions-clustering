@@ -10,7 +10,7 @@ import java.io.File
 
 fun <T> SubmissionsGraph.calculateDistances(context: SubmissionsGraphContext<T>): SubmissionsGraph {
     val graph = this.graph.enumerateNodes()
-    return operateGraph(context, graph) {
+    return transformGraph(context, graph) {
         calculateDistances()
     }
 }

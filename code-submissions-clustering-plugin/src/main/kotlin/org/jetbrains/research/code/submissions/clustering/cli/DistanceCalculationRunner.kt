@@ -7,7 +7,7 @@ import java.io.File
 import java.nio.file.Paths
 import kotlin.system.exitProcess
 
-object DistanceCalculationRunner : AbstractGraphConstructor() {
+object DistanceCalculationRunner : AbstractGraphBuilder() {
     private lateinit var inputFilename: String
 
     override fun getCommandName(): String = "calculate-dist"
@@ -15,7 +15,7 @@ object DistanceCalculationRunner : AbstractGraphConstructor() {
     @Suppress("TooGenericExceptionCaught")
     override fun main(args: MutableList<String>) {
         try {
-            parseArgs(args, ::DistanceCalculationRunnerArgs) {
+            parseArgs(args, ::DistanceCalculationRunnerArgs).run {
                 inputFilename = Paths.get(input).toString()
             }
             val file = File(inputFilename)
@@ -29,7 +29,7 @@ object DistanceCalculationRunner : AbstractGraphConstructor() {
         }
     }
 
-    data class DistanceCalculationRunnerArgs(private val parser: ArgParser) : AbstractGraphConstructionArgs(parser) {
+    data class DistanceCalculationRunnerArgs(private val parser: ArgParser) : AbstractGraphBuilderArgs(parser) {
         val input by parser.storing(
             "-i", "--input_file",
             help = "Input .bin file with serialized graph"

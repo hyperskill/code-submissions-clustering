@@ -12,56 +12,50 @@ import org.jetbrains.research.code.submissions.clustering.util.writeToString
 import java.nio.file.Paths
 import java.util.logging.Logger
 
-abstract class AbstractGraphConstructor : ApplicationStarter {
+abstract class AbstractGraphBuilder : ApplicationStarter {
     protected val logger: Logger = Logger.getLogger(javaClass.name)
     private var toBinary: Boolean = false
     private var toCSV: Boolean = false
     private lateinit var language: Language
     private lateinit var outputPath: String
 
-    protected fun <T : AbstractGraphConstructionArgs> parseArgs(
+    protected fun <T : AbstractGraphBuilderArgs> parseArgs(
         args: MutableList<String>,
-        argsClassConstructor: (ArgParser) -> T,
-        block: T.() -> Unit
-    ) {
+        argsClassConstructor: (ArgParser) -> T
+    ) : T {
         val parser = ArgParser(args.drop(1).toTypedArray())
-        parser.parseInto(argsClassConstructor).run {
+        return parser.parseInto(argsClassConstructor).apply {
             language = Language.valueOf(Paths.get(lang).toString())
             outputPath = Paths.get(output).toString()
             toBinary = serialize
             toCSV = saveCSV
-            block()
         }
     }
 
     protected fun buildGraphContext() = GumTreeGraphContextBuilder.getContext(language)
 
-    @Suppress("TooGenericExceptionCaught")
     protected fun SubmissionsGraph.writeOutputData() {
         createFolder(outputPath)
-        try {
-            writeToString(outputPath)
-        } catch (ex: Throwable) {
-            logger.severe { "Writing to txt failed: $ex" }
-        }
+        tryToWrite { writeToString(it) }
         if (toBinary) {
-            try {
-                writeToBinary(outputPath)
-            } catch (ex: Throwable) {
-                logger.severe { "Writing to bin failed: $ex" }
-            }
+            tryToWrite { writeToBinary(it) }
         }
         if (toCSV) {
-            try {
-                writeToCsv(outputPath)
-            } catch (ex: Throwable) {
-                logger.severe { "Writing to csv failed: $ex" }
-            }
+            tryToWrite { writeToCsv(it) }
+        }
+    }
+
+    @Suppress("TooGenericExceptionCaught")
+    private inline fun SubmissionsGraph.tryToWrite(write: SubmissionsGraph.(String) -> Unit) {
+        try {
+            write(outputPath)
+        } catch (ex: Throwable) {
+            logger.severe { "Writing failed: $ex" }
         }
     }
 }
 
-open class AbstractGraphConstructionArgs(parser: ArgParser) {
+open class AbstractGraphBuilderArgs(parser: ArgParser) {
     val lang by parser.storing(
         "-l", "--language",
         help = "Programming language of code submissions"
