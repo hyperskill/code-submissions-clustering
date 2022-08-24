@@ -7,7 +7,7 @@ import org.jetbrains.research.code.submissions.clustering.model.SubmissionsGraph
 import org.jetbrains.research.code.submissions.clustering.model.SubmissionsGraphEdge
 import org.jetbrains.research.code.submissions.clustering.model.SubmissionsNode
 import org.jgrapht.Graph
-import org.jgrapht.graph.SimpleDirectedWeightedGraph
+import org.jgrapht.graph.SimpleWeightedGraph
 
 fun SubmissionsNode.toProto(): ProtoSubmissionsNode = let { node ->
     ProtoSubmissionsNode.newBuilder().apply {
@@ -35,7 +35,7 @@ fun SubmissionsGraph.toProto(): ProtoSubmissionsGraph =
     }.build()
 
 fun ProtoSubmissionsGraph.toGraph(): SubmissionsGraph {
-    val graph = SimpleDirectedWeightedGraph<SubmissionsNode, SubmissionsGraphEdge>(SubmissionsGraphEdge::class.java)
+    val graph = SimpleWeightedGraph<SubmissionsNode, SubmissionsGraphEdge>(SubmissionsGraphEdge::class.java)
     val deserializedNodes = mutableMapOf<ProtoSubmissionsNode, SubmissionsNode>()
     verticesList.forEach {
         graph.addVertex(
@@ -43,12 +43,14 @@ fun ProtoSubmissionsGraph.toGraph(): SubmissionsGraph {
         )
     }
 
-    edgesList.forEach {
-        val edge = graph.addEdge(
-            deserializedNodes[it.from],
-            deserializedNodes[it.to]
+    edgesList.forEach { edge ->
+        val addedEdge = graph.addEdge(
+            deserializedNodes[edge.from],
+            deserializedNodes[edge.to]
         )
-        graph.setEdgeWeight(edge, it.weight)
+        addedEdge?.let {
+            graph.setEdgeWeight(it, edge.weight)
+        }
     }
 
     return SubmissionsGraph(graph)

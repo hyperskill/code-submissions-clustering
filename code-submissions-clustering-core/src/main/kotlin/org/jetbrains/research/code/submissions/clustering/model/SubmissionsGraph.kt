@@ -5,7 +5,7 @@ import org.jetbrains.research.code.submissions.clustering.load.context.builder.I
 import org.jetbrains.research.code.submissions.clustering.util.toProto
 import org.jgrapht.Graph
 import org.jgrapht.graph.DefaultWeightedEdge
-import org.jgrapht.graph.SimpleDirectedWeightedGraph
+import org.jgrapht.graph.SimpleWeightedGraph
 
 typealias SubmissionsGraphEdge = DefaultWeightedEdge
 
@@ -51,7 +51,7 @@ class GraphTransformer<T>(
         val vertices = graph.vertexSet()
         vertices.forEach { first ->
             vertices.forEach { second ->
-                if (first.id != second.id && !graph.containsEdge(first, second)) {
+                if (first.id < second.id && !graph.containsEdge(first, second)) {
                     val edge: SubmissionsGraphEdge = graph.addEdge(first, second)
                     val dist = submissionsGraphContext.codeDistanceMeasurer.computeDistanceWeight(edge, graph)
                     graph.setEdgeWeight(edge, dist.toDouble())
@@ -65,7 +65,7 @@ class GraphTransformer<T>(
 
 fun <T> transformGraph(
     context: SubmissionsGraphContext<T>,
-    graph: SubmissionsGraphAlias = SimpleDirectedWeightedGraph(SubmissionsGraphEdge::class.java),
+    graph: SubmissionsGraphAlias = SimpleWeightedGraph(SubmissionsGraphEdge::class.java),
     transformation: GraphTransformer<T>.() -> Unit
 ): SubmissionsGraph {
     val builder = GraphTransformer(context, graph)
