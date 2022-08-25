@@ -5,7 +5,7 @@ import org.jetbrains.research.code.submissions.clustering.load.context.Submissio
 import org.jetbrains.research.code.submissions.clustering.load.context.builder.IdentifierFactoryImpl
 import org.jetbrains.research.code.submissions.clustering.model.*
 import org.jetbrains.research.code.submissions.clustering.util.toGraph
-import org.jgrapht.graph.SimpleDirectedWeightedGraph
+import org.jgrapht.graph.SimpleWeightedGraph
 import java.io.File
 
 fun <T> SubmissionsGraph.calculateDistances(context: SubmissionsGraphContext<T>): SubmissionsGraph {
@@ -21,7 +21,7 @@ private fun SubmissionsGraphAlias.enumerateNodes(): SubmissionsGraphAlias {
     val vertices = this.vertexSet()
     val ids = vertices.map { it.id }.toSet()
     if (ids.size == 1 && ids.first() == 0) {
-        val graph: SubmissionsGraphAlias = SimpleDirectedWeightedGraph(SubmissionsGraphEdge::class.java)
+        val graph: SubmissionsGraphAlias = SimpleWeightedGraph(SubmissionsGraphEdge::class.java)
         val identifierFactory = IdentifierFactoryImpl()
         vertices.forEach {
             graph.addVertex(
