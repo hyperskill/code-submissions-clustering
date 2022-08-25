@@ -59,7 +59,6 @@ class DistanceCalculationTest : ParametrizedBaseWithUnifierTest(getTmpProjectDir
                         addIdList(2)
                     }
                     .addEdge(0, 1, 1.0)
-                    .addEdge(1, 0, 1.0)
                     .build()
             ),
             Arguments.of(
@@ -83,7 +82,6 @@ class DistanceCalculationTest : ParametrizedBaseWithUnifierTest(getTmpProjectDir
                         addAllIdList(listOf(2, 3))
                     }
                     .addEdge(0, 1, 11.0)
-                    .addEdge(1, 0, 11.0)
                     .build()
             ),
             Arguments.of(
@@ -116,10 +114,7 @@ class DistanceCalculationTest : ParametrizedBaseWithUnifierTest(getTmpProjectDir
                     }
                     .addEdge(0, 1, 1.0)
                     .addEdge(0, 2, 1.0)
-                    .addEdge(1, 0, 1.0)
                     .addEdge(1, 2, 1.0)
-                    .addEdge(2, 0, 1.0)
-                    .addEdge(2, 1, 1.0)
                     .build()
             ),
         )

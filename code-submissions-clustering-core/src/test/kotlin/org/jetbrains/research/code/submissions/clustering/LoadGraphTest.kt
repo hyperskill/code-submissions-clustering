@@ -77,7 +77,6 @@ class LoadGraphTest : ParametrizedBaseWithUnifierTest(getTmpProjectDir()) {
                         addIdList(2)
                     }
                     .addEdge(0, 1, 1.0)
-                    .addEdge(1, 0, 1.0)
                     .build()
             )
         )
