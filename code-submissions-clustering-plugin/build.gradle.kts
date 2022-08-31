@@ -41,6 +41,9 @@ tasks {
             if (project.hasProperty("saveCSV")) {
                 add("--saveCSV")
             }
+            if (project.hasProperty("visualize")) {
+                add("--visualize")
+            }
         }
     }
     register("calculate-dist", BaseCLITask::class) {
@@ -58,6 +61,9 @@ tasks {
             }
             if (project.hasProperty("saveCSV")) {
                 add("--saveCSV")
+            }
+            if (project.hasProperty("visualize")) {
+                add("--visualize")
             }
         }
     }
