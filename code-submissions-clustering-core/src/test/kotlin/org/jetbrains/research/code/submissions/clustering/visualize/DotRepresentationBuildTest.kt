@@ -2,7 +2,7 @@ package org.jetbrains.research.code.submissions.clustering.visualize
 
 import com.intellij.openapi.command.WriteCommandAction
 import org.jetbrains.research.code.submissions.clustering.ProtoSubmissionsGraph
-import org.jetbrains.research.code.submissions.clustering.load.visualization.SubmissionsGraphVisualizer
+import org.jetbrains.research.code.submissions.clustering.load.visualization.SubmissionsGraphToDotConverter
 import org.jetbrains.research.code.submissions.clustering.util.*
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.Arguments
@@ -14,8 +14,9 @@ class DotRepresentationBuildTest : ParametrizedBaseWithUnifierTest(getTmpProject
     fun testLoadGraphFromDataFrame(protoGraph: ProtoSubmissionsGraph, expectedDotRepr: String) {
         WriteCommandAction.runWriteCommandAction(mockProject) {
             val submissionsGraph = protoGraph.toGraph()
-            val visualizer = SubmissionsGraphVisualizer()
-            assertEquals(expectedDotRepr, visualizer.toDot(submissionsGraph))
+            with(SubmissionsGraphToDotConverter()) {
+                assertEquals(expectedDotRepr, submissionsGraph.toDot())
+            }
         }
     }
 
@@ -41,6 +42,10 @@ class DotRepresentationBuildTest : ParametrizedBaseWithUnifierTest(getTmpProject
                     |
                     |  v1 [label = "v1", style = filled, fillcolor = "0.1 1.00 1.0"]
                     |
+                    |  subgraph cluster_0 {
+                    |    v1
+                    |  }
+                    |
                     |}
                 """.trimMargin()
             ),
@@ -54,6 +59,10 @@ class DotRepresentationBuildTest : ParametrizedBaseWithUnifierTest(getTmpProject
                 """graph 1000 {
                     |
                     |  v1 [label = "v1", style = filled, fillcolor = "0.1 1.00 1.0"]
+                    |
+                    |  subgraph cluster_0 {
+                    |    v1
+                    |  }
                     |
                     |}
                 """.trimMargin()
@@ -75,7 +84,9 @@ class DotRepresentationBuildTest : ParametrizedBaseWithUnifierTest(getTmpProject
                     |  v1 [label = "v1", style = filled, fillcolor = "0.1 0.55 1.0"]
                     |  v2 [label = "v2", style = filled, fillcolor = "0.1 0.55 1.0"]
                     |
-                    |  v1 -- v2 [label = "1"]
+                    |  subgraph cluster_0 {
+                    |    v1 -- v2 [label = "1"]
+                    |  }
                     |
                     |}
                 """.trimMargin()

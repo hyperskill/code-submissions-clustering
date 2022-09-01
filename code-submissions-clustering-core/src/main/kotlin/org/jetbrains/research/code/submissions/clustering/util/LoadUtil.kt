@@ -4,7 +4,7 @@ import org.jetbrains.kotlinx.dataframe.DataFrame
 import org.jetbrains.kotlinx.dataframe.api.*
 import org.jetbrains.kotlinx.dataframe.io.writeCSV
 import org.jetbrains.research.code.submissions.clustering.load.context.SubmissionsGraphContext
-import org.jetbrains.research.code.submissions.clustering.load.visualization.SubmissionsGraphVisualizer
+import org.jetbrains.research.code.submissions.clustering.load.visualization.visualize
 import org.jetbrains.research.code.submissions.clustering.model.Submission
 import org.jetbrains.research.code.submissions.clustering.model.SubmissionsGraph
 import org.jetbrains.research.code.submissions.clustering.model.transformGraph
@@ -59,6 +59,5 @@ fun SubmissionsGraph.writeToCsv(outputPath: String) {
 fun SubmissionsGraph.writeToPng(outputPath: String) {
     val path = "$outputPath/graph.png"
     val file = File(path)
-    val visualizer = SubmissionsGraphVisualizer()
-    visualizer.visualize(this, file)
+    visualize(file)
 }
