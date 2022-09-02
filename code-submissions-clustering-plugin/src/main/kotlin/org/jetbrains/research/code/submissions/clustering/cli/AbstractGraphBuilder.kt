@@ -5,10 +5,7 @@ import com.xenomachina.argparser.ArgParser
 import org.jetbrains.research.code.submissions.clustering.load.context.builder.gumtree.GumTreeGraphContextBuilder
 import org.jetbrains.research.code.submissions.clustering.model.Language
 import org.jetbrains.research.code.submissions.clustering.model.SubmissionsGraph
-import org.jetbrains.research.code.submissions.clustering.util.createFolder
-import org.jetbrains.research.code.submissions.clustering.util.writeToBinary
-import org.jetbrains.research.code.submissions.clustering.util.writeToCsv
-import org.jetbrains.research.code.submissions.clustering.util.writeToString
+import org.jetbrains.research.code.submissions.clustering.util.*
 import java.nio.file.Paths
 import java.util.logging.Logger
 
@@ -16,6 +13,7 @@ abstract class AbstractGraphBuilder : ApplicationStarter {
     protected val logger: Logger = Logger.getLogger(javaClass.name)
     private var toBinary: Boolean = false
     private var toCSV: Boolean = false
+    private var toPNG: Boolean = false
     private lateinit var language: Language
     private lateinit var outputPath: String
 
@@ -29,6 +27,7 @@ abstract class AbstractGraphBuilder : ApplicationStarter {
             outputPath = Paths.get(output).toString()
             toBinary = serialize
             toCSV = saveCSV
+            toPNG = visualize
         }
     }
 
@@ -42,6 +41,9 @@ abstract class AbstractGraphBuilder : ApplicationStarter {
         }
         if (toCSV) {
             tryToWrite(::writeToCsv)
+        }
+        if (toPNG) {
+            tryToWrite(::writeToPng)
         }
     }
 
@@ -71,5 +73,9 @@ open class AbstractGraphBuilderArgs(parser: ArgParser) {
     val saveCSV by parser.flagging(
         "--saveCSV",
         help = "Save unified solutions to .csv file"
+    )
+    val visualize by parser.flagging(
+        "--visualize",
+        help = "Save submissions graph visualization to .png file"
     )
 }
