@@ -9,7 +9,9 @@ import org.jetbrains.research.code.submissions.clustering.ProtoSubmissionsNode
 import org.jetbrains.research.code.submissions.clustering.load.context.SubmissionsGraphContext
 import org.jetbrains.research.code.submissions.clustering.load.distance.measurers.gumtree.GumTreeDistanceMeasurerByPsi
 import org.jetbrains.research.code.submissions.clustering.load.unifiers.PyUnifier
+import org.jetbrains.research.code.submissions.clustering.model.SubmissionsNode
 import org.jetbrains.research.pluginUtilities.util.ParametrizedBaseWithPythonSdkTest
+import org.jgrapht.alg.interfaces.ClusteringAlgorithm.Clustering
 import org.junit.Ignore
 import java.awt.EventQueue
 
@@ -37,6 +39,10 @@ open class ParametrizedBaseWithUnifierTest(testDataRoot: String) : ParametrizedB
     protected fun ProtoSubmissionsGraph.assertEquals(other: ProtoSubmissionsGraph) {
         assertEquals(this.verticesList.sortedNodes(), other.verticesList.sortedNodes())
         assertEquals(this.edgesList.sortedEdges(), other.edgesList.sortedEdges())
+    }
+
+    protected fun Clustering<SubmissionsNode>.assertEquals(other: Clustering<SubmissionsNode>) {
+        assertEquals(this.clusters.sortedBy { it.first() }, other.clusters.sortedBy { it.first() })
     }
 
     companion object {

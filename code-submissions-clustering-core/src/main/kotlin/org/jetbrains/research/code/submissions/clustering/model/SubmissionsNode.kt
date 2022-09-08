@@ -13,13 +13,15 @@ data class SubmissionsNode(
     val code: String,
     val stepId: Int,
     val idList: MutableSet<Int>
-) {
+) : Comparable<SubmissionsNode> {
     constructor(submission: Submission, id: Identifier) : this(
         id,
         submission.code,
         submission.stepId,
         mutableSetOf(submission.id)
     )
+
+    override fun compareTo(other: SubmissionsNode): Int = id - other.id
 
     override fun equals(other: Any?): Boolean = other is SubmissionsNode && other.code == code
 
