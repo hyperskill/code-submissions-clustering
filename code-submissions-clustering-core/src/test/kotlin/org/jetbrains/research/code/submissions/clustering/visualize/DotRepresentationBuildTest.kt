@@ -43,7 +43,13 @@ class DotRepresentationBuildTest : ParametrizedBaseWithUnifierTest(getTmpProject
                     |  v1 [label = "v1", style = filled, fillcolor = "0.1 1.00 1.0"]
                     |
                     |  subgraph cluster_0 {
+                    |    label = < <B>C0</B>  [1 node] >
                     |    v1
+                    |  }
+                    |
+                    |  subgraph {
+                    |    node [shape = box]
+                    |    C0
                     |  }
                     |
                     |}
@@ -61,7 +67,13 @@ class DotRepresentationBuildTest : ParametrizedBaseWithUnifierTest(getTmpProject
                     |  v1 [label = "v1", style = filled, fillcolor = "0.1 1.00 1.0"]
                     |
                     |  subgraph cluster_0 {
+                    |    label = < <B>C0</B>  [1 node] >
                     |    v1
+                    |  }
+                    |
+                    |  subgraph {
+                    |    node [shape = box]
+                    |    C0
                     |  }
                     |
                     |}
@@ -85,7 +97,13 @@ class DotRepresentationBuildTest : ParametrizedBaseWithUnifierTest(getTmpProject
                     |  v2 [label = "v2", style = filled, fillcolor = "0.1 0.55 1.0"]
                     |
                     |  subgraph cluster_0 {
+                    |    label = < <B>C0</B>  [2 nodes] >
                     |    v1 -- v2 [label = "1"]
+                    |  }
+                    |
+                    |  subgraph {
+                    |    node [shape = box]
+                    |    C0
                     |  }
                     |
                     |}
