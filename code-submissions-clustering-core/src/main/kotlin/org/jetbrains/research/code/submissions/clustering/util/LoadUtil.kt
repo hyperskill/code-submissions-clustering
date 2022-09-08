@@ -3,11 +3,10 @@ package org.jetbrains.research.code.submissions.clustering.util
 import org.jetbrains.kotlinx.dataframe.DataFrame
 import org.jetbrains.kotlinx.dataframe.api.*
 import org.jetbrains.kotlinx.dataframe.io.writeCSV
+import org.jetbrains.research.code.submissions.clustering.load.clustering.GraphClusterer
 import org.jetbrains.research.code.submissions.clustering.load.context.SubmissionsGraphContext
 import org.jetbrains.research.code.submissions.clustering.load.visualization.visualize
-import org.jetbrains.research.code.submissions.clustering.model.Submission
-import org.jetbrains.research.code.submissions.clustering.model.SubmissionsGraph
-import org.jetbrains.research.code.submissions.clustering.model.transformGraph
+import org.jetbrains.research.code.submissions.clustering.model.*
 import java.io.File
 
 @Suppress("VariableNaming")
@@ -60,4 +59,10 @@ fun SubmissionsGraph.writeToPng(outputPath: String) {
     val path = "$outputPath/graph.png"
     val file = File(path)
     visualize(file)
+}
+
+fun SubmissionsGraph.cluster(clusterer: GraphClusterer<SubmissionsNode, SubmissionsGraphEdge>) {
+    val clusteringResult = clusterer.buildClustering(graph)
+    clustering = clusteringResult.first
+    clustersGraph = clusteringResult.second
 }

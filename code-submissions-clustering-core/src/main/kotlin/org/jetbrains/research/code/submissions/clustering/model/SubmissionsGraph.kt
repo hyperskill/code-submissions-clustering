@@ -1,5 +1,6 @@
 package org.jetbrains.research.code.submissions.clustering.model
 
+import org.jetbrains.research.code.submissions.clustering.load.clustering.ClustersGraph
 import org.jetbrains.research.code.submissions.clustering.load.context.SubmissionsGraphContext
 import org.jetbrains.research.code.submissions.clustering.load.context.builder.IdentifierFactoryImpl
 import org.jetbrains.research.code.submissions.clustering.util.toProto
@@ -17,6 +18,7 @@ typealias SubmissionsGraphAlias = Graph<SubmissionsNode, SubmissionsGraphEdge>
  */
 data class SubmissionsGraph(val graph: SubmissionsGraphAlias) {
     var clustering: Clustering<SubmissionsNode>? = null
+    var clustersGraph: ClustersGraph<SubmissionsNode>? = null
     fun buildStringRepresentation() = toProto().toString()
 }
 
