@@ -86,6 +86,11 @@ class GraphHierarchicalAgglomerativeClustering<V, E>(
             invalidateTriple(minTriple)
             val first = minTriple.first
             val second = minTriple.second
+            logger.fine {
+                """Merging clusters:
+                |$minTriple
+            """.trimMargin()
+            }
             try {
                 mergeCommunities(first, second)
             } catch (ex: Throwable) {
