@@ -1,86 +1,88 @@
 package org.jetbrains.research.code.submissions.clustering.load.clustering.hac
 
-import org.jetbrains.research.code.submissions.clustering.load.clustering.Cluster
-import org.jetbrains.research.code.submissions.clustering.load.clustering.ClusteringResult
-import org.jetbrains.research.code.submissions.clustering.load.clustering.ClustersGraph
-import org.jetbrains.research.code.submissions.clustering.load.clustering.GraphClusterer
-import org.jetbrains.research.code.submissions.clustering.load.clustering.hac.parallel.ParallelContext
-import org.jetbrains.research.code.submissions.clustering.load.clustering.hac.parallel.ParallelUtils
+import org.jetbrains.research.code.submissions.clustering.load.clustering.*
+import org.jetbrains.research.code.submissions.clustering.util.parallel.ParallelContext
+import org.jetbrains.research.code.submissions.clustering.load.context.builder.IdentifierFactoryImpl
 import org.jetbrains.research.code.submissions.clustering.model.SubmissionsGraphEdge
 import org.jetbrains.research.code.submissions.clustering.model.SubmissionsNode
+import org.jetbrains.research.code.submissions.clustering.util.parallel.ParallelUtils.combineWith
 import org.jgrapht.Graph
-import org.jgrapht.alg.interfaces.ClusteringAlgorithm.ClusteringImpl
-import org.jgrapht.graph.DefaultWeightedEdge
-import org.jgrapht.graph.SimpleWeightedGraph
 import java.util.*
 import java.util.function.Consumer
 import java.util.logging.Logger
-import kotlin.collections.ArrayDeque
 import kotlin.collections.HashMap
 import kotlin.collections.set
 
 @Suppress("TYPEALIAS_NAME_INCORRECT_CASE")
 typealias SubmissionsGraphHAC = GraphHierarchicalAgglomerativeClustering<SubmissionsNode, SubmissionsGraphEdge>
 
-@Suppress("TooManyFunctions")
+/**
+ * HAC algorithm implementation for graphs.
+ *
+ * Class implements graph clusterer using hierarchical agglomerative clustering (HAC) with complete linkage criterion.
+ *
+ * @param distanceLimit max distance between two vertices inside one cluster
+ * @param minClustersCount min final number of clusters (single cluster by default)
+ */
 class GraphHierarchicalAgglomerativeClustering<V, E>(
     private val distanceLimit: Double,
-    private val minClustersCount: Int,
+    private val minClustersCount: Int = 1,
 ) : GraphClusterer<V, E> {
     private val logger = Logger.getLogger(javaClass.name)
-    private val heap: SortedSet<Triple> = TreeSet()
-    private val triples: MutableMap<Long, Triple> = HashMap()
-    private val communities: MutableSet<Community> = HashSet()
-    private var idGenerator = 0
-    private val triplesPoll: ArrayDeque<Triple> = ArrayDeque()
+    private val heap: SortedSet<ClusterTriple> = TreeSet()
+    private val triples: MutableMap<Long, ClusterTriple> = HashMap()
+    private val clusters: MutableSet<Cluster<V>> = HashSet()
+    private val identifierFactory = IdentifierFactoryImpl()
 
     private fun init(graph: Graph<V, E>) {
         val values = graph.vertexSet()
         heap.clear()
         triples.clear()
-        communities.clear()
-        idGenerator = 0
+        clusters.clear()
         values.forEach { value ->
-            communities.add(singletonCommunity(value))
+            clusters.add(singletonCluster(value))
         }
-        val communitiesAsList = communities.toMutableList()
+        val communitiesAsList = clusters.toMutableList()
         communitiesAsList.shuffle()
         ParallelContext().use { context ->
             val toInsert = context.runParallel(
                 communitiesAsList,
                 { mutableListOf() },
-                { community: Community,
-                    accumulator: MutableList<Triple> ->
-                    graph.findTriples(community, accumulator)
+                { cluster: Cluster<V>,
+                    accumulator: MutableList<ClusterTriple> ->
+                    graph.findTriples(cluster, accumulator)
                 },
-                ParallelUtils::combineLists
+                { first, second -> first.combineWith(second) }
             )
-            toInsert.forEach(Consumer { triple: Triple -> insertTriple(triple) })
+            toInsert.forEach(Consumer { triple: ClusterTriple -> insertTriple(triple) })
         }
     }
 
-    private fun Graph<V, E>.findTriples(community: Community, accumulator: MutableList<Triple>): MutableList<Triple> {
-        for (another in communities) {
-            if (another === community) {
+    private fun Graph<V, E>.findTriples(
+        cluster: Cluster<V>,
+        accumulator: MutableList<ClusterTriple>
+    ): MutableList<ClusterTriple> {
+        for (another in clusters) {
+            if (another === cluster) {
                 break
             }
-            val firstVertex = community.entities[0]
+            val firstVertex = cluster.entities[0]
             val secondVertex = another.entities[0]
             val edge = getEdge(firstVertex, secondVertex)
             val distance = getEdgeWeight(edge)
-            accumulator.add(Triple(distance, community, another))
+            accumulator.add(ClusterTriple(distance, cluster, another))
         }
         return accumulator
     }
 
     @Suppress("TooGenericExceptionCaught")
-    override fun buildClustering(graph: Graph<V, E>): ClusteringResult<V> {
+    override fun buildClustering(graph: Graph<V, E>): ClusteredGraph<V> {
         logger.finer { "Clusterer initialization started" }
         init(graph)
         logger.finer { "Clusterer initialization finished" }
         logger.finer { "Clustering started" }
-        while (heap.isNotEmpty() && communities.size > minClustersCount) {
-            val minTriple: Triple = heap.first()
+        while (heap.isNotEmpty() && clusters.size > minClustersCount) {
+            val minTriple: ClusterTriple = heap.first()
             invalidateTriple(minTriple)
             val first = minTriple.first
             val second = minTriple.second
@@ -88,130 +90,81 @@ class GraphHierarchicalAgglomerativeClustering<V, E>(
                 mergeCommunities(first, second)
             } catch (ex: Throwable) {
                 logger.severe {
-                    """Communities merging error {$ex}:
-                        |First triple: $first
-                        |Second triple: $second
+                    """Clusters merging error {$ex}:
+                        |$minTriple
                     """.trimMargin()
                 }
             }
         }
         logger.finer { "Clustering finished" }
-        val clustering = ClusteringImpl(communities.map { it.entities.toSet() })
-        val clustersGraph = buildClustersGraph()
-        return ClusteringResult(clustering, clustersGraph)
+        if (clusters.size == 1) {
+            return buildClusteredGraph { add(clusters.first()) }
+        }
+        return buildClusteredGraph {
+            triples.values.forEach {
+                add(it.distance, it.first, it.second)
+            }
+        }
     }
 
-    private fun buildClustersGraph(): ClustersGraph<V> {
-        val clustrersGraph = SimpleWeightedGraph<Cluster<V>, DefaultWeightedEdge>(DefaultWeightedEdge::class.java)
-        triples.values.forEach { triple ->
-            val firstVertex = triple.first.entities.toSet()
-            val secondVertex = triple.second.entities.toSet()
-            clustrersGraph.addVertex(firstVertex)
-            clustrersGraph.addVertex(secondVertex)
-            clustrersGraph.addEdge(firstVertex, secondVertex)
-            val edge = clustrersGraph.getEdge(firstVertex, secondVertex)
-            clustrersGraph.setEdgeWeight(edge, triple.distance)
-        }
-        return clustrersGraph
-    }
-
-    private fun mergeCommunities(first: Community, second: Community) {
-        val merged: MutableList<V>
-        if (first.entities.size < second.entities.size) {
-            merged = second.entities
-            merged.addAll(first.entities)
-        } else {
-            merged = first.entities
-            merged.addAll(second.entities)
-        }
-        val newCommunity = Community(merged)
-        communities.remove(first)
-        communities.remove(second)
-        for (community in communities) {
-            val fromFirstId = getTripleId(first, community)
-            val fromSecondId = getTripleId(second, community)
+    private fun mergeCommunities(first: Cluster<V>, second: Cluster<V>) {
+        val merged: MutableList<V> = first.entities.combineWith(second.entities)
+        val newCluster = Cluster(identifierFactory.uniqueIdentifier(), merged)
+        clusters.removeAll(setOf(first, second))
+        for (cluster in clusters) {
+            val fromFirstId = getTripleId(first, cluster)
+            val fromSecondId = getTripleId(second, cluster)
             val fromFirst = triples[fromFirstId]
             val fromSecond = triples[fromSecondId]
             val newDistance = getDistance(fromFirst).coerceAtLeast(getDistance(fromSecond))
-            invalidateTriple(fromFirst)
-            invalidateTriple(fromSecond)
-            insertTriple(newDistance, newCommunity, community)
+            fromFirst?.let { invalidateTriple(fromFirst) }
+            fromSecond?.let { invalidateTriple(fromSecond) }
+            insertTriple(newDistance, newCluster, cluster)
         }
-        communities.add(newCommunity)
+        clusters.add(newCluster)
     }
 
-    private fun getDistance(triple: Triple?): Double = triple?.distance ?: Double.POSITIVE_INFINITY
+    private fun getDistance(triple: ClusterTriple?): Double = triple?.distance ?: Double.POSITIVE_INFINITY
 
-    private fun getTripleId(first: Community, second: Community): Long = if (second.id > first.id) {
+    private fun getTripleId(first: Cluster<V>, second: Cluster<V>): Long = if (second.id > first.id) {
         getTripleId(second, first)
     } else {
         first.id * ID_FACTOR + second.id
     }
 
-    private fun insertTriple(triple: Triple) {
+    private fun insertTriple(triple: ClusterTriple) {
         triples[getTripleId(triple.first, triple.second)] = triple
-        if (triple.distance < distanceLimit) {
+        if (triple.distance <= distanceLimit) {
             heap.add(triple)
         }
     }
 
-    private fun insertTriple(distance: Double, first: Community, second: Community) {
-        val triple = createTriple(distance, first, second)
-        insertTriple(triple)
-    }
+    private fun insertTriple(distance: Double, first: Cluster<V>, second: Cluster<V>) =
+        ClusterTriple(distance, first, second).also { insertTriple(it) }
 
-    private fun invalidateTriple(triple: Triple?) {
-        triple ?: return
+    private fun invalidateTriple(triple: ClusterTriple) {
         val tripleId = getTripleId(triple.first, triple.second)
         triples.remove(tripleId)
         heap.remove(triple)
-        triple.release()
     }
 
-    private fun singletonCommunity(entity: V): Community {
+    private fun singletonCluster(entity: V): Cluster<V> {
         val singletonList: MutableList<V> = ArrayList(1)
         singletonList.add(entity)
-        return Community(singletonList)
-    }
-
-    private fun createTriple(distance: Double, first: Community, second: Community): Triple {
-        if (triplesPoll.isNotEmpty()) {
-            triplesPoll.removeFirst()
-        }
-        return Triple(distance, first, second)
+        return Cluster(identifierFactory.uniqueIdentifier(), singletonList)
     }
 
     /**
-     * @property entities list of entities stored in the community
+     * @property distance distance between two clusters
+     * @property first first cluster
+     * @property second second cluster
      */
-    private inner class Community(val entities: MutableList<V>) :
-        Comparable<Community> {
-        val id: Int = idGenerator++
-
-        override fun compareTo(other: Community): Int = id - other.id
-
-        override fun hashCode(): Int = id
-
-        override fun equals(other: Any?): Boolean =
-            other!!.javaClass == Community::class.java && (other as GraphHierarchicalAgglomerativeClustering<*, *>.Community).id == id
-    }
-
-    /**
-     * @property distance distance between two communities
-     * @property first first community
-     * @property second second community
-     */
-    private inner class Triple(
-        var distance: Double,
-        var first: Community,
-        var second: Community
-    ) :
-        Comparable<Triple> {
-        fun release() {
-            triplesPoll.add(this)
-        }
-
-        override operator fun compareTo(other: Triple): Int {
+    private inner class ClusterTriple(
+        val distance: Double,
+        val first: Cluster<V>,
+        val second: Cluster<V>
+    ) : Comparable<ClusterTriple> {
+        override operator fun compareTo(other: ClusterTriple): Int {
             if (other === this) {
                 return 0
             }
@@ -225,7 +178,15 @@ class GraphHierarchicalAgglomerativeClustering<V, E>(
             }
         }
 
-        override fun toString() = "($distance,[${first.entities.joinToString(",")}],[${second.entities.joinToString(",")}])"
+        override fun toString() =
+            """Distance: $distance
+                |
+                |First cluster:
+                |$first
+                |
+                |Second cluster:
+                |$second
+            """.trimMargin()
     }
 
     companion object {

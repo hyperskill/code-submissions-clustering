@@ -1,6 +1,7 @@
-package org.jetbrains.research.code.submissions.clustering.load.clustering.hac.parallel
+package org.jetbrains.research.code.submissions.clustering.util.parallel
 
 import java.util.concurrent.*
+import java.util.stream.Collectors
 import kotlin.math.min
 
 class ParallelContext : AutoCloseable {
@@ -10,6 +11,14 @@ class ParallelContext : AutoCloseable {
         service.shutdownNow()
     }
 
+    /**
+     * Process [values] and accumulate results parallel.
+     *
+     * @param values values to process
+     * @param accumulatorFactory creates initial accumulator
+     * @param processor processes value and accumulates result
+     * @param combiner combines parallel processed accumulators
+     */
     fun <V, A> runParallel(
         values: List<V>,
         accumulatorFactory: () -> A,
@@ -23,6 +32,15 @@ class ParallelContext : AutoCloseable {
         combiner
     )
 
+    /**
+     * Process [values] and accumulate results parallel.
+     *
+     * @param values values to process
+     * @param processor processes value and accumulates result
+     * @param context context
+     * @param accumulatorFactory creates initial accumulator
+     * @param combiner combines parallel processed accumulators
+     */
     fun <V, C, A> runParallel(
         values: List<V>,
         processor: ParallelProcessor<V, C, A>,
@@ -37,6 +55,15 @@ class ParallelContext : AutoCloseable {
         combiner
     )
 
+    /**
+     * Process [values] and accumulate results parallel.
+     *
+     * @param values values to process
+     * @param processor processes value and accumulates result
+     * @param accumulatorFactory creates initial accumulator
+     * @param contextFactory creates context
+     * @param combiner combines parallel processed accumulators
+     */
     fun <V, C, A> runParallel(
         values: List<V>,
         processor: ParallelProcessor<V, C, A>,
@@ -44,7 +71,7 @@ class ParallelContext : AutoCloseable {
         contextFactory: () -> C,
         combiner: (A, A) -> A
     ): A {
-        val tasks = splitValues(values)
+        val tasks = splitValues(values).stream().sequential()
             .map { list ->
                 Task(
                     list,
@@ -52,28 +79,29 @@ class ParallelContext : AutoCloseable {
                     contextFactory,
                     processor
                 )
-            }
-        val results = tasks.map { task ->
-            service.submit(task)
-        }
+            }.collect(Collectors.toList())
+        val results = tasks
+            .map(service::submit)
         return results.stream().sequential()
             .map(Companion::getResult)
             .reduce(combiner)
             .orElseGet(accumulatorFactory)
     }
 
+    /**
+     * Single parallel task for processing values and accumulating results.
+     *
+     * @param values values to process
+     * @param accumulatorFactory creates accumulator
+     * @param contextFactory creates context
+     * @param processor processes value and accumulates result
+     */
     private inner class Task<V, C, A>(
         private val values: List<V>,
         private val accumulatorFactory: () -> A,
         private val contextFactory: () -> C,
-        processor: ParallelProcessor<V, C, A>
-    ) : Callable<A> {
         private val processor: ParallelProcessor<V, C, A>
-
-        init {
-            this.processor = processor
-        }
-
+    ) : Callable<A> {
         override fun call(): A {
             val context = contextFactory()
             var accumulator = accumulatorFactory()
@@ -85,15 +113,18 @@ class ParallelContext : AutoCloseable {
     }
 
     companion object {
-        private const val MIN_BLOCKS_COUNT = 4
+        private const val MAX_BLOCKS_COUNT = 4
 
+        /**
+         * Split values in at most [MAX_BLOCKS_COUNT] blocks.
+         */
         private fun <V> splitValues(values: List<V>): List<List<V>> {
             if (values.isEmpty()) {
                 return listOf(values)
             }
             val lists: MutableList<List<V>> = ArrayList()
             val valuesCount = values.size
-            val blocksCount = min(MIN_BLOCKS_COUNT, values.size)
+            val blocksCount = min(MAX_BLOCKS_COUNT, values.size)
             val blockSize = (valuesCount - 1) / blocksCount + 1  // round up
             var blockStart = 0
             while (blockStart < valuesCount) {
@@ -108,6 +139,8 @@ class ParallelContext : AutoCloseable {
             while (true) {
                 try {
                     return future.get()
+                } catch (e: InterruptedException) {
+                    continue
                 } catch (e: ExecutionException) {
                     throw RuntimeException(e)
                 }
