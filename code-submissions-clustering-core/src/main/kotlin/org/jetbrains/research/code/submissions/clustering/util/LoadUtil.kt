@@ -61,3 +61,10 @@ fun SubmissionsGraph.writeToPng(outputPath: String) {
     val structureFile = File(structureFilePath)
     visualizeDot(clustersFile, structureFile)
 }
+
+fun SubmissionsGraph.writeClusters(outputPath: String) {
+    val path = "$outputPath/clusters.txt"
+    val file = File(path)
+    file.createNewFile()
+    file.writeText(getClusteredGraph().toString())
+}

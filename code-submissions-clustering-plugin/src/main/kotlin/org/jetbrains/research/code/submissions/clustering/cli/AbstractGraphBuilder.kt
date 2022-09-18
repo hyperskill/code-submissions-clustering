@@ -14,6 +14,7 @@ abstract class AbstractGraphBuilder : ApplicationStarter {
     private var toBinary: Boolean = false
     private var toCSV: Boolean = false
     private var toPNG: Boolean = false
+    private var clustersToTxt = false
     private lateinit var language: Language
     private lateinit var outputPath: String
 
@@ -28,6 +29,7 @@ abstract class AbstractGraphBuilder : ApplicationStarter {
             toBinary = serialize
             toCSV = saveCSV
             toPNG = visualize
+            clustersToTxt = saveClusters
         }
     }
 
@@ -44,6 +46,9 @@ abstract class AbstractGraphBuilder : ApplicationStarter {
         }
         if (toPNG) {
             tryToWrite(::writeToPng)
+        }
+        if (clustersToTxt) {
+            tryToWrite(::writeClusters)
         }
     }
 
@@ -77,5 +82,9 @@ open class AbstractGraphBuilderArgs(parser: ArgParser) {
     val visualize by parser.flagging(
         "--visualize",
         help = "Save submissions graph visualization to .png file"
+    )
+    val saveClusters by parser.flagging(
+        "--saveClusters",
+        help = "Save submissions graph clusters to .txt file"
     )
 }

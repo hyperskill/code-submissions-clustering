@@ -44,6 +44,9 @@ tasks {
             if (project.hasProperty("visualize")) {
                 add("--visualize")
             }
+            if (project.hasProperty("saveClusters")) {
+                add("--saveClusters")
+            }
         }
     }
     register("calculate-dist", BaseCLITask::class) {
@@ -64,6 +67,9 @@ tasks {
             }
             if (project.hasProperty("visualize")) {
                 add("--visualize")
+            }
+            if (project.hasProperty("saveClusters")) {
+                add("--saveClusters")
             }
         }
     }
