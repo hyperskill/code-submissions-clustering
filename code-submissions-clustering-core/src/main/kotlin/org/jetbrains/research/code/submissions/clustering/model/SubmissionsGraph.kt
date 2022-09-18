@@ -1,6 +1,9 @@
 package org.jetbrains.research.code.submissions.clustering.model
 
+import org.jetbrains.research.code.submissions.clustering.load.clustering.Cluster
 import org.jetbrains.research.code.submissions.clustering.load.clustering.ClusteredGraph
+import org.jetbrains.research.code.submissions.clustering.load.clustering.GraphClusterer
+import org.jetbrains.research.code.submissions.clustering.load.clustering.buildClusteredGraph
 import org.jetbrains.research.code.submissions.clustering.load.context.SubmissionsGraphContext
 import org.jetbrains.research.code.submissions.clustering.load.context.builder.IdentifierFactoryImpl
 import org.jetbrains.research.code.submissions.clustering.util.toProto
@@ -16,7 +19,16 @@ typealias SubmissionsGraphAlias = Graph<SubmissionsNode, SubmissionsGraphEdge>
  * @property graph inner representation of submissions graph
  */
 data class SubmissionsGraph(val graph: SubmissionsGraphAlias) {
-    var clusteredGraph: ClusteredGraph<SubmissionsNode>? = null
+    private var clusteredGraph: ClusteredGraph<SubmissionsNode>? = null
+
+    fun getClusteredGraph(): ClusteredGraph<SubmissionsNode> = clusteredGraph ?: buildClusteredGraph {
+        add(Cluster(0, graph.vertexSet().toMutableList()))
+    }
+
+    fun cluster(clusterer: GraphClusterer<SubmissionsNode, SubmissionsGraphEdge>) {
+        clusteredGraph = clusterer.buildClustering(graph)
+    }
+
     fun buildStringRepresentation() = toProto().toString()
 }
 

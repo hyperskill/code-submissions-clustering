@@ -23,9 +23,8 @@ class ClusteringTest : ParametrizedBaseWithUnifierTest(getTmpProjectDir()) {
             val submissionsGraph = protoGraph.toGraph()
             val clusterer = SubmissionsGraphHAC(distanceLimit)
             submissionsGraph.cluster(clusterer)
-            submissionsGraph.clusteredGraph?.let {
-                expectedClustering.assertEquals(it.getClustering())
-            } ?: throw NullPointerException("Submissions graph clustering failed")
+            val clusteredGraph = submissionsGraph.getClusteredGraph()
+            expectedClustering.assertEquals(clusteredGraph.getClustering())
         }
     }
 
