@@ -122,7 +122,7 @@ fun SubmissionsGraph.visualizeDot(clustersOutputFile: File, structureOutputFile:
 }
 
 private fun visualizeDot(outputFile: File, dotRepresentation: String) {
-    val basePath = getTmpProjectDir(toCreateFolder = false)
+    val basePath = getTmpProjectDir(toCreateFolder = true)
     val fileName = "graph.dot"
     val dotFile = addFileToProject(basePath, fileName, dotRepresentation)
     runProcessBuilder(Command(listOf("dot", "-Tpng", dotFile.absolutePath, "-o", outputFile.absolutePath)))
