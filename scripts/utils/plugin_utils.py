@@ -51,7 +51,7 @@ class AbstractTaskRunner(ABC):
         completed_process = subprocess.run(cmd.split(), capture_output=True)
         stderr_output = completed_process.stderr
         if stderr_output is None:
-            return ""
+            return ''
         return stderr_output.decode('utf-8')
 
 
