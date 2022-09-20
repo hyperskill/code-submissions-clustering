@@ -27,12 +27,13 @@ def process_steps(
         logger.info(f'Operating step {step_id}...')
         start = time.time()
         try:
-            task_runner.run(step_id, script_arguments, **kwargs)
+            stderr_output = task_runner.run(step_id, script_arguments, **kwargs)
         except Exception as e:
             logger.error(e)
             logger.info(f'Operating step {step_id} is stopped due to above exception')
         else:
             end = time.time()
+            logger.info(stderr_output)
             logger.info(f'Step {step_id} operated in {time_to_str(end - start)}')
             total_execution_time += end - start
     logger.info(f'All steps operated in {time_to_str(total_execution_time)}')

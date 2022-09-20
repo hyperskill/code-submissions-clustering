@@ -44,11 +44,15 @@ class AbstractTaskRunner(ABC):
                 cmd = cmd + f' -P{arg_name.value}'
         return cmd
 
-    def run(self, *args, **kwargs):
-        """Run task."""
+    def run(self, *args, **kwargs) -> str:
+        """Run task and return process stderr."""
         named_args, flag_args = self.build_arguments(*args, **kwargs)
         cmd = self.configure_cmd(named_args, flag_args)
-        subprocess.run(cmd.split(), stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+        completed_process = subprocess.run(cmd.split(), capture_output=True)
+        stderr_output = completed_process.stderr
+        if stderr_output is None:
+            return ""
+        return stderr_output.decode('utf-8')
 
 
 class LoadRunner(AbstractTaskRunner):
