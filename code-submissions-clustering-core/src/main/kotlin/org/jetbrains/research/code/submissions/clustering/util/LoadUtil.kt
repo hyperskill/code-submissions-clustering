@@ -3,7 +3,6 @@ package org.jetbrains.research.code.submissions.clustering.util
 import org.jetbrains.kotlinx.dataframe.DataFrame
 import org.jetbrains.kotlinx.dataframe.api.*
 import org.jetbrains.kotlinx.dataframe.io.writeCSV
-import org.jetbrains.research.code.submissions.clustering.load.clustering.GraphClusterer
 import org.jetbrains.research.code.submissions.clustering.load.context.SubmissionsGraphContext
 import org.jetbrains.research.code.submissions.clustering.load.visualization.visualizeDot
 import org.jetbrains.research.code.submissions.clustering.model.*
@@ -63,6 +62,9 @@ fun SubmissionsGraph.writeToPng(outputPath: String) {
     visualizeDot(clustersFile, structureFile)
 }
 
-fun SubmissionsGraph.cluster(clusterer: GraphClusterer<SubmissionsNode, SubmissionsGraphEdge>) {
-    clusteredGraph = clusterer.buildClustering(graph)
+fun SubmissionsGraph.writeClusters(outputPath: String) {
+    val path = "$outputPath/clusters.txt"
+    val file = File(path)
+    file.createNewFile()
+    file.writeText(getClusteredGraph().toString())
 }

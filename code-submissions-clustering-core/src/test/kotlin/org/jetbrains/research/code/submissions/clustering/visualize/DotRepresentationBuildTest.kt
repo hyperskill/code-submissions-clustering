@@ -31,9 +31,8 @@ class DotRepresentationBuildTest : ParametrizedBaseWithUnifierTest(getTmpProject
             val clusterer = SubmissionsGraphHAC(distanceLimit)
             submissionsGraph.cluster(clusterer)
             with(SubmissionsGraphToDotConverter()) {
-                submissionsGraph.clusteredGraph?.let {
-                    assertEquals(expectedDotRepr, it.toDot())
-                } ?: throw NullPointerException("Submissions graph clustering failed")
+                val clusteredGraph = submissionsGraph.getClusteredGraph()
+                assertEquals(expectedDotRepr, clusteredGraph.toDot())
             }
         }
     }

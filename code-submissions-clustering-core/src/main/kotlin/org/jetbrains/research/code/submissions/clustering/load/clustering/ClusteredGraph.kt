@@ -25,8 +25,17 @@ data class Cluster<V>(val id: Identifier, val entities: MutableList<V>) : Compar
         other?.javaClass == Cluster::class.java && (other as Cluster<*>).id == id
 
     override fun toString(): String {
-        val sep = "${System.lineSeparator()}~~~~~~~~~~~~~~~~${System.lineSeparator()}"
-        return entities.joinToString(sep, prefix = sep, postfix = sep) { (it as SubmissionsNode).code }
+        val sep = "${System.lineSeparator()}${"-".repeat(SEP_CNT)}${System.lineSeparator()}"
+        return entities.joinToString(sep, prefix = sep, postfix = sep) {
+            """# [id=${(it as SubmissionsNode).id}]
+                |
+                |${(it as SubmissionsNode).code}
+            """.trimMargin()
+        }
+    }
+
+    companion object {
+        const val SEP_CNT = 60
     }
 }
 
@@ -35,6 +44,18 @@ data class Cluster<V>(val id: Identifier, val entities: MutableList<V>) : Compar
  */
 data class ClusteredGraph<V>(val graph: ClusteredGraphAlias<V>) {
     fun getClustering(): Clustering<V> = ClusteringImpl(graph.vertexSet().map { it.entities.toSet() })
+
+    override fun toString() = buildString {
+        val sep = "=".repeat(SEP_CNT)
+        graph.vertexSet().forEachIndexed { index, cluster ->
+            appendLine("$sep Cluster $index $sep")
+            appendLine(cluster)
+        }
+    }
+
+    companion object {
+        const val SEP_CNT = 30
+    }
 }
 
 class ClusteredGraphBuilder<V>(private val graph: ClusteredGraphAlias<V>) {

@@ -10,14 +10,7 @@ import java.io.File
 class SubmissionsGraphToDotConverter {
     fun SubmissionsGraph.toDot(): String {
         val stepId = graph.vertexSet().firstOrNull()?.stepId
-        val dotRepresentation = clusteredGraph?.let {
-            graph.clustersToDot(it)
-        } ?: run {
-            val singleClusterGraph = buildClusteredGraph<SubmissionsNode> {
-                add(Cluster(1, graph.vertexSet().toMutableList()))
-            }
-            graph.clustersToDot(singleClusterGraph)
-        }
+        val dotRepresentation = graph.clustersToDot(getClusteredGraph())
         return buildDotGraph(dotRepresentation, stepId)
     }
 
@@ -124,12 +117,12 @@ class SubmissionsGraphToDotConverter {
 fun SubmissionsGraph.visualizeDot(clustersOutputFile: File, structureOutputFile: File) {
     with(SubmissionsGraphToDotConverter()) {
         visualizeDot(clustersOutputFile, toDot())
-        clusteredGraph?.let { visualizeDot(structureOutputFile, it.toDot()) }
+        visualizeDot(structureOutputFile, getClusteredGraph().toDot())
     }
 }
 
 private fun visualizeDot(outputFile: File, dotRepresentation: String) {
-    val basePath = getTmpProjectDir(toCreateFolder = false)
+    val basePath = getTmpProjectDir(toCreateFolder = true)
     val fileName = "graph.dot"
     val dotFile = addFileToProject(basePath, fileName, dotRepresentation)
     runProcessBuilder(Command(listOf("dot", "-Tpng", dotFile.absolutePath, "-o", outputFile.absolutePath)))
