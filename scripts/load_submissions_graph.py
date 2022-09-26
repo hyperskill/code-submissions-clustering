@@ -95,6 +95,10 @@ if __name__ == '__main__':
         help='Output directory to store folders with output files',
     )
     parser.add_argument(
+        'language',
+        help='Programming language of code submissions',
+    )
+    parser.add_argument(
         '--serialize', action='store_true',
         help='Save submissions graph to binary file',
     )

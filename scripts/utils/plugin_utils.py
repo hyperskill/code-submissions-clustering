@@ -9,6 +9,7 @@ from typing import Any, Dict, Tuple
 class TaskNamedArgs(Enum):
     INPUT_FILE = 'input'
     OUTPUT_PATH = 'output'
+    LANGUAGE = 'lang'
 
 
 @unique
@@ -43,11 +44,15 @@ class AbstractTaskRunner(ABC):
                 cmd = cmd + f' -P{arg_name.value}'
         return cmd
 
-    def run(self, *args, **kwargs):
-        """Run task."""
+    def run(self, *args, **kwargs) -> str:
+        """Run task and return process stderr."""
         named_args, flag_args = self.build_arguments(*args, **kwargs)
         cmd = self.configure_cmd(named_args, flag_args)
-        subprocess.run(cmd.split(), stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+        completed_process = subprocess.run(cmd.split(), capture_output=True)
+        stderr_output = completed_process.stderr
+        if stderr_output is None:
+            return ''
+        return stderr_output.decode('utf-8')
 
 
 class LoadRunner(AbstractTaskRunner):
@@ -67,6 +72,7 @@ class LoadRunner(AbstractTaskRunner):
                 kwargs['build_solutions_file_name'](step_id, script_arguments),
             TaskNamedArgs.OUTPUT_PATH:
                 kwargs['build_output_dir_name'](step_id, script_arguments),
+            TaskNamedArgs.LANGUAGE: script_arguments.language,
         }
         flag_args = {
             TaskFlagArgs.SERIALIZE: script_arguments.serialize,
@@ -92,8 +98,10 @@ class CalculateDistRunner(AbstractTaskRunner):
                 kwargs['build_initial_graph_filename'](step_id, script_arguments),
             TaskNamedArgs.OUTPUT_PATH:
                 kwargs['build_output_dir_name'](step_id, script_arguments),
+            TaskNamedArgs.LANGUAGE: script_arguments.language,
         }
         flag_args = {
             TaskFlagArgs.SERIALIZE: script_arguments.serialize,
+            TaskFlagArgs.SAVE_CSV: script_arguments.saveCSV,
         }
         return named_args, flag_args
