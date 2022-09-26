@@ -25,7 +25,7 @@ data class Cluster<V>(val id: Identifier, val entities: MutableList<V>) : Compar
         other?.javaClass == Cluster::class.java && (other as Cluster<*>).id == id
 
     override fun toString(): String {
-        val sep = "\n~~~~~~~~~~~~~~~~\n"
+        val sep = "${System.lineSeparator()}~~~~~~~~~~~~~~~~${System.lineSeparator()}"
         return entities.joinToString(sep, prefix = sep, postfix = sep) { (it as SubmissionsNode).code }
     }
 }
