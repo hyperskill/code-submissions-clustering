@@ -1,55 +1,94 @@
 package org.jetbrains.research.code.submissions.clustering.load.visualization
 
+import org.jetbrains.research.code.submissions.clustering.load.clustering.*
 import org.jetbrains.research.code.submissions.clustering.model.SubmissionsGraph
 import org.jetbrains.research.code.submissions.clustering.model.SubmissionsGraphAlias
 import org.jetbrains.research.code.submissions.clustering.model.SubmissionsNode
 import org.jetbrains.research.code.submissions.clustering.util.*
-import org.jgrapht.alg.interfaces.ClusteringAlgorithm.Clustering
-import org.jgrapht.alg.interfaces.ClusteringAlgorithm.ClusteringImpl
 import java.io.File
 
 class SubmissionsGraphToDotConverter {
-    fun SubmissionsGraph.toDot() = buildString {
-        val stepId = graph.vertexSet().firstOrNull()?.stepId ?: "?"
-        appendLine("graph $stepId {")
-        appendLine()
-        append(clustering?.let {
+    fun SubmissionsGraph.toDot(): String {
+        val stepId = graph.vertexSet().firstOrNull()?.stepId
+        val dotRepresentation = clusteredGraph?.let {
             graph.clustersToDot(it)
-        } ?: graph.clustersToDot(ClusteringImpl(listOf(graph.vertexSet()))))
+        } ?: run {
+            val singleClusterGraph = buildClusteredGraph<SubmissionsNode> {
+                add(Cluster(1, graph.vertexSet().toMutableList()))
+            }
+            graph.clustersToDot(singleClusterGraph)
+        }
+        return buildDotGraph(dotRepresentation, stepId)
+    }
+
+    fun ClusteredGraph<SubmissionsNode>.toDot() = buildString {
+        val stepId = graph.vertexSet().firstOrNull()?.entities
+            ?.first()?.stepId
+        val dotRepresentation = graph.toDot()
+        return buildDotGraph(dotRepresentation, stepId)
+    }
+
+    private fun buildDotGraph(dotRepresentation: String, stepId: Int?) = buildString {
+        appendLine("graph ${stepId ?: "?"} {")
+        appendLine()
+        appendLine(dotRepresentation)
         append("}")
     }
 
-    private fun SubmissionsGraphAlias.clustersToDot(clustering: Clustering<SubmissionsNode>): String {
+    private fun SubmissionsGraphAlias.clustersToDot(
+        clusteredGraph: ClusteredGraph<SubmissionsNode>
+    ): String {
         val vsb = StringBuilder()
         val csb = StringBuilder()
         val totalSubmissionsCnt = vertexSet().sumOf { it.idList.size }
-        val clusters = clustering.clusters
-        clusters.forEachIndexed { i, clusterVertices ->
-            if (clusterVertices.isEmpty()) {
+        val clusters = clusteredGraph.graph.vertexSet()
+        clusters.forEachIndexed { i, cluster ->
+            val entities = cluster.entities
+            if (entities.isEmpty()) {
                 return@forEachIndexed
             }
             csb.appendLine("  subgraph cluster_$i {")
-            if (clusterVertices.size == 1) {
-                val vertex = clusterVertices.first()
+            csb.append("    ").appendLine(cluster.buildLabel(i))
+            if (entities.size == 1) {
+                val vertex = entities.first()
                 vsb.append("  ").appendLine(vertexToDot(vertex, totalSubmissionsCnt))
                 csb.append("    ").appendLine("v${vertex.id}").appendLine("  }")
-                    .appendLine()
                 return@forEachIndexed
             }
-            clusterVertices.forEach { first ->
+            entities.sorted().forEach { first ->
                 vsb.append("  ").appendLine(vertexToDot(first, totalSubmissionsCnt))
-                clusterVertices.forEach { second ->
+                entities.forEach { second ->
                     if (first.id < second.id) {
                         csb.append("    ").appendLine(edgeToDot(first, second))
                     }
                 }
             }
-            csb.appendLine("  }").appendLine()
+            csb.appendLine("  }")
         }
         if (vsb.isEmpty()) {
             return ""
         }
         return listOf(vsb, csb).joinToString(separator = System.lineSeparator())
+    }
+
+    private fun ClusteredGraphAlias<SubmissionsNode>.toDot() = buildString {
+        val clusters = vertexSet()
+        appendLine("  subgraph {")
+        append("    ").appendLine("node [shape = box]")
+        if (clusters.size == 1) {
+            append("    ").appendLine("C0")
+        } else {
+            clusters.forEachIndexed { i, first ->
+                clusters.forEachIndexed { j, second ->
+                    if (j > i) {
+                        val edge = getEdge(first, second)
+                        val weight = getEdgeWeight(edge).toInt()
+                        append("    ").appendLine("C$i -- C$j [label = \"$weight\"]")
+                    }
+                }
+            }
+        }
+        appendLine("  }")
     }
 
     private fun vertexToDot(vertex: SubmissionsNode, totalSubmissionsCnt: Int): String {
@@ -68,19 +107,31 @@ class SubmissionsGraphToDotConverter {
         return "\"0.1 %.2f 1.0\"".format(hue)
     }
 
+    private fun Cluster<SubmissionsNode>.buildLabel(i: Int) = buildString {
+        append("label = < <B>C$i</B>  [${entities.size} node")
+        if (entities.size > 1) {
+            append("s")
+        }
+        append("] >")
+    }
+
     companion object {
         const val HUE_COEFFICIENT = 0.9
         const val LOWER_HUE_BOUND = 0.1
     }
 }
 
-fun SubmissionsGraph.visualize(outputFile: File) {
+fun SubmissionsGraph.visualizeDot(clustersOutputFile: File, structureOutputFile: File) {
+    with(SubmissionsGraphToDotConverter()) {
+        visualizeDot(clustersOutputFile, toDot())
+        clusteredGraph?.let { visualizeDot(structureOutputFile, it.toDot()) }
+    }
+}
+
+private fun visualizeDot(outputFile: File, dotRepresentation: String) {
     val basePath = getTmpProjectDir(toCreateFolder = false)
     val fileName = "graph.dot"
-    with(SubmissionsGraphToDotConverter()) {
-        val dotRepresentation = toDot()
-        val dotFile = addFileToProject(basePath, fileName, dotRepresentation)
-        runProcessBuilder(Command(listOf("dot", "-Tpng", dotFile.absolutePath, "-o", outputFile.absolutePath)))
-        dotFile.deleteFromProject()
-    }
+    val dotFile = addFileToProject(basePath, fileName, dotRepresentation)
+    runProcessBuilder(Command(listOf("dot", "-Tpng", dotFile.absolutePath, "-o", outputFile.absolutePath)))
+    dotFile.deleteFromProject()
 }
