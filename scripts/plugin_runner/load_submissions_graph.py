@@ -19,9 +19,9 @@ import time
 from typing import List
 
 from utils.df_utils import read_df, write_df
-from utils.models.df_column_name import SubmissionColumns
 from utils.file_utils import create_dir
 from utils.logger_utils import set_logger
+from utils.models.df_column_name import SubmissionColumns
 from utils.runners.load_runner import LoadRunner
 from utils.steps_processing_utils import process_steps
 from utils.time_utils import time_to_str
