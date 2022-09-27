@@ -41,3 +41,6 @@ inline fun <reified T> String.asPsiFile(language: Language, psiManager: PsiManag
     file.deleteFromProject()
     return result
 }
+
+// TODO: add other symbols?
+fun String.trimCode() = this.trim(' ', '\n')

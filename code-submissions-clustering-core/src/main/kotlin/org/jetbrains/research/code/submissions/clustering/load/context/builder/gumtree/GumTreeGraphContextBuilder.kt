@@ -16,7 +16,7 @@ object GumTreeGraphContextBuilder : AbstractGraphContextBuilder<List<Action>>() 
         Language.PYTHON to { getPythonTreeGenerator() },
     )
 
-    fun getPythonTreeGenerator(): PythonTreeGenerator {
+    private fun getPythonTreeGenerator(): PythonTreeGenerator {
         GumTreeParserUtil.checkSetup()
         return PythonTreeGenerator()
     }
