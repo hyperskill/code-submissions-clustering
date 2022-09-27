@@ -28,6 +28,8 @@ ignore =
   S603,
 # WPS inspections
   WPS,
+# Missing docstring in public package
+  D104,
 
 exclude = .git, */data, env/, venv/
 

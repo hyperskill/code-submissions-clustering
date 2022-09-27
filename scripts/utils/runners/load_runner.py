@@ -1,7 +1,7 @@
 from argparse import Namespace
 from typing import Any, Dict, Tuple
 
-from utils.models.cli_models import TaskNamedArgs, TaskFlagArgs
+from utils.models.cli_models import TaskFlagArgs, TaskNamedArgs
 from utils.runners.abstract_task_runner import AbstractTaskRunner
 
 
