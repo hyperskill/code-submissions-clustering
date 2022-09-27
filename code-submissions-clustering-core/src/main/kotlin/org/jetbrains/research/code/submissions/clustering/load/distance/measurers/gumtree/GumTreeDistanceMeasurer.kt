@@ -1,10 +1,12 @@
 package org.jetbrains.research.code.submissions.clustering.load.distance.measurers.gumtree
 
 import com.github.gumtreediff.actions.model.Action
+import com.github.gumtreediff.actions.model.Move
 import com.github.gumtreediff.gen.TreeGenerator
 import com.github.gumtreediff.tree.TreeContext
 import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiManager
+import io.ktor.util.reflect.*
 import org.jetbrains.research.code.submissions.clustering.load.context.builder.gumtree.converter.getTreeContext
 import org.jetbrains.research.code.submissions.clustering.load.distance.measurers.CodeDistanceMeasurerBase
 import org.jetbrains.research.code.submissions.clustering.load.unifiers.createTempProject
@@ -14,7 +16,7 @@ import org.jetbrains.research.code.submissions.clustering.model.SubmissionsGraph
 import org.jetbrains.research.code.submissions.clustering.util.asPsiFile
 
 abstract class GumTreeDistanceMeasurerBase : CodeDistanceMeasurerBase<List<Action>>() {
-    override fun List<Action>.calculateWeight() = this.size
+    override fun List<Action>.calculateWeight() = this.map(::calculateWeightByAction).sum()
 
     abstract fun String.parseTree(): TreeContext
 
@@ -30,7 +32,7 @@ abstract class GumTreeDistanceMeasurerBase : CodeDistanceMeasurerBase<List<Actio
 class GumTreeDistanceMeasurerByParser(
     private val treeGenerator: TreeGenerator,
 ) : GumTreeDistanceMeasurerBase() {
-    override fun List<Action>.calculateWeight() = this.size
+    override fun List<Action>.calculateWeight() = this.map(::calculateWeightByAction).sum()
 
     @Suppress("WRONG_OVERLOADING_FUNCTION_ARGUMENTS")
     override fun String.parseTree() = this.parseTree(treeGenerator)
@@ -47,4 +49,11 @@ class GumTreeDistanceMeasurerByPsi(
         this.asPsiFile(Language.PYTHON, psiManager) {
             getTreeContext(it)
         }
+}
+
+private fun calculateWeightByAction(action: Action): Int {
+    if (action.instanceOf(Move::class)) {
+        return 1
+    }
+    return action.node.metrics.size
 }
