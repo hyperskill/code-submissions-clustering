@@ -30,6 +30,10 @@ ignore =
   WPS,
 # Missing docstring in public package
   D104,
+# Isort found an import in the wrong position
+  I101,
+# Isort found an unexpected missing import
+  I005,
 
 exclude = .git, */data, env/, venv/
 
