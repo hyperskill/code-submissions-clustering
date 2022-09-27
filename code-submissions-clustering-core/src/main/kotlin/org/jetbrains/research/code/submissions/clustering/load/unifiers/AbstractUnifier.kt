@@ -76,6 +76,8 @@ abstract class AbstractUnifier(
         return this.copy(code = psi.text)
     }
 
+    fun clearCache() = codeToUnifiedPsi.clear()
+
     companion object {
         const val MAX_ITERATIONS = 50
     }
