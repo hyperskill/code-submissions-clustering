@@ -3,7 +3,7 @@ from argparse import Namespace
 from logging import Logger
 from typing import List
 
-from utils.plugin_utils import AbstractTaskRunner
+from utils.runners.abstract_task_runner import AbstractTaskRunner
 from utils.time_utils import time_to_str
 
 

@@ -19,6 +19,15 @@ To load submissions graph(s) from .csv file, run load_submissions_graph.py with 
 
 ### Usage example
 
+Run the following command from the **root** of the **scripts** folder:
+
 ```
-python3 load_submissions_graph.py /path/to/input/file /path/to/output/dir PYTHON --serialize --saveCSV
+python3 -m plugin_runner.load_submissions_graph /path/to/input/file /path/to/output/dir PYTHON --serialize --saveCSV
+```
+
+**Note**: you need to install all requirements from the 
+[requirements](./requirements.txt) file before launching this script:
+
+```text
+pip3 install -r requirements.txt
 ```

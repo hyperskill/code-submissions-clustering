@@ -1,6 +1,7 @@
 import logging
 import os
 import sys
+from pathlib import Path
 
 
 def set_logger(output_path: str) -> logging.Logger:
@@ -9,7 +10,7 @@ def set_logger(output_path: str) -> logging.Logger:
 
     log_file = f'{output_path}/log.txt'
     if not os.path.exists(log_file):
-        os.mknod(log_file)
+        Path(log_file).touch()
 
     output_file_handler = logging.FileHandler(log_file)
     stdout_handler = logging.StreamHandler(sys.stdout)
