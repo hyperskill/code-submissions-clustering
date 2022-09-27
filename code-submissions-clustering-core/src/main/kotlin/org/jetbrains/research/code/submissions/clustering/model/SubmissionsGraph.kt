@@ -47,7 +47,7 @@ class GraphTransformer<T>(
 
     fun add(submission: Submission) {
         submissionsGraphContext.unifier.run {
-            val unifiedSubmission = submission.unify(submissionsGraphContext)
+            val unifiedSubmission = submission.unify()
             vertexByCode.compute(unifiedSubmission.code) { _, vertex ->
                 vertex?.let {
                     // Update existing vertex
@@ -70,7 +70,6 @@ class GraphTransformer<T>(
                     val dist = submissionsGraphContext.codeDistanceMeasurer.computeDistanceWeight(
                         edge,
                         graph,
-                        submissionsGraphContext
                     )
                     graph.setEdgeWeight(edge, dist.toDouble())
                 }

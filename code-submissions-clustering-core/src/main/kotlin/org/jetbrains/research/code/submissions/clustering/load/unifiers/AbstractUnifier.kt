@@ -8,7 +8,6 @@ import com.intellij.psi.PsiDocumentManager
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
 import com.intellij.psi.PsiManager
-import org.jetbrains.research.code.submissions.clustering.load.context.SubmissionsGraphContext
 import org.jetbrains.research.code.submissions.clustering.model.Language
 import org.jetbrains.research.code.submissions.clustering.model.Submission
 import org.jetbrains.research.code.submissions.clustering.util.asPsiFile
@@ -28,6 +27,7 @@ abstract class AbstractUnifier(
     private val logger = Logger.getLogger(javaClass.name)
     abstract val language: Language
     abstract val transformations: List<Transformation>
+    private val codeToUnifiedPsi = HashMap<String, PsiFile>()
 
     @Suppress("TooGenericExceptionCaught")
     private fun PsiFile.applyTransformations(transformations: List<Transformation>, previousTree: PsiElement? = null) {
@@ -56,8 +56,8 @@ abstract class AbstractUnifier(
     }
 
     @Suppress("TOO_MANY_LINES_IN_LAMBDA")
-    fun Submission.unify(context: SubmissionsGraphContext<*>): Submission {
-        val psi = context.codeToUnifiedPsi.getOrDefault(this.code, this.code.asPsiFile(language, psiManager) {
+    fun Submission.unify(): Submission {
+        val psi = codeToUnifiedPsi.getOrDefault(this.code, this.code.asPsiFile(language, psiManager) {
             ApplicationManager.getApplication().invokeAndWait {
                 ApplicationManager.getApplication().runWriteAction {
                     var iterationNumber = 0
@@ -67,17 +67,17 @@ abstract class AbstractUnifier(
                         it.applyTransformations(transformations, previousTree)
                         logger.finer { "Previous text[$iterationNumber]:\n${previousTree.text}\n" }
                         logger.finer { "Current text[$iterationNumber]:\n${it.text}\n\n" }
-                    } while (!previousTree.textMatches(it.text) && iterationNumber <= MAX_ITERATIONS && context.codeToUnifiedPsi[it.text] == null)
+                    } while (!previousTree.textMatches(it.text) && iterationNumber <= MAX_ITERATIONS && codeToUnifiedPsi[it.text] == null)
                     logger.fine { "Tree Ended[[$iterationNumber]]: ${it.text}\n\n\n" }
                 }
             }
-            context.codeToUnifiedPsi.getOrPut(it.text) { it.reformatInWriteAction() }
+            codeToUnifiedPsi.getOrPut(it.text) { it.reformatInWriteAction() }
         })
         return this.copy(code = psi.text)
     }
 
     companion object {
-        const val MAX_ITERATIONS = 100
+        const val MAX_ITERATIONS = 50
     }
 }
 

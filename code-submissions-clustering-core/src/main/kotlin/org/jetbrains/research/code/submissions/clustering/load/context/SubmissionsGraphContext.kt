@@ -1,6 +1,5 @@
 package org.jetbrains.research.code.submissions.clustering.load.context
 
-import com.intellij.psi.PsiFile
 import org.jetbrains.research.code.submissions.clustering.load.distance.measurers.CodeDistanceMeasurerBase
 import org.jetbrains.research.code.submissions.clustering.load.unifiers.AbstractUnifier
 
@@ -11,5 +10,4 @@ import org.jetbrains.research.code.submissions.clustering.load.unifiers.Abstract
 data class SubmissionsGraphContext<T>(
     val unifier: AbstractUnifier,
     val codeDistanceMeasurer: CodeDistanceMeasurerBase<T>,
-    val codeToUnifiedPsi: HashMap<String, PsiFile> = HashMap(),
 )
