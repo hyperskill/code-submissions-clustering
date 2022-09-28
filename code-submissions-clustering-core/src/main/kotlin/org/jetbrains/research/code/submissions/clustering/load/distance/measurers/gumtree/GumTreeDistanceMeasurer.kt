@@ -6,7 +6,6 @@ import com.github.gumtreediff.gen.TreeGenerator
 import com.github.gumtreediff.tree.TreeContext
 import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiManager
-import io.ktor.util.reflect.*
 import org.jetbrains.research.code.submissions.clustering.load.context.builder.gumtree.converter.getTreeContext
 import org.jetbrains.research.code.submissions.clustering.load.distance.measurers.CodeDistanceMeasurerBase
 import org.jetbrains.research.code.submissions.clustering.load.unifiers.createTempProject
@@ -27,13 +26,18 @@ abstract class GumTreeDistanceMeasurerBase : CodeDistanceMeasurerBase<List<Actio
         val target = graph.getEdgeTarget(edge).code.parseTree()
         return calculateDistance(source, target)
     }
+
+    private fun calculateWeightByAction(action: Action): Int {
+        if (action is Move) {
+            return 1
+        }
+        return action.node.metrics.size
+    }
 }
 
 class GumTreeDistanceMeasurerByParser(
     private val treeGenerator: TreeGenerator,
 ) : GumTreeDistanceMeasurerBase() {
-    override fun List<Action>.calculateWeight() = this.map(::calculateWeightByAction).sum()
-
     @Suppress("WRONG_OVERLOADING_FUNCTION_ARGUMENTS")
     override fun String.parseTree() = this.parseTree(treeGenerator)
 
@@ -49,11 +53,4 @@ class GumTreeDistanceMeasurerByPsi(
         this.asPsiFile(Language.PYTHON, psiManager) {
             getTreeContext(it)
         }
-}
-
-private fun calculateWeightByAction(action: Action): Int {
-    if (action.instanceOf(Move::class)) {
-        return 1
-    }
-    return action.node.metrics.size
 }
