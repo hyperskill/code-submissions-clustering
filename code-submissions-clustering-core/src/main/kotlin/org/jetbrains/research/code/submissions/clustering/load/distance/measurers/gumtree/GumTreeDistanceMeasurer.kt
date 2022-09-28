@@ -2,7 +2,10 @@ package org.jetbrains.research.code.submissions.clustering.load.distance.measure
 
 import com.github.gumtreediff.actions.model.Action
 import com.github.gumtreediff.actions.model.Move
+import com.github.gumtreediff.actions.model.TreeDelete
+import com.github.gumtreediff.actions.model.TreeInsert
 import com.github.gumtreediff.gen.TreeGenerator
+import com.github.gumtreediff.tree.Tree
 import com.github.gumtreediff.tree.TreeContext
 import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiManager
@@ -16,7 +19,38 @@ import org.jetbrains.research.code.submissions.clustering.util.asPsiFile
 import org.jetbrains.research.code.submissions.clustering.util.trimCode
 
 abstract class GumTreeDistanceMeasurerBase : CodeDistanceMeasurerBase<List<Action>>() {
-    override fun List<Action>.calculateWeight() = this.map(::calculateWeightByAction).sum()
+    private fun Tree.toMapKey() = this.toString()
+
+    @Suppress("NestedBlockDepth", "NO_BRACES_IN_CONDITIONALS_AND_LOOPS")
+    override fun List<Action>.calculateWeight(): Int {
+        // Sometimes we have actions about adding and deleting almost the same subtrees,
+        // in these cases we calculate only different parts of the subtries
+        val insertedNodeToFreq = mutableMapOf<String, Int>()
+        var weight = 0
+        for (action in this) {
+            when (action) {
+                is Move -> weight += 1
+                is TreeInsert -> {
+                    action.node.preOrder().forEach {
+                        val node = it.toMapKey()
+                        insertedNodeToFreq.putIfAbsent(node, 0)
+                        insertedNodeToFreq[node] = insertedNodeToFreq[node]!! + 1
+                    }
+                }
+                is TreeDelete -> {
+                    action.node.preOrder().forEach {
+                        val node = it.toMapKey()
+                        if (node in insertedNodeToFreq.keys) {
+                            insertedNodeToFreq[node] = insertedNodeToFreq[node]!! - 1
+                        }
+                    }
+                }
+                else -> weight += action.node.metrics.size
+            }
+        }
+        weight += insertedNodeToFreq.values.filter { it > 0 } .sum()
+        return weight
+    }
 
     abstract fun String.parseTree(): TreeContext
 
@@ -29,13 +63,6 @@ abstract class GumTreeDistanceMeasurerBase : CodeDistanceMeasurerBase<List<Actio
         val source = graph.getEdgeSource(edge).code.parseTree()
         val target = graph.getEdgeTarget(edge).code.parseTree()
         return calculateDistance(source, target)
-    }
-
-    private fun calculateWeightByAction(action: Action): Int {
-        if (action is Move) {
-            return 1
-        }
-        return action.node.metrics.size
     }
 }
 
