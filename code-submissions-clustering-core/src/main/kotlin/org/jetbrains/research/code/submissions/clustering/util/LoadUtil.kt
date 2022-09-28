@@ -24,6 +24,9 @@ fun <T> DataFrame<*>.loadGraph(context: SubmissionsGraphContext<T>): Submissions
                     )
                 )
             }
+            // We don't share it with distances, so we can remove extra information
+            context.unifier.clearCache()
+
             calculateDistances()
         }
     }

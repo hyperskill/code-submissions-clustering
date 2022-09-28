@@ -9,5 +9,5 @@ import org.jetbrains.research.code.submissions.clustering.load.unifiers.Abstract
  */
 data class SubmissionsGraphContext<T>(
     val unifier: AbstractUnifier,
-    val codeDistanceMeasurer: CodeDistanceMeasurerBase<T>
+    val codeDistanceMeasurer: CodeDistanceMeasurerBase<T>,
 )

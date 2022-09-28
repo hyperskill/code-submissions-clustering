@@ -67,7 +67,10 @@ class GraphTransformer<T>(
             vertices.forEach { second ->
                 if (first.id < second.id && !graph.containsEdge(first, second)) {
                     val edge: SubmissionsGraphEdge = graph.addEdge(first, second)
-                    val dist = submissionsGraphContext.codeDistanceMeasurer.computeDistanceWeight(edge, graph)
+                    val dist = submissionsGraphContext.codeDistanceMeasurer.computeDistanceWeight(
+                        edge,
+                        graph,
+                    )
                     graph.setEdgeWeight(edge, dist.toDouble())
                 }
             }

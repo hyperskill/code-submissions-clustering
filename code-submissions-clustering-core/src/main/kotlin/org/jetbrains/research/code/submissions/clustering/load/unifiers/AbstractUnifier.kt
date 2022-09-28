@@ -10,7 +10,9 @@ import com.intellij.psi.PsiFile
 import com.intellij.psi.PsiManager
 import org.jetbrains.research.code.submissions.clustering.model.Language
 import org.jetbrains.research.code.submissions.clustering.model.Submission
-import org.jetbrains.research.code.submissions.clustering.util.*
+import org.jetbrains.research.code.submissions.clustering.util.asPsiFile
+import org.jetbrains.research.code.submissions.clustering.util.getTmpProjectDir
+import org.jetbrains.research.code.submissions.clustering.util.reformatInWriteAction
 import org.jetbrains.research.ml.ast.transformations.Transformation
 import java.util.logging.Logger
 
@@ -20,13 +22,12 @@ import java.util.logging.Logger
  * @property psiManager PSI manager to use
  */
 abstract class AbstractUnifier(
-    private val project: Project,
-    private val psiManager: PsiManager,
-    private val anonymization: Transformation? = null
+    private val project: Project, private val psiManager: PsiManager, private val anonymization: Transformation? = null
 ) {
     private val logger = Logger.getLogger(javaClass.name)
     abstract val language: Language
     abstract val transformations: List<Transformation>
+    private val codeToUnifiedPsi = HashMap<String, PsiFile>()
 
     @Suppress("TooGenericExceptionCaught")
     private fun PsiFile.applyTransformations(transformations: List<Transformation>, previousTree: PsiElement? = null) {
@@ -55,8 +56,8 @@ abstract class AbstractUnifier(
     }
 
     @Suppress("TOO_MANY_LINES_IN_LAMBDA")
-    fun Submission.unify(): Submission =
-        this.code.asPsiFile(language, psiManager) {
+    fun Submission.unify(): Submission {
+        val psi = codeToUnifiedPsi.getOrDefault(this.code, this.code.asPsiFile(language, psiManager) {
             ApplicationManager.getApplication().invokeAndWait {
                 ApplicationManager.getApplication().runWriteAction {
                     var iterationNumber = 0
@@ -66,15 +67,19 @@ abstract class AbstractUnifier(
                         it.applyTransformations(transformations, previousTree)
                         logger.finer { "Previous text[$iterationNumber]:\n${previousTree.text}\n" }
                         logger.finer { "Current text[$iterationNumber]:\n${it.text}\n\n" }
-                    } while (!previousTree.textMatches(it.text) && iterationNumber <= MAX_ITERATIONS)
+                    } while (!previousTree.textMatches(it.text) && iterationNumber <= MAX_ITERATIONS && codeToUnifiedPsi[it.text] == null)
                     logger.fine { "Tree Ended[[$iterationNumber]]: ${it.text}\n\n\n" }
                 }
             }
-            this.copy(code = it.reformatInWriteAction().text)
-        }
+            codeToUnifiedPsi.getOrPut(it.text) { it.reformatInWriteAction() }
+        })
+        return this.copy(code = psi.text)
+    }
+
+    fun clearCache() = codeToUnifiedPsi.clear()
 
     companion object {
-        const val MAX_ITERATIONS = 100
+        const val MAX_ITERATIONS = 50
     }
 }
 
