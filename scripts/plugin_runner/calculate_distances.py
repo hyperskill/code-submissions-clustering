@@ -14,7 +14,7 @@ import argparse
 
 from utils.file_utils import create_dir, list_dirs
 from utils.logger_utils import set_logger
-from utils.plugin_utils import CalculateDistRunner
+from utils.runners.calculate_dist_runner import CalculateDistRunner
 from utils.steps_processing_utils import process_steps
 
 
