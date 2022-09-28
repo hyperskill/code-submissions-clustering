@@ -50,8 +50,11 @@ class GumTreeDistanceMeasurerByPsi(
     private val codeToTreeContext: HashMap<String, TreeContext> = HashMap()
     override fun String.parseTree(): TreeContext {
         val trimmedCode = this.trimCode()
-        return codeToTreeContext[trimmedCode] ?: run {
-            this.asPsiFile(Language.PYTHON, psiManager) { getTreeContext(it) }
+        return codeToTreeContext.getOrPut(trimmedCode) {
+            this.asPsiFile(
+                Language.PYTHON,
+                psiManager
+            ) { getTreeContext(it) }
         }
     }
 }
