@@ -48,7 +48,7 @@ abstract class GumTreeDistanceMeasurerBase : CodeDistanceMeasurerBase<List<Actio
                 else -> weight += action.node.metrics.size
             }
         }
-        weight += insertedNodeToFreq.values.filter { it > 0 } .sum()
+        weight += insertedNodeToFreq.values.filter { it > 0 }.sum()
         return weight
     }
 
