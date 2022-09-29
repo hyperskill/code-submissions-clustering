@@ -17,6 +17,7 @@ import org.jetbrains.research.code.submissions.clustering.model.SubmissionsGraph
 import org.jetbrains.research.code.submissions.clustering.model.SubmissionsGraphEdge
 import org.jetbrains.research.code.submissions.clustering.util.asPsiFile
 import org.jetbrains.research.code.submissions.clustering.util.trimCode
+import kotlin.math.abs
 
 abstract class GumTreeDistanceMeasurerBase : CodeDistanceMeasurerBase<List<Action>>() {
     private fun Tree.toMapKey() = this.toString()
@@ -48,7 +49,7 @@ abstract class GumTreeDistanceMeasurerBase : CodeDistanceMeasurerBase<List<Actio
                 else -> weight += action.node.metrics.size
             }
         }
-        weight += insertedNodeToFreq.values.filter { it > 0 }.sum()
+        weight += insertedNodeToFreq.values.sumOf { abs(it) }
         return weight
     }
 
