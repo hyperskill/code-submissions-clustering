@@ -27,7 +27,7 @@ abstract class AbstractUnifier(
     private val logger = Logger.getLogger(javaClass.name)
     abstract val language: Language
     abstract val transformations: List<Transformation>
-    private val codeToUnifiedPsi = HashMap<String, PsiFile>()
+    private val codeToUnifiedCode = HashMap<String, String>()
 
     @Suppress("TooGenericExceptionCaught")
     private fun PsiFile.applyTransformations(transformations: List<Transformation>, previousTree: PsiElement? = null) {
@@ -57,7 +57,7 @@ abstract class AbstractUnifier(
 
     @Suppress("TOO_MANY_LINES_IN_LAMBDA")
     fun Submission.unify(): Submission {
-        val psi = codeToUnifiedPsi.getOrDefault(this.code, this.code.asPsiFile(language, psiManager) {
+        val code = codeToUnifiedCode.getOrDefault(this.code, this.code.asPsiFile(language, psiManager) {
             ApplicationManager.getApplication().invokeAndWait {
                 ApplicationManager.getApplication().runWriteAction {
                     var iterationNumber = 0
@@ -67,16 +67,16 @@ abstract class AbstractUnifier(
                         it.applyTransformations(transformations, previousTree)
                         logger.finer { "Previous text[$iterationNumber]:\n${previousTree.text}\n" }
                         logger.finer { "Current text[$iterationNumber]:\n${it.text}\n\n" }
-                    } while (!previousTree.textMatches(it.text) && iterationNumber <= MAX_ITERATIONS && codeToUnifiedPsi[it.text] == null)
+                    } while (!previousTree.textMatches(it.text) && iterationNumber <= MAX_ITERATIONS && codeToUnifiedCode[it.text] == null)
                     logger.fine { "Tree Ended[[$iterationNumber]]: ${it.text}\n\n\n" }
                 }
             }
-            codeToUnifiedPsi.getOrPut(it.text) { it.reformatInWriteAction() }
+            codeToUnifiedCode.getOrPut(it.text) { it.reformatInWriteAction().text }
         })
-        return this.copy(code = psi.text)
+        return this.copy(code = code)
     }
 
-    fun clearCache() = codeToUnifiedPsi.clear()
+    fun clearCache() = codeToUnifiedCode.clear()
 
     companion object {
         const val MAX_ITERATIONS = 50
