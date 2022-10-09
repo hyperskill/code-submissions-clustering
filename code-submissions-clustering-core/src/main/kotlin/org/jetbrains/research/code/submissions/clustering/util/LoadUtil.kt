@@ -3,6 +3,7 @@ package org.jetbrains.research.code.submissions.clustering.util
 import org.jetbrains.kotlinx.dataframe.DataFrame
 import org.jetbrains.kotlinx.dataframe.api.*
 import org.jetbrains.kotlinx.dataframe.io.writeCSV
+import org.jetbrains.research.code.submissions.clustering.load.clustering.ClusteredGraph
 import org.jetbrains.research.code.submissions.clustering.load.context.SubmissionsGraphContext
 import org.jetbrains.research.code.submissions.clustering.load.visualization.visualizeDot
 import org.jetbrains.research.code.submissions.clustering.model.*
@@ -48,6 +49,12 @@ fun SubmissionsGraph.writeToString(outputPath: String) {
 
 fun SubmissionsGraph.writeToBinary(outputPath: String) {
     val path = "$outputPath/graph.bin"
+    val file = File(path)
+    toProto().writeTo(file.outputStream())
+}
+
+fun ClusteredGraph<SubmissionsNode>.writeToBinary(outputPath: String) {
+    val path = "$outputPath/clusters.bin"
     val file = File(path)
     toProto().writeTo(file.outputStream())
 }

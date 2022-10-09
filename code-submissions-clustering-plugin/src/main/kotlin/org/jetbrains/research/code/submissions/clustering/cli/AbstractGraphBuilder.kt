@@ -11,7 +11,8 @@ import java.util.logging.Logger
 
 abstract class AbstractGraphBuilder : ApplicationStarter {
     protected val logger: Logger = Logger.getLogger(javaClass.name)
-    private var toBinary: Boolean = false
+    private var graphToBinary: Boolean = false
+    private var clustersToBinary: Boolean = false
     private var toCSV: Boolean = false
     private var toPNG: Boolean = false
     private var clustersToTxt = false
@@ -26,7 +27,8 @@ abstract class AbstractGraphBuilder : ApplicationStarter {
         return parser.parseInto(argsClassConstructor).apply {
             language = Language.valueOf(Paths.get(lang).toString())
             outputPath = Paths.get(output).toString()
-            toBinary = serialize
+            graphToBinary = serializeGraph
+            clustersToBinary = serializeClusters
             toCSV = saveCSV
             toPNG = visualize
             clustersToTxt = saveClusters
@@ -38,8 +40,11 @@ abstract class AbstractGraphBuilder : ApplicationStarter {
     protected fun SubmissionsGraph.writeOutputData() {
         createFolder(outputPath)
         tryToWrite(::writeToString)
-        if (toBinary) {
+        if (graphToBinary) {
             tryToWrite(::writeToBinary)
+        }
+        if (clustersToBinary) {
+            tryToWrite(getClusteredGraph()::writeToBinary)
         }
         if (toCSV) {
             tryToWrite(::writeToCsv)
@@ -71,9 +76,13 @@ open class AbstractGraphBuilderArgs(parser: ArgParser) {
         "-o", "--output_path",
         help = "Directory to store all output files",
     )
-    val serialize by parser.flagging(
+    val serializeGraph by parser.flagging(
         "--serialize",
         help = "Save submissions graph to binary file"
+    )
+    val serializeClusters by parser.flagging(
+        "--serialize_clusters",
+        help = "Save clustered graph structure to binary file"
     )
     val saveCSV by parser.flagging(
         "--saveCSV",
