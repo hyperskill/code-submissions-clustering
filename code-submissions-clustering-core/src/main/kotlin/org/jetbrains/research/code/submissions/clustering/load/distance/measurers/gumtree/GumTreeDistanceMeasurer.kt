@@ -26,7 +26,11 @@ abstract class GumTreeDistanceMeasurerBase : CodeDistanceMeasurerBase<List<Actio
         else -> 3
     }
 
-    private fun Action.calculateWeight() = minOf(this.node.metrics.depth, this.node.metrics.size)
+    private fun Action.calculateWeight() = if (this.node.metrics.depth == 0) {
+        1
+    } else {
+        minOf(this.node.metrics.depth, this.node.metrics.size)
+    }
 
     @Suppress("NestedBlockDepth", "NO_BRACES_IN_CONDITIONALS_AND_LOOPS")
     override fun List<Action>.calculateWeight(): Int {
@@ -58,7 +62,7 @@ abstract class GumTreeDistanceMeasurerBase : CodeDistanceMeasurerBase<List<Actio
         }
         // Don't take into account the same vertices (which were added and then removed)
         weight -= insertedNodeToState.values.count { it == State.SAME }
-        return weight
+        return kotlin.math.abs(weight)
     }
 
     abstract fun String.parseTree(): TreeContext
