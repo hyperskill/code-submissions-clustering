@@ -64,8 +64,6 @@ fun ProtoSubmissionsGraph.toGraph(): SubmissionsGraph {
     return SubmissionsGraph(graph)
 }
 
-// COPY
-
 fun Cluster<SubmissionsNode>.toProto(): ProtoCluster = let { cluster ->
     ProtoCluster.newBuilder().apply {
         id = cluster.id

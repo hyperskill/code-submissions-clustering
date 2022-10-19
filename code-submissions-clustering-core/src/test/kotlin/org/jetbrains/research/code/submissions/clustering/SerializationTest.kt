@@ -29,7 +29,7 @@ class SerializationTest : ParametrizedBaseWithUnifierTest(getTmpProjectDir()) {
     fun testSerializeClusteredGraph(dataFrame: DataFrame<*>) {
         WriteCommandAction.runWriteCommandAction(mockProject) {
             val graph = dataFrame.loadGraph(mockContext)
-            val clusterer = SubmissionsGraphHAC(3.0)
+            val clusterer = SubmissionsGraphHAC(DIST_LIMIT)
             graph.cluster(clusterer)
             val clusteredGraph = graph.getClusteredGraph()
             val bytes = clusteredGraph.toProto().toByteArray()
@@ -53,6 +53,8 @@ class SerializationTest : ParametrizedBaseWithUnifierTest(getTmpProjectDir()) {
         }
 
     companion object {
+        const val DIST_LIMIT = 3.0
+
         @Suppress("WRONG_NEWLINES", "TOO_LONG_FUNCTION")
         @JvmStatic
         fun getTestData(): List<DataFrame<*>> = listOf(
