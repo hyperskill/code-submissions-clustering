@@ -18,6 +18,7 @@ import sys
 import time
 from typing import List
 
+from plugin_runner.utils import configure_parser
 from utils.df_utils import read_df, write_df
 from utils.file_utils import create_dir
 from utils.logger_utils import set_logger
@@ -90,23 +91,7 @@ if __name__ == '__main__':
         'input_file',
         help='Input .csv file with code solutions for a set of steps',
     )
-    parser.add_argument(
-        'output_path',
-        help='Output directory to store folders with output files',
-    )
-    parser.add_argument(
-        'language',
-        help='Programming language of code submissions',
-    )
-    parser.add_argument(
-        '--serialize', action='store_true',
-        help='Save submissions graph to binary file',
-    )
-    parser.add_argument(
-        '--saveCSV', action='store_true',
-        help='Save unified solutions to .csv file',
-    )
-
+    configure_parser(parser)
     args = parser.parse_args()
 
     create_directories(args.output_path)
