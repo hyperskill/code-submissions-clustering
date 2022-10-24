@@ -2,7 +2,7 @@ package org.jetbrains.research.code.submissions.clustering.visualize
 
 import com.intellij.openapi.command.WriteCommandAction
 import org.jetbrains.research.code.submissions.clustering.ProtoSubmissionsGraph
-import org.jetbrains.research.code.submissions.clustering.load.clustering.hac.SubmissionsGraphHAC
+import org.jetbrains.research.code.submissions.clustering.load.clustering.submissions.SubmissionsGraphHAC
 import org.jetbrains.research.code.submissions.clustering.load.visualization.SubmissionsGraphToDotConverter
 import org.jetbrains.research.code.submissions.clustering.util.*
 import org.junit.jupiter.params.ParameterizedTest
