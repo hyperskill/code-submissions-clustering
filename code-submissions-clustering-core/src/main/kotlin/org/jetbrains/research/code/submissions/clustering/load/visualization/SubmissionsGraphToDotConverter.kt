@@ -35,18 +35,18 @@ class SubmissionsGraphToDotConverter {
         val csb = StringBuilder()
         val totalSubmissionsCnt = vertexSet().sumOf { it.idList.size }
         val clusters = clusteredGraph.graph.vertexSet()
-        clusters.forEachIndexed { i, cluster ->
+        clusters.forEach { cluster ->
             val entities = cluster.entities
             if (entities.isEmpty()) {
-                return@forEachIndexed
+                return@forEach
             }
-            csb.appendLine("  subgraph cluster_$i {")
-            csb.append("    ").appendLine(cluster.buildLabel(i))
+            csb.appendLine("  subgraph cluster_${cluster.id} {")
+            csb.append("    ").appendLine(cluster.buildLabel())
             if (entities.size == 1) {
                 val vertex = entities.first()
                 vsb.append("  ").appendLine(vertexToDot(vertex, totalSubmissionsCnt))
                 csb.append("    ").appendLine("v${vertex.id}").appendLine("  }")
-                return@forEachIndexed
+                return@forEach
             }
             entities.sorted().forEach { first ->
                 vsb.append("  ").appendLine(vertexToDot(first, totalSubmissionsCnt))
@@ -69,14 +69,14 @@ class SubmissionsGraphToDotConverter {
         appendLine("  subgraph {")
         append("    ").appendLine("node [shape = box]")
         if (clusters.size == 1) {
-            append("    ").appendLine("C0")
+            append("    ").appendLine("C${clusters.first().id}")
         } else {
-            clusters.forEachIndexed { i, first ->
-                clusters.forEachIndexed { j, second ->
-                    if (j > i) {
+            clusters.forEach { first ->
+                clusters.forEach { second ->
+                    if (second.id > first.id) {
                         val edge = getEdge(first, second)
                         val weight = getEdgeWeight(edge).toInt()
-                        append("    ").appendLine("C$i -- C$j [label = \"$weight\"]")
+                        append("    ").appendLine("C${first.id} -- C${second.id} [label = \"$weight\"]")
                     }
                 }
             }
@@ -100,8 +100,8 @@ class SubmissionsGraphToDotConverter {
         return "\"0.1 %.2f 1.0\"".format(hue)
     }
 
-    private fun Cluster<SubmissionsNode>.buildLabel(i: Int) = buildString {
-        append("label = < <B>C$i</B>  [${entities.size} node")
+    private fun Cluster<SubmissionsNode>.buildLabel() = buildString {
+        append("label = < <B>C$id</B>  [${entities.size} node")
         if (entities.size > 1) {
             append("s")
         }
