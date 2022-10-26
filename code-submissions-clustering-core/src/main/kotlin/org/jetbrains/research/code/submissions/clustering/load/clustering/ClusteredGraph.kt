@@ -78,7 +78,7 @@ class ClusteredGraphBuilder<V>(private val graph: ClusteredGraphAlias<V>) {
         }
     }
 
-    fun add(cluster: Cluster<V>) = graph.addVertex(cluster)
+    fun add(cluster: Cluster<V>) = graph.addVertex(getOrNewCluster(cluster))
 
     fun build(): ClusteredGraph<V> = ClusteredGraph(graph)
 }
