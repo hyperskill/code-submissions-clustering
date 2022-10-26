@@ -17,9 +17,9 @@ abstract class AbstractGraphBuilder : ApplicationStarter {
     private var toPNG: Boolean = false
     private var clustersToTxt = false
     private var clusteringRes = false
+    private var binaryDir: String? = null
     private lateinit var language: Language
     private lateinit var outputPath: String
-    private var binaryDir: String? = null
 
     protected fun <T : AbstractGraphBuilderArgs> parseArgs(
         args: MutableList<String>,

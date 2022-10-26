@@ -28,6 +28,7 @@ class SubmissionsGraphToDotConverter {
         append("}")
     }
 
+    @Suppress("NestedBlockDepth")
     private fun SubmissionsGraphAlias.clustersToDot(
         clusteredGraph: ClusteredGraph<SubmissionsNode>
     ): String {

@@ -63,12 +63,10 @@ class ClusteredGraphBuilder<V>(private val graph: ClusteredGraphAlias<V>) {
     private val identifierFactory = IdentifierFactoryImpl(0)
     private val initialIndexToCluster = HashMap<Int, Cluster<V>>()
 
-    private fun getOrNewCluster(cluster: Cluster<V>): Cluster<V> {
-        return initialIndexToCluster[cluster.id] ?: Cluster(
-            identifierFactory.uniqueIdentifier(),
-            cluster.entities
-        ).also { initialIndexToCluster[cluster.id] = it }
-    }
+    private fun getOrNewCluster(cluster: Cluster<V>): Cluster<V> = initialIndexToCluster[cluster.id] ?: Cluster(
+        identifierFactory.uniqueIdentifier(),
+        cluster.entities
+    ).also { initialIndexToCluster[cluster.id] = it }
 
     fun add(distance: Double, first: Cluster<V>, second: Cluster<V>) {
         val firstCluster = getOrNewCluster(first)

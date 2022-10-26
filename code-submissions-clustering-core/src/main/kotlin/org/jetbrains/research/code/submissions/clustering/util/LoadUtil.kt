@@ -36,27 +36,6 @@ fun <T> DataFrame<*>.loadGraph(context: SubmissionsGraphContext<T>): Submissions
     return graph
 }
 
-private fun SubmissionsGraph.toClusteringDataFrame(): DataFrame<*> {
-    val submissions = mutableListOf<Int>()
-    val clusters = mutableListOf<Int>()
-    val positions = mutableListOf<Int>()
-    getClusteredGraph().graph.vertexSet().forEach { cluster ->
-        var currentPosition = 0
-        cluster.entities.forEach { submissionsNode ->
-            submissionsNode.idList.forEach { submissionId ->
-                submissions.add(submissionId)
-                clusters.add(cluster.id)
-                positions.add(currentPosition++)
-            }
-        }
-    }
-    return dataFrameOf(
-        submissions.toColumn() named "submission_id",
-        clusters.toColumn() named "cluster_id",
-        positions.toColumn() named "position"
-    )
-}
-
 fun SubmissionsGraph.writeClusteringResult(outputPath: String) {
     val path = "$outputPath/clustering.csv.gz"
     val file = File(path)
@@ -117,4 +96,25 @@ fun SubmissionsGraph.writeClustersToTxt(outputPath: String) {
     val file = File(path)
     file.createNewFile()
     file.writeText(getClusteredGraph().toString())
+}
+
+private fun SubmissionsGraph.toClusteringDataFrame(): DataFrame<*> {
+    val submissions = mutableListOf<Int>()
+    val clusters = mutableListOf<Int>()
+    val positions = mutableListOf<Int>()
+    getClusteredGraph().graph.vertexSet().forEach { cluster ->
+        var currentPosition = 0
+        cluster.entities.forEach { submissionsNode ->
+            submissionsNode.idList.forEach { submissionId ->
+                submissions.add(submissionId)
+                clusters.add(cluster.id)
+                positions.add(currentPosition++)
+            }
+        }
+    }
+    return dataFrameOf(
+        submissions.toColumn() named "submission_id",
+        clusters.toColumn() named "cluster_id",
+        positions.toColumn() named "position"
+    )
 }

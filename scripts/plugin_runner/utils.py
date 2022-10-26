@@ -34,5 +34,5 @@ def configure_parser(parser: ArgumentParser):
     )
     parser.add_argument(
         f'--{TaskFlagArgs.CLUSTERING_RESULT.value}', action='store_true',
-        help='Save the result of clustering to .csv.gz file'
+        help='Save the result of clustering to .csv.gz file',
     )
