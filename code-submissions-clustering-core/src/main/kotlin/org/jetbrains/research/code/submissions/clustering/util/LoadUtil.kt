@@ -2,12 +2,15 @@ package org.jetbrains.research.code.submissions.clustering.util
 
 import org.jetbrains.kotlinx.dataframe.DataFrame
 import org.jetbrains.kotlinx.dataframe.api.*
+import org.jetbrains.kotlinx.dataframe.io.toCsv
 import org.jetbrains.kotlinx.dataframe.io.writeCSV
 import org.jetbrains.research.code.submissions.clustering.load.clustering.ClusteredGraph
 import org.jetbrains.research.code.submissions.clustering.load.context.SubmissionsGraphContext
 import org.jetbrains.research.code.submissions.clustering.load.visualization.visualizeDot
 import org.jetbrains.research.code.submissions.clustering.model.*
+import java.io.ByteArrayOutputStream
 import java.io.File
+import java.util.zip.GZIPOutputStream
 
 @Suppress("VariableNaming")
 fun <T> DataFrame<*>.loadGraph(context: SubmissionsGraphContext<T>): SubmissionsGraph {
@@ -32,6 +35,39 @@ fun <T> DataFrame<*>.loadGraph(context: SubmissionsGraphContext<T>): Submissions
         }
     }
     return graph
+}
+
+private fun SubmissionsGraph.toClusteringDataFrame(): DataFrame<*> {
+    val submissions = mutableListOf<Int>()
+    val clusters = mutableListOf<Int>()
+    val positions = mutableListOf<Int>()
+    getClusteredGraph().graph.vertexSet().forEach { cluster ->
+        var currentPosition = 0
+        cluster.entities.forEach { submissionsNode ->
+            submissionsNode.idList.forEach { submissionId ->
+                submissions.add(submissionId)
+                clusters.add(cluster.id)
+                positions.add(currentPosition++)
+            }
+        }
+    }
+    return dataFrameOf(
+        submissions.toColumn() named "submission_id",
+        clusters.toColumn() named "cluster_id",
+        positions.toColumn() named "position"
+    )
+}
+
+fun SubmissionsGraph.writeClusteringResult(outputPath: String) {
+    val path = "$outputPath/clustering.csv.gz"
+    val file = File(path)
+    file.createNewFile()
+
+    val bos = ByteArrayOutputStream()
+    GZIPOutputStream(bos).bufferedWriter(Charsets.UTF_8).use {
+        it.write(toClusteringDataFrame().toCsv())
+    }
+    file.writeBytes(bos.toByteArray())
 }
 
 fun SubmissionsGraph.toDataFrame(): DataFrame<*> {
