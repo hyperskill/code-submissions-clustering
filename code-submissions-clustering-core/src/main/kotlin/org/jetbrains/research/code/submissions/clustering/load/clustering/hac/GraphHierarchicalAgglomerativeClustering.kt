@@ -20,7 +20,7 @@ import kotlin.collections.set
  * @param minClustersCount min final number of clusters (single cluster by default)
  */
 class GraphHierarchicalAgglomerativeClustering<V, E>(
-    private val weightProvider: ClusterWeightProvider<V>,
+    private val weightProvider: ClusterSizeProvider<V>,
     private val distanceLimit: Double,
     private val minClustersCount: Int = 1,
 ) : GraphClusterer<V, E> {
@@ -172,8 +172,8 @@ class GraphHierarchicalAgglomerativeClustering<V, E>(
             if (distance != other.distance) {
                 return distance.compareTo(other.distance)
             }
-            return maxOf(weightProvider.getWeight(first), weightProvider.getWeight(second)) -
-                maxOf(weightProvider.getWeight(other.first), weightProvider.getWeight(other.second))
+            return maxOf(weightProvider.getSize(first), weightProvider.getSize(second)) -
+                maxOf(weightProvider.getSize(other.first), weightProvider.getSize(other.second))
         }
 
         override fun toString() =

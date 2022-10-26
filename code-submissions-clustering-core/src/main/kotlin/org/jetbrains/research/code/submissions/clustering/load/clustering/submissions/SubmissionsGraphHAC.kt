@@ -10,6 +10,6 @@ import org.jetbrains.research.code.submissions.clustering.model.SubmissionsNode
 @Suppress("CLASS_NAME_INCORRECT")
 class SubmissionsGraphHAC(distanceLimit: Double) :
     GraphClusterer<SubmissionsNode, SubmissionsGraphEdge> by GraphHierarchicalAgglomerativeClustering(
-    SubmissionsClusterWeightProvider(),
+    SubmissionsClusterSizeProvider(),
     distanceLimit
 )
