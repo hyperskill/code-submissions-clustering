@@ -30,11 +30,13 @@ tasks {
         val input: String? by project
         val lang: String? by project
         val output: String? by project
+        val inputBinDirectory: String? by project
         args = mutableListOf<String>().apply {
             add("load")
             input?.let { add("--input_file=$it") }
             lang?.let { add("--language=$it") }
             output?.let { add("--output_path=$it") }
+            inputBinDirectory?.let { add("--binary_input=$it") }
             if (project.hasProperty("serialize")) {
                 add("--serialize")
             }
@@ -46,6 +48,9 @@ tasks {
             }
             if (project.hasProperty("saveClusters")) {
                 add("--saveClusters")
+            }
+            if (project.hasProperty("clusteringResult")) {
+                add("--clusteringResult")
             }
         }
     }
@@ -54,11 +59,13 @@ tasks {
         val input: String? by project
         val lang: String? by project
         val output: String? by project
+        val inputBinDirectory: String? by project
         args = mutableListOf<String>().apply {
             add("calculate-dist")
             input?.let { add("--input_file=$it") }
             lang?.let { add("--language=$it") }
             output?.let { add("--output_path=$it") }
+            inputBinDirectory?.let { add("--binary_input=$it") }
             if (project.hasProperty("serialize")) {
                 add("--serialize")
             }
@@ -70,6 +77,9 @@ tasks {
             }
             if (project.hasProperty("saveClusters")) {
                 add("--saveClusters")
+            }
+            if (project.hasProperty("clusteringResult")) {
+                add("--clusteringResult")
             }
         }
     }

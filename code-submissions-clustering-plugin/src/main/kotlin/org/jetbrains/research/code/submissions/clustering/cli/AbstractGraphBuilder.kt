@@ -2,6 +2,7 @@ package org.jetbrains.research.code.submissions.clustering.cli
 
 import com.intellij.openapi.application.ApplicationStarter
 import com.xenomachina.argparser.ArgParser
+import com.xenomachina.argparser.default
 import org.jetbrains.research.code.submissions.clustering.load.context.builder.gumtree.GumTreeGraphContextBuilder
 import org.jetbrains.research.code.submissions.clustering.model.Language
 import org.jetbrains.research.code.submissions.clustering.model.SubmissionsGraph
@@ -11,12 +12,14 @@ import java.util.logging.Logger
 
 abstract class AbstractGraphBuilder : ApplicationStarter {
     protected val logger: Logger = Logger.getLogger(javaClass.name)
-    private var graphToBinary: Boolean = false
+    private var toBinary: Boolean = false
     private var toCSV: Boolean = false
     private var toPNG: Boolean = false
     private var clustersToTxt = false
+    private var clusteringRes = false
     private lateinit var language: Language
     private lateinit var outputPath: String
+    private var binaryDir: String? = null
 
     protected fun <T : AbstractGraphBuilderArgs> parseArgs(
         args: MutableList<String>,
@@ -26,10 +29,12 @@ abstract class AbstractGraphBuilder : ApplicationStarter {
         return parser.parseInto(argsClassConstructor).apply {
             language = Language.valueOf(Paths.get(lang).toString())
             outputPath = Paths.get(output).toString()
-            graphToBinary = serializeGraph
+            binaryDir = inputBinDirectory?.let { Paths.get(it).toString() }
+            toBinary = serializeGraph
             toCSV = saveCSV
             toPNG = visualize
             clustersToTxt = saveClusters
+            clusteringRes = clusteringResult
         }
     }
 
@@ -37,10 +42,9 @@ abstract class AbstractGraphBuilder : ApplicationStarter {
 
     protected fun SubmissionsGraph.writeOutputData() {
         createFolder(outputPath)
-        tryToWrite(::writeToString)
-        if (graphToBinary) {
+        tryToWrite(::writeToTxt)
+        if (toBinary) {
             tryToWrite(::writeToBinary)
-            tryToWrite(getClusteredGraph()::writeToBinary)
         }
         if (toCSV) {
             tryToWrite(::writeToCsv)
@@ -49,7 +53,10 @@ abstract class AbstractGraphBuilder : ApplicationStarter {
             tryToWrite(::writeToPng)
         }
         if (clustersToTxt) {
-            tryToWrite(::writeClusters)
+            tryToWrite(::writeClustersToTxt)
+        }
+        if (clusteringRes) {
+            tryToWrite(::writeClusteringResult)
         }
     }
 
@@ -72,6 +79,10 @@ open class AbstractGraphBuilderArgs(parser: ArgParser) {
         "-o", "--output_path",
         help = "Directory to store all output files",
     )
+    val inputBinDirectory by parser.storing(
+        "-b", "--binary_input",
+        help = "Directory storing previously serialized graph"
+    ).default<String?>(null)
     val serializeGraph by parser.flagging(
         "--serialize",
         help = "Save submissions graph to binary file"
@@ -87,5 +98,9 @@ open class AbstractGraphBuilderArgs(parser: ArgParser) {
     val saveClusters by parser.flagging(
         "--saveClusters",
         help = "Save submissions graph clusters to .txt file"
+    )
+    val clusteringResult by parser.flagging(
+        "--clusteringResult",
+        help = "Save the result of clustering to .csv.gz file"
     )
 }
