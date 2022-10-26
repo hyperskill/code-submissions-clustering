@@ -12,17 +12,19 @@ To load submissions graph(s) from .csv file, run load_submissions_graph.py with 
 
 ### Optional arguments
 
-| Argument        | Description                                                                                              |
-|-----------------|----------------------------------------------------------------------------------------------------------|
-| **--serialize** | Serialize resulting graph to .bin file using [protobuf](https://developers.google.com/protocol-buffers). |
-| **--saveCSV**   | Save unified submissions and corresponding list of submission ids to .csv file.                          |
+| Argument           | Description                                                                                              |
+|--------------------|----------------------------------------------------------------------------------------------------------|
+| **--serialize**    | Serialize resulting graph to .bin file using [protobuf](https://developers.google.com/protocol-buffers). |
+| **--saveCSV**      | Save unified submissions and corresponding list of submission ids to .csv file.                          |
+| **--visualize**    | Visualize the solution graph into png format (can work slow).                                            |
+| **--saveClusters** | Save clusters to .txt file.                                                                              |
 
 ### Usage example
 
 Run the following command from the **root** of the **scripts** folder:
 
 ```
-python3 -m plugin_runner.load_submissions_graph /path/to/input/file /path/to/output/dir PYTHON --serialize --saveCSV
+python3 -m plugin_runner.load_submissions_graph /path/to/input/file /path/to/output/dir PYTHON --serialize --saveCSV --saveClusters
 ```
 
 **Note**: you need to install all requirements from the 

@@ -24,8 +24,4 @@ class LoadRunner(AbstractTaskRunner):
                 kwargs['build_output_dir_name'](step_id, script_arguments),
             TaskNamedArgs.LANGUAGE: script_arguments.language,
         }
-        flag_args = {
-            TaskFlagArgs.SERIALIZE: script_arguments.serialize,
-            TaskFlagArgs.SAVE_CSV: script_arguments.saveCSV,
-        }
-        return named_args, flag_args
+        return named_args, TaskFlagArgs.get_all_flags(script_arguments)

@@ -12,6 +12,7 @@ submissions graph
 
 import argparse
 
+from plugin_runner.utils import configure_parser
 from utils.file_utils import create_dir, list_dirs
 from utils.logger_utils import set_logger
 from utils.runners.calculate_dist_runner import CalculateDistRunner
@@ -48,23 +49,7 @@ if __name__ == '__main__':
         'input_path',
         help='Input directory with folders containing serialized graphs',
     )
-    parser.add_argument(
-        'output_path',
-        help='Output directory to store folders with output files',
-    )
-    parser.add_argument(
-        'language',
-        help='Programming language of code submissions',
-    )
-    parser.add_argument(
-        '--serialize', action='store_true',
-        help='Save submissions graph to binary file',
-    )
-    parser.add_argument(
-        '--saveCSV', action='store_true',
-        help='Save unified solutions to .csv file',
-    )
-
+    configure_parser(parser)
     args = parser.parse_args()
 
     create_dir(args.output_path)
