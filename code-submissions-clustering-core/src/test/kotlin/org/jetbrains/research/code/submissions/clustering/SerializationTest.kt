@@ -3,7 +3,7 @@ package org.jetbrains.research.code.submissions.clustering
 import com.intellij.openapi.command.WriteCommandAction
 import org.jetbrains.kotlinx.dataframe.DataFrame
 import org.jetbrains.kotlinx.dataframe.api.dataFrameOf
-import org.jetbrains.research.code.submissions.clustering.load.clustering.hac.SubmissionsGraphHAC
+import org.jetbrains.research.code.submissions.clustering.load.clustering.submissions.SubmissionsGraphHAC
 import org.jetbrains.research.code.submissions.clustering.util.*
 import org.jgrapht.Graph
 import org.junit.jupiter.params.ParameterizedTest
