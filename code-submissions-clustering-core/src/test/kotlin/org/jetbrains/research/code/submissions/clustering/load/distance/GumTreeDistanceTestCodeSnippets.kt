@@ -26,6 +26,21 @@ def f1(f1_p1, f1_p2):
                     """.trimIndent(),
         5
     )
+    private val smallChanges1 = GumTreeDistanceTestCodeSnippets(
+        """
+a = input()
+b = input()
+c = int(a) + int(b) - 100
+print(c)
+        """.trimIndent(),
+        """
+a = int(input())
+b = int(input())
+c = a + b - 100
+print(c)            
+        """.trimIndent(),
+        5
+    )
     private val middleChanges1 = GumTreeDistanceTestCodeSnippets(
         """
 def f1(f1_p1, f1_p2):
@@ -67,10 +82,12 @@ print([float(v1) for v1 in sorted(input().split(), reverse=True)])
         """.trimIndent(),
         31
     )
+
     val codeSnippets = listOf(
         smallChanges,
-        middleChanges1,
-        middleChanges2,
-        bigChanges
+//        smallChanges1,
+//        middleChanges1,
+//        middleChanges2,
+//        bigChanges
     )
 }

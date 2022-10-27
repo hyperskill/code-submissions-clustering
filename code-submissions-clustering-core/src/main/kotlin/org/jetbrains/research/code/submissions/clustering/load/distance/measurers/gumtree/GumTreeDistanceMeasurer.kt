@@ -16,7 +16,9 @@ import org.jetbrains.research.code.submissions.clustering.util.asPsiFile
 import org.jetbrains.research.code.submissions.clustering.util.trimCode
 
 abstract class GumTreeDistanceMeasurerBase : CodeDistanceMeasurerBase<List<Action>>() {
-    private fun Tree.toMapKey() = this.toString()
+    private fun Tree.toMapKey() = "${this.type}:${this.label}"
+
+    private fun Action.toMapKey() = this.node.preOrder().map { it.toMapKey() }.joinToString(":")
 
     @Suppress("MagicNumber", "MAGIC_NUMBER")
     private fun Action.toNumber() = when (this) {
@@ -26,11 +28,9 @@ abstract class GumTreeDistanceMeasurerBase : CodeDistanceMeasurerBase<List<Actio
         else -> 3
     }
 
-    private fun Action.calculateWeight() = if (this.node.metrics.depth == 0) {
-        1
-    } else {
-        minOf(this.node.metrics.depth, this.node.metrics.size)
-    }
+    private fun Tree.calculateWeight() = this.metrics.size
+
+    private fun Action.calculateWeight() = this.node.calculateWeight()
 
     @Suppress("NestedBlockDepth", "NO_BRACES_IN_CONDITIONALS_AND_LOOPS")
     override fun List<Action>.calculateWeight(): Int {
@@ -45,23 +45,46 @@ abstract class GumTreeDistanceMeasurerBase : CodeDistanceMeasurerBase<List<Actio
                     action.node.preOrder().forEach {
                         val node = it.toMapKey()
                         insertedNodeToState.putIfAbsent(node, State.DIFFERENT)
+                        weight += 1
                     }
-                    weight += action.calculateWeight()
+//                    weight += action.calculateWeight()
+                }
+                is Insert -> {
+                    val node = action.node.toMapKey()
+                    insertedNodeToState.putIfAbsent(node, State.DIFFERENT)
+                    weight += 1
+                }
+                is Delete -> {
+                    val node = action.node.toMapKey()
+                    if (node in insertedNodeToState.keys) {
+                        if (insertedNodeToState[node] == State.SAME) {
+                            insertedNodeToState[node]!!.count += 1
+                        } else {
+                            insertedNodeToState[node] = State.SAME
+                        }
+                    }
+                    weight -= 1
                 }
                 is TreeDelete -> {
                     action.node.preOrder().forEach {
                         val node = it.toMapKey()
                         if (node in insertedNodeToState.keys) {
-                            insertedNodeToState[node] = State.SAME
+                            if (insertedNodeToState[node] == State.SAME) {
+                                insertedNodeToState[node]!!.count += 1
+                            } else {
+                                insertedNodeToState[node] = State.SAME
+                            }
                         }
+                        weight -= 1
                     }
-                    weight += action.calculateWeight()
                 }
+//                is Insert -> weight += action.calculateWeight()
+//                is Delete -> weight -= action.calculateWeight()
                 else -> weight += 1
             }
         }
         // Don't take into account the same vertices (which were added and then removed)
-        weight -= insertedNodeToState.values.count { it == State.SAME }
+        weight -= insertedNodeToState.values.filter{ it == State.SAME }.fold(0){ acc, x -> acc + x.count }
         return kotlin.math.abs(weight)
     }
 
@@ -79,9 +102,9 @@ abstract class GumTreeDistanceMeasurerBase : CodeDistanceMeasurerBase<List<Actio
     }
 
     // An enum class to indicate if the same ot the different node was changed in a subtree
-    private enum class State {
-        DIFFERENT,
-        SAME,
+    private enum class State(var count: Int) {
+        DIFFERENT(0),
+        SAME(1),
         ;
     }
 }
