@@ -32,6 +32,7 @@ class GumTreeDistanceTest : ParametrizedBaseWithUnifierTest(getTmpProjectDir()) 
             assertEquals(expectedDistance, dist)
         }
     }
+
     companion object {
         private const val EMPTY_CODE = ""
 
@@ -39,8 +40,8 @@ class GumTreeDistanceTest : ParametrizedBaseWithUnifierTest(getTmpProjectDir()) 
         fun solutions(): List<Arguments> = GumTreeDistanceCodeSnippetsData.codeSnippets.map {
             listOf(
                 // from, to, distance
-                Arguments.of(it.code1, it.code2, it.distance),
-                Arguments.of(it.code2, it.code1, it.distance),
+                Arguments.of(it.code1, it.code2, it.distance1),
+                Arguments.of(it.code2, it.code1, it.distance2),
                 Arguments.of(it.code1, it.code1, 0),
                 Arguments.of(it.code2, it.code2, 0)
             )
