@@ -89,7 +89,6 @@ print([float(v1) for v1 in sorted(input().split(), reverse=True)])
         288,
         281,
     )
-
     val codeSnippets = listOf(
         changes1,
         changes2,

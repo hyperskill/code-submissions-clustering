@@ -81,6 +81,7 @@ abstract class GumTreeDistanceMeasurerBase : CodeDistanceMeasurerBase<List<Actio
     }
 
     // An enum class to indicate if the same ot the different node was changed in a subtree
+    @Suppress("KDOC_NO_CONSTRUCTOR_PROPERTY")
     private enum class State(var count: Int) {
         DIFFERENT(0),
         SAME(0),
