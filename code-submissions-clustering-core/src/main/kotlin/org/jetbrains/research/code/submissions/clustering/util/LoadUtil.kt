@@ -98,23 +98,21 @@ fun SubmissionsGraph.writeClustersToTxt(outputPath: String) {
     file.writeText(getClusteredGraph().toString())
 }
 
-private fun SubmissionsGraph.toClusteringDataFrame(): DataFrame<*> {
+fun SubmissionsGraph.toClusteringDataFrame(): DataFrame<*> {
     val submissions = mutableListOf<Int>()
     val clusters = mutableListOf<Int>()
     val positions = mutableListOf<Int>()
     getClusteredGraph().graph.vertexSet().forEach { cluster ->
         var currentPosition = 0
-        cluster.entities.forEach { submissionsNode ->
-            submissionsNode.idList.forEach { submissionId ->
-                submissions.add(submissionId)
-                clusters.add(cluster.id)
-                positions.add(currentPosition++)
-            }
+        cluster.entities.flatMap { it.idList }.sorted().forEach { submissionId ->
+            submissions.add(submissionId)
+            clusters.add(cluster.id)
+            positions.add(currentPosition++)
         }
     }
     return dataFrameOf(
         submissions.toColumn() named "submission_id",
         clusters.toColumn() named "cluster_id",
         positions.toColumn() named "position"
-    )
+    ).sortBy("submission_id")
 }
