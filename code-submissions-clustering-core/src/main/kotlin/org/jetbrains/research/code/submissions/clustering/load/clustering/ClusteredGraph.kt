@@ -48,8 +48,8 @@ data class ClusteredGraph<V>(val graph: ClusteredGraphAlias<V>) {
 
     override fun toString() = buildString {
         val sep = "=".repeat(SEP_CNT)
-        graph.vertexSet().forEachIndexed { index, cluster ->
-            appendLine("$sep Cluster $index $sep")
+        graph.vertexSet().sorted().forEach { cluster ->
+            appendLine("$sep Cluster ${cluster.id} $sep")
             appendLine(cluster)
         }
     }
