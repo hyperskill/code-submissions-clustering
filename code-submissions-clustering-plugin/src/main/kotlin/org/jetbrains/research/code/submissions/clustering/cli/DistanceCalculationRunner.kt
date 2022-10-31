@@ -16,7 +16,7 @@ object DistanceCalculationRunner : AbstractGraphBuilder() {
     override fun main(args: MutableList<String>) {
         try {
             parseArgs(args, ::DistanceCalculationRunnerArgs).run {
-                inputFilename = Paths.get(input).toString()
+                inputFilename = Paths.get(inputFile).toString()
             }
             val file = File(inputFilename)
             val context = buildGraphContext()
@@ -30,8 +30,8 @@ object DistanceCalculationRunner : AbstractGraphBuilder() {
     }
 
     data class DistanceCalculationRunnerArgs(private val parser: ArgParser) : AbstractGraphBuilderArgs(parser) {
-        val input by parser.storing(
-            "-i", "--input_file",
+        val inputFile by parser.storing(
+            "-i", "--inputFile",
             help = "Input .bin file with serialized graph"
         )
     }

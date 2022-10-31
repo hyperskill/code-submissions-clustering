@@ -18,8 +18,8 @@ abstract class AbstractGraphBuilder : ApplicationStarter {
     private var toPNG: Boolean = false
     private var clustersToTxt = false
     private var clusteringRes = false
-    protected var binaryDir: Path? = null
-    private lateinit var language: Language
+    protected var binInput: Path? = null
+    private lateinit var lang: Language
     private lateinit var outputPath: String
 
     protected fun <T : AbstractGraphBuilderArgs> parseArgs(
@@ -28,9 +28,9 @@ abstract class AbstractGraphBuilder : ApplicationStarter {
     ): T {
         val parser = ArgParser(args.drop(1).toTypedArray())
         return parser.parseInto(argsClassConstructor).apply {
-            language = Language.valueOf(Paths.get(lang).toString())
-            outputPath = Paths.get(output).toString()
-            binaryDir = inputBinDirectory?.let { Paths.get(it) }
+            lang = Language.valueOf(Paths.get(language).toString())
+            outputPath = Paths.get(outputDir).toString()
+            binInput = binaryInput?.let { Paths.get(it) }
             toBinary = serializeGraph
             toCSV = saveCSV
             toPNG = visualize
@@ -39,7 +39,7 @@ abstract class AbstractGraphBuilder : ApplicationStarter {
         }
     }
 
-    protected fun buildGraphContext() = GumTreeGraphContextBuilder.getContext(language)
+    protected fun buildGraphContext() = GumTreeGraphContextBuilder.getContext(lang)
 
     protected fun SubmissionsGraph.writeOutputData() {
         createFolder(outputPath)
@@ -72,16 +72,16 @@ abstract class AbstractGraphBuilder : ApplicationStarter {
 }
 
 open class AbstractGraphBuilderArgs(parser: ArgParser) {
-    val lang by parser.storing(
+    val language by parser.storing(
         "-l", "--language",
         help = "Programming language of code submissions"
     )
-    val output by parser.storing(
-        "-o", "--output_path",
+    val outputDir by parser.storing(
+        "-o", "--outputDir",
         help = "Directory to store all output files",
     )
-    val inputBinDirectory by parser.storing(
-        "-b", "--binary_input",
+    val binaryInput by parser.storing(
+        "-b", "--binaryInput",
         help = "Directory storing previously serialized graph"
     ).default<String?>(null)
     val serializeGraph by parser.flagging(

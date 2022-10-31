@@ -11,28 +11,23 @@ import kotlin.system.exitProcess
 
 object ClusteringRunner : AbstractGraphBuilder() {
     private lateinit var inputFilename: String
-    private lateinit var dl: String
+    private lateinit var distLimit: String
 
     override fun getCommandName() = "cluster"
 
-    @Suppress(
-        "TooGenericExceptionCaught",
-        "MagicNumber",
-        "PrintStackTrace",
-        "MAGIC_NUMBER"
-    )
+    @Suppress("TooGenericExceptionCaught")
     override fun main(args: MutableList<String>) {
         try {
             parseArgs(args, ::GraphClusteringRunnerArgs).run {
-                inputFilename = Paths.get(input).toString()
-                dl = distLimit
+                inputFilename = Paths.get(inputFile).toString()
+                distLimit = distanceLimit
             }
-            val submissionsGraph = binaryDir?.toSubmissionsGraph()
+            val submissionsGraph = binInput?.toSubmissionsGraph()
                 ?: DataFrame.readCSV(inputFilename).let {
                     val context = this.buildGraphContext()
                     it.loadGraph(context)
                 }
-            val clusterer = SubmissionsGraphHAC(dl.toDouble())
+            val clusterer = SubmissionsGraphHAC(distLimit.toDouble())
             submissionsGraph.cluster(clusterer)
             submissionsGraph.writeOutputData()
         } catch (ex: Throwable) {
@@ -43,12 +38,12 @@ object ClusteringRunner : AbstractGraphBuilder() {
     }
 
     data class GraphClusteringRunnerArgs(private val parser: ArgParser) : AbstractGraphBuilderArgs(parser) {
-        val input by parser.storing(
-            "-i", "--input_file",
+        val inputFile by parser.storing(
+            "-i", "--inputFile",
             help = "Input .csv file with code submissions"
         )
-        val distLimit by parser.storing(
-            "--distLimit",
+        val distanceLimit by parser.storing(
+            "--distanceLimit",
             help = "Max distance between two vertices inside one cluster"
         )
     }

@@ -4,9 +4,9 @@ from enum import Enum, unique
 
 @unique
 class TaskNamedArgs(Enum):
-    INPUT_FILE = 'input'
-    OUTPUT_PATH = 'output'
-    LANGUAGE = 'lang'
+    INPUT_FILE = 'inputFile'
+    OUTPUT_PATH = 'outputDir'
+    LANGUAGE = 'language'
     BINARY_INPUT = 'binaryInput'
 
 

@@ -27,16 +27,16 @@ open class BaseCLITask : RunIdeTask() {
 tasks {
     register("load", BaseCLITask::class) {
         dependsOn(build)
-        val input: String? by project
-        val lang: String? by project
-        val output: String? by project
-        val inputBinDirectory: String? by project
+        val inputFile: String? by project
+        val language: String? by project
+        val outputDir: String? by project
+        val binaryInput: String? by project
         args = mutableListOf<String>().apply {
             add("load")
-            input?.let { add("--input_file=$it") }
-            lang?.let { add("--language=$it") }
-            output?.let { add("--output_path=$it") }
-            inputBinDirectory?.let { add("--binary_input=$it") }
+            inputFile?.let { add("--inputFile=$it") }
+            language?.let { add("--language=$it") }
+            outputDir?.let { add("--outputDir=$it") }
+            binaryInput?.let { add("--binaryInput=$it") }
             if (project.hasProperty("serialize")) {
                 add("--serialize")
             }
@@ -56,16 +56,16 @@ tasks {
     }
     register("calculate-dist", BaseCLITask::class) {
         dependsOn(build)
-        val input: String? by project
-        val lang: String? by project
-        val output: String? by project
-        val inputBinDirectory: String? by project
+        val inputFile: String? by project
+        val language: String? by project
+        val outputDir: String? by project
+        val binaryInput: String? by project
         args = mutableListOf<String>().apply {
             add("calculate-dist")
-            input?.let { add("--input_file=$it") }
-            lang?.let { add("--language=$it") }
-            output?.let { add("--output_path=$it") }
-            inputBinDirectory?.let { add("--binary_input=$it") }
+            inputFile?.let { add("--inputFile=$it") }
+            language?.let { add("--language=$it") }
+            outputDir?.let { add("--outputDir=$it") }
+            binaryInput?.let { add("--binaryInput=$it") }
             if (project.hasProperty("serialize")) {
                 add("--serialize")
             }
@@ -85,18 +85,18 @@ tasks {
     }
     register("cluster", BaseCLITask::class) {
         dependsOn(build)
-        val input: String? by project
-        val lang: String? by project
-        val distLimit: String? by project
-        val output: String? by project
-        val inputBinDirectory: String? by project
+        val inputFile: String? by project
+        val language: String? by project
+        val distanceLimit: String? by project
+        val outputDir: String? by project
+        val binaryInput: String? by project
         args = mutableListOf<String>().apply {
             add("cluster")
-            input?.let { add("--input_file=$it") }
-            lang?.let { add("--language=$it") }
-            distLimit?.let { add("--distLimit=$it") }
-            output?.let { add("--output_path=$it") }
-            inputBinDirectory?.let { add("--binary_input=$it") }
+            inputFile?.let { add("--inputFile=$it") }
+            language?.let { add("--language=$it") }
+            distanceLimit?.let { add("--distanceLimit=$it") }
+            outputDir?.let { add("--outputDir=$it") }
+            binaryInput?.let { add("--binaryInput=$it") }
             if (project.hasProperty("serialize")) {
                 add("--serialize")
             }
