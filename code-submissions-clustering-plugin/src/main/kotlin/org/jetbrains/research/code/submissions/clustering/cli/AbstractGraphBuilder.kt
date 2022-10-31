@@ -86,7 +86,7 @@ open class AbstractGraphBuilderArgs(parser: ArgParser) {
     ).default<String?>(null)
     val serializeGraph by parser.flagging(
         "--serialize",
-        help = "Save submissions graph to binary file"
+        help = "Save submissions graph and its clustered structure to binary files"
     )
     val saveCSV by parser.flagging(
         "--saveCSV",
@@ -94,7 +94,7 @@ open class AbstractGraphBuilderArgs(parser: ArgParser) {
     )
     val visualize by parser.flagging(
         "--visualize",
-        help = "Save submissions graph visualization to .png file"
+        help = "Save submissions graph and its clustered structure visualization to .png files"
     )
     val saveClusters by parser.flagging(
         "--saveClusters",
