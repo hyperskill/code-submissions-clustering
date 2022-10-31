@@ -2,7 +2,7 @@ package org.jetbrains.research.code.submissions.clustering.cli
 
 import com.xenomachina.argparser.ArgParser
 import org.jetbrains.research.code.submissions.clustering.load.distance.calculateDistances
-import org.jetbrains.research.code.submissions.clustering.load.distance.toSubmissionsGraph
+import org.jetbrains.research.code.submissions.clustering.util.toSubmissionsGraph
 import java.io.File
 import java.nio.file.Paths
 import kotlin.system.exitProcess

@@ -83,4 +83,35 @@ tasks {
             }
         }
     }
+    register("cluster", BaseCLITask::class) {
+        dependsOn(build)
+        val input: String? by project
+        val lang: String? by project
+        val distLimit: String? by project
+        val output: String? by project
+        val inputBinDirectory: String? by project
+        args = mutableListOf<String>().apply {
+            add("cluster")
+            input?.let { add("--input_file=$it") }
+            lang?.let { add("--language=$it") }
+            distLimit?.let { add("--distLimit=$it") }
+            output?.let { add("--output_path=$it") }
+            inputBinDirectory?.let { add("--binary_input=$it") }
+            if (project.hasProperty("serialize")) {
+                add("--serialize")
+            }
+            if (project.hasProperty("saveCSV")) {
+                add("--saveCSV")
+            }
+            if (project.hasProperty("visualize")) {
+                add("--visualize")
+            }
+            if (project.hasProperty("saveClusters")) {
+                add("--saveClusters")
+            }
+            if (project.hasProperty("clusteringResult")) {
+                add("--clusteringResult")
+            }
+        }
+    }
 }

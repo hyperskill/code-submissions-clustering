@@ -7,6 +7,7 @@ import org.jetbrains.research.code.submissions.clustering.load.context.builder.g
 import org.jetbrains.research.code.submissions.clustering.model.Language
 import org.jetbrains.research.code.submissions.clustering.model.SubmissionsGraph
 import org.jetbrains.research.code.submissions.clustering.util.*
+import java.nio.file.Path
 import java.nio.file.Paths
 import java.util.logging.Logger
 
@@ -17,7 +18,7 @@ abstract class AbstractGraphBuilder : ApplicationStarter {
     private var toPNG: Boolean = false
     private var clustersToTxt = false
     private var clusteringRes = false
-    private var binaryDir: String? = null
+    protected var binaryDir: Path? = null
     private lateinit var language: Language
     private lateinit var outputPath: String
 
@@ -29,7 +30,7 @@ abstract class AbstractGraphBuilder : ApplicationStarter {
         return parser.parseInto(argsClassConstructor).apply {
             language = Language.valueOf(Paths.get(lang).toString())
             outputPath = Paths.get(output).toString()
-            binaryDir = inputBinDirectory?.let { Paths.get(it).toString() }
+            binaryDir = inputBinDirectory?.let { Paths.get(it) }
             toBinary = serializeGraph
             toCSV = saveCSV
             toPNG = visualize
