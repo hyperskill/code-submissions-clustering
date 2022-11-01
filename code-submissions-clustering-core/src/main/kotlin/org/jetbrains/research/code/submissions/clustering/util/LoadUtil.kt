@@ -103,11 +103,10 @@ fun SubmissionsGraph.toClusteringDataFrame(): DataFrame<*> {
     val clusters = mutableListOf<Int>()
     val positions = mutableListOf<Int>()
     getClusteredGraph().graph.vertexSet().forEach { cluster ->
-        var currentPosition = 0
-        cluster.entities.flatMap { it.idList }.sorted().forEach { submissionId ->
+        cluster.entities.flatMap { it.idList }.sorted().forEachIndexed { index, submissionId ->
             submissions.add(submissionId)
             clusters.add(cluster.id)
-            positions.add(currentPosition++)
+            positions.add(index)
         }
     }
     return dataFrameOf(
