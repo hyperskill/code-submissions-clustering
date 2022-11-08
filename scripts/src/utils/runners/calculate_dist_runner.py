@@ -1,5 +1,6 @@
 from typing import Any, Dict, Tuple
 
+from src.utils.models.cli_arguments import ClusteringArguments
 from src.utils.models.cli_models import TaskFlagArgs, TaskNamedArgs
 from src.utils.runners.abstract_task_runner import AbstractTaskRunner, get_common_named_arguments
 
@@ -11,8 +12,8 @@ class CalculateDistRunner(AbstractTaskRunner):
 
     def build_arguments(
             self,
-            step_id,
-            script_arguments,
+            step_id: int,
+            script_arguments: ClusteringArguments,
             **kwargs,
     ) -> Tuple[Dict[TaskNamedArgs, Any], Dict[TaskFlagArgs, bool]]:
         """Build arguments for 'calculate-dist' CLI."""

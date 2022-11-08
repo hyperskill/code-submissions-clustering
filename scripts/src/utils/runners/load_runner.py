@@ -1,6 +1,7 @@
 from argparse import Namespace
 from typing import Any, Dict, Tuple
 
+from src.utils.models.cli_arguments import ClusteringArguments
 from src.utils.models.cli_models import TaskFlagArgs, TaskNamedArgs
 from src.utils.runners.abstract_task_runner import AbstractTaskRunner, get_common_named_arguments
 
@@ -13,7 +14,7 @@ class LoadRunner(AbstractTaskRunner):
     def build_arguments(
             self,
             step_id: int,
-            script_arguments: Namespace,
+            script_arguments: ClusteringArguments,
             **kwargs,
     ) -> Tuple[Dict[TaskNamedArgs, Any], Dict[TaskFlagArgs, bool]]:
         """Build arguments for 'load' CLI."""

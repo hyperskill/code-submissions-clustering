@@ -2,13 +2,14 @@ from abc import ABC, abstractmethod
 from pathlib import Path
 from typing import Any, Dict, Tuple
 
+from src.utils.models.cli_arguments import ClusteringArguments
 from src.utils.models.cli_models import TaskFlagArgs, TaskNamedArgs
 from src.utils.run_process_utils import run_in_subprocess
 
 
 def get_common_named_arguments(
-        step_id,
-        script_arguments,
+        step_id: int,
+        script_arguments: ClusteringArguments,
         input_file_name_in_kwargs: str,
         **kwargs,
 ) -> Dict[TaskNamedArgs, str]:
@@ -18,7 +19,7 @@ def get_common_named_arguments(
         TaskNamedArgs.OUTPUT_PATH:
             kwargs['build_output_dir_name'](step_id, script_arguments),
         TaskNamedArgs.LANGUAGE: script_arguments.language,
-        TaskNamedArgs.DISTANCE_LIMIT: script_arguments.distanceLimit,
+        TaskNamedArgs.DISTANCE_LIMIT: script_arguments.distance_limit,
     }
 
 

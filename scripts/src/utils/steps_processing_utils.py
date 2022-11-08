@@ -1,8 +1,8 @@
 import time
-from argparse import Namespace
 from logging import Logger
 from typing import List
 
+from src.utils.models.cli_arguments import ClusteringArguments
 from src.utils.runners.abstract_task_runner import AbstractTaskRunner
 from src.utils.time_utils import time_to_str
 
@@ -10,7 +10,7 @@ from src.utils.time_utils import time_to_str
 def process_steps(
         step_ids: List[int],
         task_runner: AbstractTaskRunner,
-        script_arguments: Namespace,
+        script_arguments: ClusteringArguments,
         logger: Logger,
         **kwargs,
 ):
