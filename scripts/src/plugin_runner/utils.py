@@ -1,6 +1,6 @@
 from argparse import ArgumentParser
 
-from utils.models.cli_models import TaskFlagArgs, TaskNamedArgs
+from src.utils.models.cli_models import TaskFlagArgs, TaskNamedArgs
 
 
 def configure_parser(parser: ArgumentParser):

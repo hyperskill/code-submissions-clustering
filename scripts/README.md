@@ -27,7 +27,7 @@ To load submissions graph(s) from .csv file, run load_submissions_graph.py with 
 Run the following command from the **root** of the **scripts** folder:
 
 ```
-python3 -m plugin_runner.load_submissions_graph /path/to/input/file /path/to/output/dir PYTHON 50 --serialize --saveCSV --saveClusters --clusteringResult
+python3 -m src.plugin_runner.load_submissions_graph /path/to/input/file /path/to/output/dir PYTHON 50 --serialize --saveCSV --saveClusters --clusteringResult
 ```
 
 **Note**: you need to install all requirements from the 

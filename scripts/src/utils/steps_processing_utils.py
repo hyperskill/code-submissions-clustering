@@ -3,8 +3,8 @@ from argparse import Namespace
 from logging import Logger
 from typing import List
 
-from utils.runners.abstract_task_runner import AbstractTaskRunner
-from utils.time_utils import time_to_str
+from src.utils.runners.abstract_task_runner import AbstractTaskRunner
+from src.utils.time_utils import time_to_str
 
 
 def process_steps(

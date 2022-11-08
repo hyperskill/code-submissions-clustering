@@ -12,11 +12,11 @@ submissions graph
 
 import argparse
 
-from plugin_runner.utils import configure_parser
-from utils.file_utils import create_dir, list_dirs
-from utils.logger_utils import set_logger
-from utils.runners.calculate_dist_runner import CalculateDistRunner
-from utils.steps_processing_utils import process_steps
+from src.plugin_runner.utils import configure_parser
+from src.utils.file_utils import create_dir, list_dirs, get_absolute_path
+from src.utils.logger_utils import set_logger
+from src.utils.runners.calculate_dist_runner import CalculateDistRunner
+from src.utils.steps_processing_utils import process_steps
 
 
 def build_initial_graph_filename(step_id: int, args: argparse.Namespace) -> str:
@@ -27,7 +27,7 @@ def build_initial_graph_filename(step_id: int, args: argparse.Namespace) -> str:
     :param args: script arguments
     :return: .bin file name
     """
-    input_path = args.input_path
+    input_path = get_absolute_path(args.input_path)
     return f'{input_path}/{step_id}/graph.bin'
 
 
@@ -39,7 +39,7 @@ def build_output_dir_name(step_id: int, args: argparse.Namespace) -> str:
     :param args: script arguments
     :return: built directory name
     """
-    output_path = args.output_path
+    output_path = get_absolute_path(args.output_path)
     return f'{output_path}/{step_id}'
 
 
@@ -52,10 +52,10 @@ if __name__ == '__main__':
     configure_parser(parser)
     args = parser.parse_args()
 
-    create_dir(args.output_path)
-    logger = set_logger(args.output_path)
+    create_dir(get_absolute_path(args.output_path))
+    logger = set_logger(get_absolute_path(args.output_path))
 
-    step_ids = [int(d) for d in list_dirs(args.input_path)]
+    step_ids = [int(d) for d in list_dirs(get_absolute_path(args.input_path))]
     task_runner = CalculateDistRunner()
 
     process_steps(

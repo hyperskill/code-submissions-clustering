@@ -18,14 +18,14 @@ import sys
 import time
 from typing import List
 
-from plugin_runner.utils import configure_parser
-from utils.df_utils import read_df, write_df
-from utils.file_utils import create_dir
-from utils.logger_utils import set_logger
-from utils.models.df_column_name import SubmissionColumns
-from utils.runners.load_runner import LoadRunner
-from utils.steps_processing_utils import process_steps
-from utils.time_utils import time_to_str
+from src.plugin_runner.utils import configure_parser
+from src.utils.df_utils import read_df, write_df
+from src.utils.file_utils import create_dir, get_absolute_path
+from src.utils.logger_utils import set_logger
+from src.utils.models.df_column_name import SubmissionColumns
+from src.utils.runners.load_runner import LoadRunner
+from src.utils.steps_processing_utils import process_steps
+from src.utils.time_utils import time_to_str
 
 SOLUTIONS_DIR_NAME = 'solutions'
 OUTPUT_DIR_NAME = 'output'
@@ -39,7 +39,7 @@ def build_solutions_file_name(step_id: int, args: argparse.Namespace) -> str:
     :param args: script arguments
     :return: built .csv file name
     """
-    output_path = args.output_path
+    output_path = get_absolute_path(args.output_path)
     return f'{output_path}/{SOLUTIONS_DIR_NAME}/{step_id}.csv'
 
 
@@ -51,7 +51,7 @@ def build_output_dir_name(step_id: int, args: argparse.Namespace) -> str:
     :param args: script arguments
     :return: built directory name
     """
-    output_path = args.output_path
+    output_path = get_absolute_path(args.output_path)
     return f'{output_path}/{OUTPUT_DIR_NAME}/{step_id}'
 
 
@@ -61,10 +61,10 @@ def create_directories(output_path: str):
 
     :param output_path: root output directory
     """
-    create_dir(output_path)
-    solutions_path = f'{output_path}/{SOLUTIONS_DIR_NAME}'
+    absolute_path = get_absolute_path(output_path)
+    solutions_path = f'{absolute_path}/{SOLUTIONS_DIR_NAME}'
     create_dir(solutions_path)
-    output_dir = f'{output_path}/{OUTPUT_DIR_NAME}'
+    output_dir = f'{absolute_path}/{OUTPUT_DIR_NAME}'
     create_dir(output_dir)
 
 
@@ -75,7 +75,7 @@ def parse_solutions(args: argparse.Namespace) -> List[int]:
     :param args: script arguments
     :return: list of contained step ids
     """
-    input_file = args.input_file
+    input_file = get_absolute_path(args.input_file)
     df_all_solutions = read_df(input_file)
     unique_steps = df_all_solutions[SubmissionColumns.STEP_ID.value].unique()
     for step in unique_steps:
@@ -94,11 +94,11 @@ if __name__ == '__main__':
     configure_parser(parser)
     args = parser.parse_args()
 
-    create_directories(args.output_path)
-    logger = set_logger(args.output_path)
+    create_directories(get_absolute_path(args.output_path))
+    logger = set_logger(get_absolute_path(args.output_path))
     total_execution_time = 0
 
-    logger.info(f'Start parsing {args.input_file}...')
+    logger.info(f'Start parsing {get_absolute_path(args.input_file)}...')
     start = time.time()
     try:
         step_ids = parse_solutions(args)
