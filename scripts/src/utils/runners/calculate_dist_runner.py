@@ -21,6 +21,6 @@ class CalculateDistRunner(AbstractTaskRunner):
             step_id,
             script_arguments,
             'build_initial_graph_filename',
-            **kwargs
+            **kwargs,
         )
         return named_args, TaskFlagArgs.get_all_flags(script_arguments)
