@@ -9,7 +9,7 @@ from utils.run_process_utils import run_in_subprocess
 def get_common_named_arguments(
         step_id,
         script_arguments,
-        **kwargs
+        **kwargs,
 ) -> Dict[TaskNamedArgs, str]:
     return {
         TaskNamedArgs.INPUT_FILE:
