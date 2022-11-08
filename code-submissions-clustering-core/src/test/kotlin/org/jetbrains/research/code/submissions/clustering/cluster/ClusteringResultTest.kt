@@ -5,7 +5,7 @@ import org.jetbrains.kotlinx.dataframe.DataFrame
 import org.jetbrains.kotlinx.dataframe.api.dataFrameOf
 import org.jetbrains.kotlinx.dataframe.io.toCsv
 import org.jetbrains.research.code.submissions.clustering.ProtoSubmissionsGraph
-import org.jetbrains.research.code.submissions.clustering.load.clustering.hac.SubmissionsGraphHAC
+import org.jetbrains.research.code.submissions.clustering.load.clustering.submissions.SubmissionsGraphHAC
 import org.jetbrains.research.code.submissions.clustering.util.*
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.Arguments

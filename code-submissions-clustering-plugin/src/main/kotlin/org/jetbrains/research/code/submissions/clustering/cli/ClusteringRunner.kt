@@ -3,7 +3,7 @@ package org.jetbrains.research.code.submissions.clustering.cli
 import com.xenomachina.argparser.ArgParser
 import org.jetbrains.kotlinx.dataframe.DataFrame
 import org.jetbrains.kotlinx.dataframe.io.readCSV
-import org.jetbrains.research.code.submissions.clustering.load.clustering.hac.SubmissionsGraphHAC
+import org.jetbrains.research.code.submissions.clustering.load.clustering.submissions.SubmissionsGraphHAC
 import org.jetbrains.research.code.submissions.clustering.util.loadGraph
 import org.jetbrains.research.code.submissions.clustering.util.toSubmissionsGraph
 import java.nio.file.Paths
