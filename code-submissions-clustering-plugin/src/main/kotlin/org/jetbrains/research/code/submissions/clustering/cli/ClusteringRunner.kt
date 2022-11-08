@@ -3,11 +3,11 @@ package org.jetbrains.research.code.submissions.clustering.cli
 import com.xenomachina.argparser.ArgParser
 import org.jetbrains.kotlinx.dataframe.DataFrame
 import org.jetbrains.kotlinx.dataframe.io.readCSV
+import org.jetbrains.research.code.submissions.clustering.cli.models.AbstractGraphBuilderArgs
 import org.jetbrains.research.code.submissions.clustering.load.clustering.submissions.SubmissionsGraphHAC
 import org.jetbrains.research.code.submissions.clustering.util.loadGraph
 import org.jetbrains.research.code.submissions.clustering.util.toSubmissionsGraph
 import java.nio.file.Paths
-import kotlin.system.exitProcess
 
 object ClusteringRunner : AbstractGraphBuilder() {
     private lateinit var inputFilename: String
@@ -15,9 +15,8 @@ object ClusteringRunner : AbstractGraphBuilder() {
 
     override fun getCommandName() = "cluster"
 
-    @Suppress("TooGenericExceptionCaught")
     override fun main(args: MutableList<String>) {
-        try {
+        startRunner(args) {
             parseArgs(args, ::GraphClusteringRunnerArgs).run {
                 inputFilename = Paths.get(inputFile).toString()
                 distLimit = distanceLimit
@@ -30,10 +29,6 @@ object ClusteringRunner : AbstractGraphBuilder() {
             val clusterer = SubmissionsGraphHAC(distLimit.toDouble())
             submissionsGraph.cluster(clusterer)
             submissionsGraph.writeOutputData()
-        } catch (ex: Throwable) {
-            logger.severe { ex.stackTraceToString() }
-        } finally {
-            exitProcess(0)
         }
     }
 
