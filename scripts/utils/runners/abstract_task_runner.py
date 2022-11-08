@@ -6,6 +6,21 @@ from utils.models.cli_models import TaskFlagArgs, TaskNamedArgs
 from utils.run_process_utils import run_in_subprocess
 
 
+def get_common_named_arguments(
+        step_id,
+        script_arguments,
+        **kwargs
+) -> Dict[TaskNamedArgs, str]:
+    return {
+        TaskNamedArgs.INPUT_FILE:
+            kwargs['build_initial_graph_filename'](step_id, script_arguments),
+        TaskNamedArgs.OUTPUT_PATH:
+            kwargs['build_output_dir_name'](step_id, script_arguments),
+        TaskNamedArgs.LANGUAGE: script_arguments.language,
+        TaskNamedArgs.DISTANCE_LIMIT: script_arguments.distanceLimit,
+    }
+
+
 class AbstractTaskRunner(ABC):
     """Abstract gradle task runner."""
 
@@ -40,6 +55,7 @@ class AbstractTaskRunner(ABC):
         named_args, flag_args = self.build_arguments(*args, **kwargs)
         cmd = self.configure_cmd(named_args, flag_args)
 
+        print(cmd)
         return_code, stdout = run_in_subprocess(cmd.split(), self.PROJECT_DIR)
         if return_code != 0:
             return ''
