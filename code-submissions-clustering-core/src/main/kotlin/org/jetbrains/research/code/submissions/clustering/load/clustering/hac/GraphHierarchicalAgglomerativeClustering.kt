@@ -3,8 +3,6 @@ package org.jetbrains.research.code.submissions.clustering.load.clustering.hac
 import org.jetbrains.research.code.submissions.clustering.load.clustering.*
 import org.jetbrains.research.code.submissions.clustering.util.parallel.ParallelContext
 import org.jetbrains.research.code.submissions.clustering.load.context.builder.IdentifierFactoryImpl
-import org.jetbrains.research.code.submissions.clustering.model.SubmissionsGraphEdge
-import org.jetbrains.research.code.submissions.clustering.model.SubmissionsNode
 import org.jetbrains.research.code.submissions.clustering.util.parallel.ParallelUtils.combineWith
 import org.jgrapht.Graph
 import java.util.*
@@ -12,9 +10,6 @@ import java.util.function.Consumer
 import java.util.logging.Logger
 import kotlin.collections.HashMap
 import kotlin.collections.set
-
-@Suppress("TYPEALIAS_NAME_INCORRECT_CASE")
-typealias SubmissionsGraphHAC = GraphHierarchicalAgglomerativeClustering<SubmissionsNode, SubmissionsGraphEdge>
 
 /**
  * HAC algorithm implementation for graphs.
@@ -25,6 +20,7 @@ typealias SubmissionsGraphHAC = GraphHierarchicalAgglomerativeClustering<Submiss
  * @param minClustersCount min final number of clusters (single cluster by default)
  */
 class GraphHierarchicalAgglomerativeClustering<V, E>(
+    private val weightProvider: ClusterSizeProvider<V>,
     private val distanceLimit: Double,
     private val minClustersCount: Int = 1,
 ) : GraphClusterer<V, E> {
@@ -176,11 +172,8 @@ class GraphHierarchicalAgglomerativeClustering<V, E>(
             if (distance != other.distance) {
                 return distance.compareTo(other.distance)
             }
-            return if (first !== other.first) {
-                first.compareTo(other.first)
-            } else {
-                second.compareTo(other.second)
-            }
+            return maxOf(weightProvider.getSize(first), weightProvider.getSize(second)) -
+                maxOf(weightProvider.getSize(other.first), weightProvider.getSize(other.second))
         }
 
         override fun toString() =
