@@ -1,3 +1,5 @@
+@file:Suppress("TooManyFunctions")
+
 package org.jetbrains.research.code.submissions.clustering.util
 
 import org.jetbrains.research.code.submissions.clustering.ProtoCluster
@@ -6,16 +8,30 @@ import org.jetbrains.research.code.submissions.clustering.ProtoClusteredGraph
 import org.jetbrains.research.code.submissions.clustering.ProtoSubmissionsEdge
 import org.jetbrains.research.code.submissions.clustering.ProtoSubmissionsGraph
 import org.jetbrains.research.code.submissions.clustering.ProtoSubmissionsNode
-import org.jetbrains.research.code.submissions.clustering.load.clustering.Cluster
-import org.jetbrains.research.code.submissions.clustering.load.clustering.ClusteredGraph
-import org.jetbrains.research.code.submissions.clustering.load.clustering.ClusteredGraphAlias
-import org.jetbrains.research.code.submissions.clustering.load.clustering.ClusteredGraphEdge
+import org.jetbrains.research.code.submissions.clustering.load.clustering.*
 import org.jetbrains.research.code.submissions.clustering.load.context.builder.Identifier
 import org.jetbrains.research.code.submissions.clustering.model.SubmissionsGraph
 import org.jetbrains.research.code.submissions.clustering.model.SubmissionsGraphEdge
 import org.jetbrains.research.code.submissions.clustering.model.SubmissionsNode
 import org.jgrapht.Graph
 import org.jgrapht.graph.SimpleWeightedGraph
+import java.io.File
+import java.nio.file.Path
+
+fun Path.toSubmissionsGraph(): SubmissionsGraph {
+    val submissionsGraphPath = "$this/graph.bin"
+    val clusteredGraphPath = "$this/clusters.bin"
+    val submissionsGraphFile = File(submissionsGraphPath)
+    val clusteredGraphFile = File(clusteredGraphPath)
+    val submissionsGraph = submissionsGraphFile.toSubmissionsGraph()
+    val clusteredGraph = clusteredGraphFile.toClusteredGraph()
+    submissionsGraph.cluster(CopyGraphClusterer(clusteredGraph))
+    return submissionsGraph
+}
+
+fun File.toSubmissionsGraph() = ProtoSubmissionsGraph.parseFrom(this.inputStream()).toGraph()
+
+fun File.toClusteredGraph() = ProtoClusteredGraph.parseFrom(this.inputStream()).toGraph()
 
 fun SubmissionsNode.toProto(): ProtoSubmissionsNode = let { node ->
     ProtoSubmissionsNode.newBuilder().apply {
@@ -90,6 +106,9 @@ fun ProtoClusteredGraph.toGraph(): ClusteredGraph<SubmissionsNode> {
     }
 
     edgesList.forEach { edge ->
+        if (edge.fromClusterId == edge.toClusterId) {
+            return@forEach
+        }
         val addedEdge = graph.addEdge(
             idToCluster[edge.fromClusterId],
             idToCluster[edge.toClusterId]

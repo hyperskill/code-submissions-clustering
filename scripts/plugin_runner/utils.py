@@ -1,6 +1,6 @@
 from argparse import ArgumentParser
 
-from utils.models.cli_models import TaskFlagArgs
+from utils.models.cli_models import TaskFlagArgs, TaskNamedArgs
 
 
 def configure_parser(parser: ArgumentParser):
@@ -11,6 +11,10 @@ def configure_parser(parser: ArgumentParser):
     parser.add_argument(
         'language',
         help='Programming language of code submissions',
+    )
+    parser.add_argument(
+        f'--{TaskNamedArgs.BINARY_INPUT.value}',
+        help='Directory storing previously serialized graph',
     )
     parser.add_argument(
         f'--{TaskFlagArgs.SERIALIZE.value}', action='store_true',
@@ -27,4 +31,8 @@ def configure_parser(parser: ArgumentParser):
     parser.add_argument(
         f'--{TaskFlagArgs.SAVE_CLUSTERS.value}', action='store_true',
         help='Save clusters to .txt file',
+    )
+    parser.add_argument(
+        f'--{TaskFlagArgs.CLUSTERING_RESULT.value}', action='store_true',
+        help='Save the result of clustering to .csv.gz file',
     )
