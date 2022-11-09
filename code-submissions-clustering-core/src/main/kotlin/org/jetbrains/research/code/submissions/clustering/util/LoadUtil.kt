@@ -71,7 +71,7 @@ fun SubmissionsGraph.writeToBinary(outputPath: String) {
     toProto().writeTo(graphFile.outputStream())
     val clustersFilePath = "$serializationFolder/clusters.bin"
     val clustersFile = File(clustersFilePath)
-    toProto().writeTo(clustersFile.outputStream())
+    getClusteredGraph().toProto().writeTo(clustersFile.outputStream())
 }
 
 fun SubmissionsGraph.writeToCsv(outputPath: String) {
