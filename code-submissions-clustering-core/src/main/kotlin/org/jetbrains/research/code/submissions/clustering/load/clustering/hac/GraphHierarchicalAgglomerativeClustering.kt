@@ -172,8 +172,12 @@ class GraphHierarchicalAgglomerativeClustering<V, E>(
             if (distance != other.distance) {
                 return distance.compareTo(other.distance)
             }
-            return maxOf(weightProvider.getSize(first), weightProvider.getSize(second)) -
-                maxOf(weightProvider.getSize(other.first), weightProvider.getSize(other.second))
+            val firstSize = maxOf(weightProvider.getSize(first), weightProvider.getSize(second))
+            val secondSize = maxOf(weightProvider.getSize(other.first), weightProvider.getSize(other.second))
+            if (firstSize != secondSize) {
+                return firstSize - secondSize
+            }
+            return getTripleId(first, second).compareTo(getTripleId(other.first, other.second))
         }
 
         override fun toString() =
