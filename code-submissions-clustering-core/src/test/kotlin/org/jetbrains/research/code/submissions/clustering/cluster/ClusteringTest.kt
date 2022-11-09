@@ -3,6 +3,7 @@ package org.jetbrains.research.code.submissions.clustering.cluster
 import com.intellij.openapi.command.WriteCommandAction
 import org.jetbrains.research.code.submissions.clustering.ProtoSubmissionsGraph
 import org.jetbrains.research.code.submissions.clustering.load.clustering.submissions.SubmissionsGraphHAC
+import org.jetbrains.research.code.submissions.clustering.model.SubmissionsGraph
 import org.jetbrains.research.code.submissions.clustering.model.SubmissionsNode
 import org.jetbrains.research.code.submissions.clustering.util.*
 import org.jgrapht.alg.interfaces.ClusteringAlgorithm.Clustering
@@ -10,6 +11,8 @@ import org.jgrapht.alg.interfaces.ClusteringAlgorithm.ClusteringImpl
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.Arguments
 import org.junit.jupiter.params.provider.MethodSource
+import java.io.File
+import java.nio.file.Paths
 
 class ClusteringTest : ParametrizedBaseWithUnifierTest(getTmpProjectDir()) {
     @ParameterizedTest
@@ -25,6 +28,24 @@ class ClusteringTest : ParametrizedBaseWithUnifierTest(getTmpProjectDir()) {
             submissionsGraph.cluster(clusterer)
             val clusteredGraph = submissionsGraph.getClusteredGraph()
             expectedClustering.assertEquals(clusteredGraph.getClustering())
+        }
+    }
+
+    @ParameterizedTest
+    @MethodSource("getTestDataFromBin")
+    fun testInfiniteEdgesClustering(
+        submissionsGraph: SubmissionsGraph,
+        distanceLimit: Double
+    ) {
+        WriteCommandAction.runWriteCommandAction(mockProject) {
+            val clusterer = SubmissionsGraphHAC(distanceLimit)
+            submissionsGraph.cluster(clusterer)
+            val clusteredGraph = submissionsGraph.getClusteredGraph().graph
+            assert(
+                (clusteredGraph.edgeSet().maxOfOrNull {
+                    clusteredGraph.getEdgeWeight(it)
+                } ?: 0).toDouble() < Double.POSITIVE_INFINITY
+            )
         }
     }
 
@@ -194,5 +215,22 @@ class ClusteringTest : ParametrizedBaseWithUnifierTest(getTmpProjectDir()) {
                 ))
             ),
         )
+
+        @JvmStatic
+        fun getTestDataFromBin(): List<Arguments> {
+            val binDir = "${Paths.get("").toAbsolutePath()}/src/test/resources/bin.data"
+            val serializationDirs =
+                File(binDir).list { dir, name -> File(dir, name).isDirectory }.map { Paths.get("$binDir/$it") }
+            val submissionsGraphs = serializationDirs.map { it.toSubmissionsGraph() }
+            val arguments = mutableListOf<Arguments>()
+
+            for (graph in submissionsGraphs) {
+                for (distLimit in 25..600 step 50) {
+                    arguments.add(Arguments.of(graph, distLimit))
+                }
+            }
+
+            return arguments
+        }
     }
 }
