@@ -109,7 +109,7 @@ class GraphHierarchicalAgglomerativeClustering<V, E>(
     }
 
     private fun mergeCommunities(first: Cluster<V>, second: Cluster<V>) {
-        val merged: MutableList<V> = first.entities.combineWith(second.entities)
+        val merged: MutableList<V> = first.entities.toMutableList().combineWith(second.entities)
         val newCluster = Cluster(identifierFactory.uniqueIdentifier(), merged)
         clusters.removeAll(setOf(first, second))
         for (cluster in clusters) {
