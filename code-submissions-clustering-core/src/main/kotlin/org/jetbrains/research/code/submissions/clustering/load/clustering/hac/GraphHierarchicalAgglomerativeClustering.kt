@@ -174,10 +174,11 @@ class GraphHierarchicalAgglomerativeClustering<V, E>(
             }
             val firstSize = maxOf(weightProvider.getSize(first), weightProvider.getSize(second))
             val secondSize = maxOf(weightProvider.getSize(other.first), weightProvider.getSize(other.second))
-            if (firstSize != secondSize) {
-                return firstSize - secondSize
+            return if (firstSize != secondSize) {
+                firstSize - secondSize
+            } else {
+                getTripleId(first, second).compareTo(getTripleId(other.first, other.second))
             }
-            return getTripleId(first, second).compareTo(getTripleId(other.first, other.second))
         }
 
         override fun toString() =
