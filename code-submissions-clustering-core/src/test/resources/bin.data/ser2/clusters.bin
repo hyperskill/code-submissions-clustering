@@ -1,5 +1,5 @@
 
-ø<«
+ø:≈
 πimport numpy as m1
 
 v1 = int(input())
@@ -11,14 +11,14 @@ if len(v4[v5]) == 3:
     print(True)
 else:
     print(False)
-√V±õÌ ™
+√V‡ î
 uimport numpy as m1
 
 v1 = int(input())
 v2 = int(input())
 v3 = int(input())
 print(m1.all(m1.array([v1, v2, v3]) > 15))
-√V,ë…ÌË≠¿øÜ»‡»“›’Ÿ√ΩÁóœŒÿáò„Î¨£ÁÊ‚è⁄ «
+√V·ÛÄèëöπΩ¿◊› Ê
 }import numpy as m1
 
 v1 = int(input())
@@ -26,12 +26,12 @@ v2 = int(input())
 v3 = int(input())
 v4 = m1.array([v1, v2, v3])
 print(m1.all(v4 > 15))
-√V¿ÏπÓø¡´îı≈îı¥¸¯≥„Åí™Çıè•ÙÛ“Œ∞‹ƒ®Ä¡¿éã‡ù¥°µ„Ÿ ˆœœÅ“ÉÙ∏êªÅß¯Ì≠≠º◊¿ÑÁœ›≤ÂﬁçÜﬁ∂⁄ü‘ö®®ºìÉ¶Ì•üÏ©º¥∂„¥∂ÂÌÇ«∆Öü˘¶Ω¢¬äÆ“•Ì‡ò¯ï©éß€à”‚äóà»°ÍÀ¬Ï’«‡‚œ°áË—⁄∫ z
+√V`‚ÂËÈÍÎÏıˆ˙˝˛ˇÅÇÖáâäêíñú†°£•´ÆØ¥ªºø¬ƒ≈»… ÃŒ‘’÷ÿ⁄ t
 eimport numpy as m1
 
 v1 = m1.array([int(input()), int(input()), int(input())])
 print(m1.all(v1 > 15))
-√V∑∏Ô∑î¨çé¥ °
+√V„Úã ü
 ìimport numpy as m1
 
 v1 = int(input())
@@ -42,7 +42,7 @@ v4[0] = v1
 v4[1] = v2
 v4[2] = v3
 print(m1.all(v4 > 15))
-√Vìæ õ
+√V‰ ô
 çimport numpy as m1
 
 v1 = int(input())
@@ -50,7 +50,7 @@ v2 = int(input())
 v3 = int(input())
 v4 = m1.array([v1, v2, v3])
 print(True if all(v4 > 15) else False)
-√V—˚Û ì
+√VÊ ã
 zimport numpy as m1
 
 v1 = int(input())
@@ -58,14 +58,14 @@ v2 = int(input())
 v3 = int(input())
 v4 = m1.array([v1, v2, v3])
 print(all(v4 > 15))
-√V˛˚ÛÀÇ ¨°°«Õ… é
+√VÁÙï√ å
 Äimport numpy as m1
 
 v1 = int(input())
 v2 = int(input())
 v3 = int(input())
 print(m1.all(m1.greater(m1.array([v1, v2, v3]), 15)))
-√Vå∞Ç º
+√VÌ ∫
 Æimport numpy as m1
 
 v1 = int(input())
@@ -78,7 +78,7 @@ def f1(f1_p1, f1_p2, f1_p3):
 
 
 return all(f1_v1 > 15)
-√V∏œà 	ö
+√VÓ 	ò
 åimport numpy as m1
 
 v1 = [int(input()) for v2 in range(3)]
@@ -87,8 +87,8 @@ if m1.all(v3 > 15):
     print("True")
 else:
     print("False")
-√Vôûü 
-ì
+√VÔ 
+ç
 ~import numpy as m1
 
 v1 = int(input())
@@ -96,7 +96,7 @@ v2 = int(input())
 v3 = int(input())
 v4 = m1.array([v1, v2, v3])
 print(m1.all(v4 >= 15))
-√V›·´©≈°∏≈° √
+√VÒ©™ ¡
 µimport numpy as m1
 
 v1 = int(input())
@@ -112,7 +112,7 @@ m1.all(f1_p1 > 15):
 print(True)
 else:print(False)
 f1(v4)
-√V¿ßÄ ⁄
+√V˜ ÿ
 Ãimport numpy as m1
 
 v1 = int(input())
@@ -129,7 +129,7 @@ print(True)
 elif m1.any(~(f1_p1 > 15)):
 print(False)
 f1(v4)
-√V„ßÄ ¬
+√V¯ ¿
 ¥import numpy as m1
 
 v1 = int(input())
@@ -140,12 +140,12 @@ if m1.all(v4 > 15):
     print(True)
 elif m1.any(~(v4 > 15)):
     print(False)
-√Ví®Ä f
+√V˘ d
 Yimport numpy as m1
 
 v1 = m1.v1([int(input()) for v2 in range(3)])
 print(m1.all(v1 > 15))
-√VéàÅ ∞
+√V˚ Æ
 ¢import numpy as m1
 
 v1 = int(input())
@@ -157,7 +157,7 @@ for v6 in v5:
     if 15 >= v6:
         v4 = False
 print(v4)
-√Vê„Å í
+√V¸ å
 }import numpy as m1
 
 v1 = int(input())
@@ -165,7 +165,7 @@ v2 = int(input())
 v3 = int(input())
 v1 = m1.array([v1, v2, v3])
 print(m1.all(v1 > 15))
-√VÏ•’ƒ“§°÷¿ à
+√VÉæ¡ Ñ
 wimport numpy as m1
 
 v1 = int(input())
@@ -173,7 +173,7 @@ v2 = int(input())
 v3 = int(input())
 v4 = m1.v4([v1, v2, v3])
 print(all(v4 > 15))
-√V«˝Ÿ⁄Â™ ê
+√VÑû é
 Çimport numpy as m1
 
 v1 = int(input())
@@ -182,7 +182,7 @@ v3 = int(input())
 v4 = m1.v4([v1, v2, v3])
 v5 = m1.all(v4 > 15)
 print(v5)
-√VÜ¨ç n
+√VÜ l
 aimport numpy as m1
 
 
@@ -190,19 +190,19 @@ def f1(f1_p1): f1_v1 in f1_v2(len(f1_p1)):
 
 
 if f1_p1[v1] > 15: return True
-√Vπﬂô Ä
+√Và ~
 simport numpy as m1
 
 v1 = int(input())
 v2 = int(input())
 v3 = int(input())
 print(all(m1.array([v1, v2, v3]) >= 15))
-√VÂâΩ q
+√Vå k
 \import numpy as m1
 
 v1 = m1.array([int(input()) for v2 in range(3)])
 print(m1.all(v1 > 15))
-√Vﬁ≤√«†˘Ò¥∂ ì
+√Vç§∂ ë
 Öimport numpy as m1
 
 v1 = int(input())
@@ -210,14 +210,14 @@ v2 = int(input())
 v3 = int(input())
 v4 = m1.array([v1, v2, v3])
 print(all(m1.greater(v4, 15)))
-√Vﬂé∆ É
+√Vé 
 rimport numpy as m1
 
 v1 = int(input())
 v2 = int(input())
 v3 = int(input())
 print(all(m1.array([v1, v2, v3]) > 15))
-√V∫Ó»ïˆ ï
+√VìÀ ì
 áimport numpy as m1
 
 v1 = int(input())
@@ -225,11 +225,11 @@ v2 = int(input())
 v3 = int(input())
 v4 = m1.array([v1, v2, v3])
 print(m1.array(m1.all(v4 > 15)))
-√V¿ù¯ e
+√Vî a
 Timport numpy as m1
 
 print(m1.all(m1.array([int(input()) for v1 in range(3)]) > 15))
-√VÛ˛Œƒ¥∂ À
+√Vó∞ …
 Ωimport numpy as m1
 
 v1 = int(input())
@@ -241,7 +241,7 @@ if len(v4[v5]) == 3:
     print("True")
 else:
     print("False")
-√Vœç◊ á
+√Vò Ö
 zimport numpy as m1
 
 v1 = int(input())
@@ -249,7 +249,7 @@ v2 = int(input())
 v3 = int(input())
 v4 = m1.v4([v1, v2, v2])
 print(m1.all(v4 > 15))
-√V¶ëŸ ò
+√Vô ñ
 äimport numpy as m1
 
 v1 = int(input())
@@ -257,7 +257,7 @@ v2 = int(input())
 v3 = int(input())
 v4 = m1.v4([v1, v2, v3])
 print(v1 > 15 and v2 > 15 and v3 > 15)
-√VÉõÑ À
+√Võ «
 πimport numpy as m1
 
 v1 = int(input())
@@ -269,7 +269,7 @@ for v1 in v4:
     v2 = v1 > 15
 v5.append(v2)
 if len(v5) == 3: print(v5[0])
-√V∏ïíﬁ¥∂ ê
+√Vù≥ é
 Çimport numpy as m1
 
 v1 = int(input())
@@ -278,14 +278,14 @@ v3 = int(input())
 v4 = 15
 v5 = m1.array([v1, v2, v3])
 print(all(v5 > 15))
-√V‡à± 
+√Vü }
 rimport numpy as m1
 
 v1 = int(input())
 v2 = int(input())
 v3 = int(input())
 print(all(m1.array((v1, v2, v3)) > 15))
-√VÅôÈ  ∂
+√V¢  ¥
 ®import numpy as m1
 
 v1 = int(input())
@@ -297,7 +297,7 @@ for v6 in v4:
     if 15 > v6:
         v5 = False
 print(v5)
-√VáÔù !˚
+√V¶ !˘
 Ìimport numpy as m1
 
 v1 = int(input())
@@ -312,7 +312,7 @@ for v6 in m1.greater(v4, 15):
     else:
         v5 = True
 if v5: print(True)
-√VÅ†û "ä
+√Vß "à
 }import numpy as m1
 
 v1 = int(input())
@@ -320,7 +320,7 @@ v2 = int(input())
 v3 = int(input())
 v4 = m1.array([v1, v2, v3])
 print((v4 > 15).all())
-√V‘¯û #Ø
+√V® #´
 ùimport numpy as m1
 
 v1 = int(input())
@@ -334,7 +334,7 @@ def f1(f1_p1):
 
 
 return f1_v1[0]
-√V∞É¶·É¶ $ñ
+√V¨≠ $î
 àimport numpy as m1
 
 
@@ -343,7 +343,7 @@ def f1(f1_p1): return m1.all(f1_p1)
 
 v1 = m1.array([int(input()), int(input()), int(input())])
 print(f1(v1 > 15))
-√V’¥∂ %¢
+√V± %†
 îimport numpy as m1
 
 v1 = int(input())
@@ -351,11 +351,11 @@ v2 = int(input())
 v3 = int(input())
 v4 = m1.array([v1, v2, v3])
 print("True" if m1.all(v4 > 15) else "False")
-√V⁄¥∂ &j
+√V≤ &h
 ]import numpy as m1
 
 print(m1.all(m1.array([int(input()), int(input()), int(input())]) > 15))
-√VÊ¥∂ 'è
+√Vµ 'ç
 Åimport numpy as m1
 
 v1 = int(input())
@@ -363,7 +363,7 @@ v2 = int(input())
 v3 = int(input())
 v4 = m1.array([v1, v2, v3])
 print(not m1.any(15 > v4))
-√V»ë∏ (õ
+√V∑ (è
 zimport numpy as m1
 
 v1 = int(input())
@@ -371,7 +371,7 @@ v2 = int(input())
 v3 = int(input())
 v4 = m1.v4([v1, v2, v3])
 print(m1.all(v4 > 15))
-√Vπó¡ÖóùáÎØ¶ﬁ±˝Ù»∆ﬁ“ )∂
+√V∏Õ—“€‹ )¥
 ®import numpy as m1
 
 v1 = int(input())
@@ -382,7 +382,7 @@ if False in (v4 > 15):
     print("False")
 else:
     print("True")
-√Vì‘ *ï
+√V∫ *ì
 áimport numpy as m1
 
 v1 = int(input())
@@ -390,7 +390,7 @@ v2 = int(input())
 v3 = int(input())
 v4 = m1.array([v1, v2, v3])
 print(all(v5 > 15 for v5 in v4))
-√VΩ•‰ +ü
+√V∆ +ù
 ëimport numpy as m1
 
 v1 = int(input())
@@ -398,14 +398,14 @@ v2 = int(input())
 v3 = int(input())
 v4 = m1.v4([v1, v2, v3])
 print("True" if m1.all(v4 > 15) else "False")
-√V‚∆Á ,Å
+√V« ,
 timport numpy as m1
 
 v1 = int(input())
 v2 = int(input())
 v3 = int(input())
 print(m1.all(m1.array([v1, v2, v3]) > 5))
-√Vó∂• -ñ
+√Vœ -î
 àimport numpy as m1
 
 v1 = int(input())
@@ -413,14 +413,14 @@ v2 = int(input())
 v3 = int(input())
 v4 = m1.array([v1, v2, v3])
 print(m1.all(m1.greater(v4, 15)))
-√V≠ñ¨ .Ç
+√V– .Ä
 uimport numpy as m1
 
 v1 = int(input())
 v2 = int(input())
 v3 = int(input())
 print((m1.array([v1, v2, v3]) > 15).all())
-√V£üæ /≥
+√V” /±
 •import numpy as m1
 
 v1 = int(input())
@@ -431,4 +431,4 @@ if m1.all(v1 > 15):
     print("True")
 else:
     print("False")
-√V†©ù 0
+√VŸ 0
