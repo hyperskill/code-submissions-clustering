@@ -8,6 +8,7 @@ class TaskNamedArgs(Enum):
     OUTPUT_PATH = 'outputDir'
     LANGUAGE = 'language'
     BINARY_INPUT = 'binaryInput'
+    DISTANCE_LIMIT = 'distanceLimit'
 
 
 @unique
