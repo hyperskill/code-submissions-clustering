@@ -218,19 +218,26 @@ class ClusteringTest : ParametrizedBaseWithUnifierTest(getTmpProjectDir()) {
 
         @JvmStatic
         fun getTestDataFromBin(): List<Arguments> {
-            val binDir = "${Paths.get("").toAbsolutePath()}/src/test/resources/bin.data"
-            val serializationDirs =
-                File(binDir).list { dir, name -> File(dir, name).isDirectory }.map { Paths.get("$binDir/$it") }
-            val submissionsGraphs = serializationDirs.map { it.toSubmissionsGraph() }
-            val arguments = mutableListOf<Arguments>()
+            val binDirName = "bin.data/"
+            val classLoader = Thread.currentThread().contextClassLoader
+            val binDir = classLoader.getResource(binDirName)?.toURI()?.let { Paths.get(it) }
 
-            for (graph in submissionsGraphs) {
-                for (distLimit in 25..600 step 50) {
-                    arguments.add(Arguments.of(graph, distLimit))
-                }
+            val submissionsGraphs = binDir?.toFile()?.walkTopDown()?.mapNotNull {
+                (if (it.isSerializationFolder()) Paths.get(it.toURI()) else null)?.toSubmissionsGraph()
             }
+                ?.toList()
 
-            return arguments
+            return submissionsGraphs?.map { graph ->
+                (25..600 step 50).map { limit ->
+                    Arguments.of(graph, limit)
+                }
+            }?.flatten() ?: listOf()
+        }
+
+        private fun File.isSerializationFolder(): Boolean {
+            val graphSerName = "graph.bin"
+            val clusterSerName = "clusters.bin"
+            return this.isDirectory && File(this, graphSerName).exists() && File(this, clusterSerName).exists()
         }
     }
 }
