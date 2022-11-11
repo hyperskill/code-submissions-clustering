@@ -81,7 +81,7 @@ class DistanceCalculationTest : ParametrizedBaseWithUnifierTest(getTmpProjectDir
                         code = "v1 = [1, 2, 3]\nfor v2 in v1: print(v2)\n"
                         addAllIdList(listOf(2, 3))
                     }
-                    .addEdge(0, 1, 56.0)
+                    .addEdge(0, 1, 87.0)
                     .build()
             ),
             Arguments.of(
