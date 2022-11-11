@@ -1,12 +1,13 @@
 from argparse import Namespace
-from typing import Tuple, Dict, Any
+from typing import Any, Dict, Tuple
 
-from utils.models.cli_models import TaskNamedArgs, TaskFlagArgs
+from utils.models.cli_models import TaskFlagArgs, TaskNamedArgs
 from utils.runners.abstract_task_runner import AbstractTaskRunner
 
 
 class ClusteringRunner(AbstractTaskRunner):
     """'cluster' task runner."""
+
     task_name = 'cluster'
 
     def build_arguments(
