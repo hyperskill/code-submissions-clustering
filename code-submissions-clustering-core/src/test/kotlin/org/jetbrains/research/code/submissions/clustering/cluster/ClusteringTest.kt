@@ -218,7 +218,7 @@ class ClusteringTest : ParametrizedBaseWithUnifierTest(getTmpProjectDir()) {
 
         @JvmStatic
         fun getTestDataFromBin(): List<Arguments> {
-            val binDirName = "bin.data/"
+            val binDirName = "bin.data"
             val classLoader = Thread.currentThread().contextClassLoader
             val binDir = classLoader.getResource(binDirName)?.toURI()?.let { Paths.get(it) }
 
