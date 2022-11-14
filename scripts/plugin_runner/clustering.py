@@ -1,9 +1,9 @@
 """Cluster code submissions script.
 
 This script allows user to cluster code submissions for multiple steps from directory [csv_dir]
-containing .csv files with submissions for specified steps. Distance limit between resulting
-clusters is configured by 3 arguments: [min_distance_limit], [max_distance_limit] and
-[step_distance_limit].
+containing .csv files with submissions for specified steps. With a single run of the script multiple
+distance limits might be used for clustering. Distance limit between resulting clusters is
+configured by 3 arguments: [min_distance_limit], [max_distance_limit] and [step_distance_limit].
 
 If submissions graphs for specified steps have been already loaded and serialized, the resulting
 serialization can be provided with [preprocess_dir argument]. [preprocess_dir] must be a directory
