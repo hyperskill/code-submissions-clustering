@@ -6,7 +6,8 @@ from src.utils.models.cli_arguments import ClusteringArguments
 @unique
 class TaskNamedArgs(Enum):
     INPUT_FILE = 'inputFile'
-    OUTPUT_PATH = 'outputDir'
+    OUTPUT_DIR = 'outputDir'
+    OUTPUT_PATH = 'output_path'
     LANGUAGE = 'language'
     BINARY_INPUT = 'binaryInput'
     DISTANCE_LIMIT = 'distanceLimit'

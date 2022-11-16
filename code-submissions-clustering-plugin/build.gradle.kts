@@ -74,10 +74,15 @@ tasks {
         dependsOn(build)
     }
 
-    val clusterDistTaskName = "cluster"
-    register<BaseCLITask>(clusterDistTaskName) {
-        taskName.set(clusterDistTaskName)
+    val clusterTaskName = "cluster"
+    register<BaseCLITask>(clusterTaskName) {
+        val distanceLimit: Int? by project
+        taskName.set(clusterTaskName)
         setArgs()
+
+        distanceLimit?.let {
+            args.add("--distanceLimit=$it")
+        }
         dependsOn(build)
     }
 }

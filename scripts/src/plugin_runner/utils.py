@@ -5,7 +5,7 @@ from src.utils.models.cli_models import TaskFlagArgs, TaskNamedArgs
 
 def configure_parser(parser: ArgumentParser):
     parser.add_argument(
-        'output_path',
+        TaskNamedArgs.OUTPUT_PATH.value,
         help='Output directory to store folders with output files',
     )
     parser.add_argument(
