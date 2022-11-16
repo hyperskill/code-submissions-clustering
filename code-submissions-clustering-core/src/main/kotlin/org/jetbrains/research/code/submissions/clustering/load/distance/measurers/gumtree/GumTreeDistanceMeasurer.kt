@@ -1,9 +1,6 @@
 package org.jetbrains.research.code.submissions.clustering.load.distance.measurers.gumtree
 
-import com.github.gumtreediff.actions.model.Action
-import com.github.gumtreediff.actions.model.Move
-import com.github.gumtreediff.actions.model.TreeDelete
-import com.github.gumtreediff.actions.model.TreeInsert
+import com.github.gumtreediff.actions.model.*
 import com.github.gumtreediff.gen.TreeGenerator
 import com.github.gumtreediff.tree.Tree
 import com.github.gumtreediff.tree.TreeContext
@@ -17,45 +14,62 @@ import org.jetbrains.research.code.submissions.clustering.model.SubmissionsGraph
 import org.jetbrains.research.code.submissions.clustering.model.SubmissionsGraphEdge
 import org.jetbrains.research.code.submissions.clustering.util.asPsiFile
 import org.jetbrains.research.code.submissions.clustering.util.trimCode
-import kotlin.math.abs
 
 abstract class GumTreeDistanceMeasurerBase : CodeDistanceMeasurerBase<List<Action>>() {
     private fun Tree.toMapKey() = this.toString()
 
+    @Suppress("MagicNumber", "MAGIC_NUMBER")
+    private fun Action.toNumber() = when (this) {
+        is Move -> 0
+        is TreeInsert, is Insert -> 1
+        is TreeDelete, is Delete -> 2
+        else -> 3
+    }
+
+    private fun Tree.calculateWeight() = this.metrics.size
+
+    private fun Action.calculateWeight() = this.node.calculateWeight()
+
     @Suppress("NestedBlockDepth", "NO_BRACES_IN_CONDITIONALS_AND_LOOPS")
     override fun List<Action>.calculateWeight(): Int {
         // Sometimes we have actions about adding and deleting almost the same subtrees,
-        // in these cases we calculate only different parts of the subtries
-        val insertedNodeToFreq = mutableMapOf<String, Int>()
+        // in these cases we calculate only different parts of the subtrees
+        val insertedNodeToState = mutableMapOf<String, State>()
         var weight = 0
-        for (action in this) {
+        val sortedActions = this.sortedBy { it.toNumber() }
+        for (action in sortedActions) {
             when (action) {
                 is Move -> weight += 1
-                is TreeInsert -> {
+                is TreeInsert, is Insert -> {
                     action.node.preOrder().forEach {
                         val node = it.toMapKey()
-                        insertedNodeToFreq.putIfAbsent(node, 0)
-                        insertedNodeToFreq[node] = insertedNodeToFreq[node]!! + 1
+                        insertedNodeToState.putIfAbsent(node, State.DIFFERENT)
+                        weight += 1
                     }
                 }
-                is TreeDelete -> {
+                is TreeDelete, is Delete -> {
                     action.node.preOrder().forEach {
                         val node = it.toMapKey()
-                        if (node in insertedNodeToFreq.keys) {
-                            insertedNodeToFreq[node] = insertedNodeToFreq[node]!! - 1
+                        if (node in insertedNodeToState.keys) {
+                            if (insertedNodeToState[node] == State.DIFFERENT) {
+                                insertedNodeToState[node] = State.SAME
+                            }
+                            insertedNodeToState[node]!!.count += 1
                         }
+                        weight += 1
                     }
                 }
-                else -> weight += action.node.metrics.size
+                else -> weight += action.calculateWeight()
             }
         }
-        weight += insertedNodeToFreq.values.sumOf { abs(it) }
-        return weight
+        // Don't take into account the same vertices (which were added and then removed)
+        weight -= insertedNodeToState.values.filter { it == State.SAME }.fold(0) { acc, x -> acc + x.count }
+        return kotlin.math.abs(weight)
     }
 
     abstract fun String.parseTree(): TreeContext
 
-    private fun calculateDistance(source: TreeContext, target: TreeContext) = Matcher(source, target).getEditActions()
+    fun calculateDistance(source: TreeContext, target: TreeContext) = Matcher(source, target).getEditActions()
 
     final override fun computeFullDistance(
         edge: SubmissionsGraphEdge,
@@ -64,6 +78,14 @@ abstract class GumTreeDistanceMeasurerBase : CodeDistanceMeasurerBase<List<Actio
         val source = graph.getEdgeSource(edge).code.parseTree()
         val target = graph.getEdgeTarget(edge).code.parseTree()
         return calculateDistance(source, target)
+    }
+
+    // An enum class to indicate if the same ot the different node was changed in a subtree
+    @Suppress("KDOC_NO_CONSTRUCTOR_PROPERTY")
+    private enum class State(var count: Int) {
+        DIFFERENT(0),
+        SAME(0),
+        ;
     }
 }
 
