@@ -13,10 +13,6 @@ def configure_parser(parser: ArgumentParser):
         help='Programming language of code submissions',
     )
     parser.add_argument(
-        TaskNamedArgs.DISTANCE_LIMIT.value,
-        help='Max distance between two vertices inside one cluster',
-    )
-    parser.add_argument(
         f'--{TaskNamedArgs.BINARY_INPUT.value}',
         help='Directory storing previously serialized graph',
     )

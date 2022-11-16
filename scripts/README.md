@@ -9,7 +9,6 @@ To load submissions graph(s) from .csv file, run load_submissions_graph.py with 
 | **input_file**    | Input .csv file storing submissions for a step (or multiple steps).                                                                                                                             |
 | **output_path**   | Output directory to store all output files. In basic configuration a log file, <br/>a new .csv and a string representation of resulting graph for every step in **input_file** will be created. |
 | **language**      | Programming language of code submissions.                                                                                                                                                       |
-| **distanceLimit** | Max distance between two vertices inside one cluster. You can use 50 for the test running.                                                                                                      |
 
 ### Optional arguments
 

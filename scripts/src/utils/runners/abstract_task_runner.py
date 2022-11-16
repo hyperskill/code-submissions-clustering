@@ -19,7 +19,6 @@ def get_common_named_arguments(
         TaskNamedArgs.OUTPUT_PATH:
             kwargs['build_output_dir_name'](step_id, script_arguments),
         TaskNamedArgs.LANGUAGE: script_arguments.language,
-        TaskNamedArgs.DISTANCE_LIMIT: script_arguments.distance_limit,
     }
 
 
