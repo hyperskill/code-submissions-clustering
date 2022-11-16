@@ -18,20 +18,21 @@ import sys
 import time
 from typing import List
 
-from plugin_runner.utils import configure_parser
-from utils.df_utils import read_df, write_df
-from utils.file_utils import create_dir
-from utils.logger_utils import set_logger
-from utils.models.df_column_name import SubmissionColumns
-from utils.runners.load_runner import LoadRunner
-from utils.steps_processing_utils import process_steps
-from utils.time_utils import time_to_str
+from src.plugin_runner.utils import configure_parser
+from src.utils.df_utils import read_df, write_df
+from src.utils.file_utils import create_dir
+from src.utils.logger_utils import set_logger
+from src.utils.models.cli_arguments import ClusteringArguments
+from src.utils.models.df_column_name import SubmissionColumns
+from src.utils.runners.load_runner import LoadRunner
+from src.utils.steps_processing_utils import process_steps
+from src.utils.time_utils import time_to_str
 
 SOLUTIONS_DIR_NAME = 'solutions'
 OUTPUT_DIR_NAME = 'output'
 
 
-def build_solutions_file_name(step_id: int, args: argparse.Namespace) -> str:
+def build_solutions_file_name(step_id: int, args: ClusteringArguments) -> str:
     """
     Build .csv file name to store submissions for step step_id.
 
@@ -39,11 +40,10 @@ def build_solutions_file_name(step_id: int, args: argparse.Namespace) -> str:
     :param args: script arguments
     :return: built .csv file name
     """
-    output_path = args.output_path
-    return f'{output_path}/{SOLUTIONS_DIR_NAME}/{step_id}.csv'
+    return f'{args.output_path}/{SOLUTIONS_DIR_NAME}/{step_id}.csv'
 
 
-def build_output_dir_name(step_id: int, args: argparse.Namespace) -> str:
+def build_output_dir_name(step_id: int, args: ClusteringArguments) -> str:
     """
     Build directory name to store submissions graph output files for step step_id.
 
@@ -51,8 +51,7 @@ def build_output_dir_name(step_id: int, args: argparse.Namespace) -> str:
     :param args: script arguments
     :return: built directory name
     """
-    output_path = args.output_path
-    return f'{output_path}/{OUTPUT_DIR_NAME}/{step_id}'
+    return f'{args.output_path}/{OUTPUT_DIR_NAME}/{step_id}'
 
 
 def create_directories(output_path: str):
@@ -61,22 +60,20 @@ def create_directories(output_path: str):
 
     :param output_path: root output directory
     """
-    create_dir(output_path)
     solutions_path = f'{output_path}/{SOLUTIONS_DIR_NAME}'
     create_dir(solutions_path)
     output_dir = f'{output_path}/{OUTPUT_DIR_NAME}'
     create_dir(output_dir)
 
 
-def parse_solutions(args: argparse.Namespace) -> List[int]:
+def parse_solutions(args: ClusteringArguments) -> List[int]:
     """
     Read input .csv file input_file and write submissions for every step in separate .csv file.
 
     :param args: script arguments
     :return: list of contained step ids
     """
-    input_file = args.input_file
-    df_all_solutions = read_df(input_file)
+    df_all_solutions = read_df(args.input_file)
     unique_steps = df_all_solutions[SubmissionColumns.STEP_ID.value].unique()
     for step in unique_steps:
         output_file = build_solutions_file_name(step, args)
@@ -92,7 +89,7 @@ if __name__ == '__main__':
         help='Input .csv file with code solutions for a set of steps',
     )
     configure_parser(parser)
-    args = parser.parse_args()
+    args = ClusteringArguments(parser.parse_args())
 
     create_directories(args.output_path)
     logger = set_logger(args.output_path)

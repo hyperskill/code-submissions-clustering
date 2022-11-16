@@ -1,20 +1,19 @@
 package org.jetbrains.research.code.submissions.clustering.cli
 
 import com.xenomachina.argparser.ArgParser
+import org.jetbrains.research.code.submissions.clustering.cli.models.AbstractGraphBuilderArgs
 import org.jetbrains.research.code.submissions.clustering.load.distance.calculateDistances
 import org.jetbrains.research.code.submissions.clustering.util.toSubmissionsGraph
 import java.io.File
 import java.nio.file.Paths
-import kotlin.system.exitProcess
 
 object DistanceCalculationRunner : AbstractGraphBuilder() {
     private lateinit var inputFilename: String
 
     override fun getCommandName(): String = "calculate-dist"
 
-    @Suppress("TooGenericExceptionCaught")
     override fun main(args: MutableList<String>) {
-        try {
+        startRunner(args) {
             parseArgs(args, ::DistanceCalculationRunnerArgs).run {
                 inputFilename = Paths.get(inputFile).toString()
             }
@@ -22,10 +21,6 @@ object DistanceCalculationRunner : AbstractGraphBuilder() {
             val context = buildGraphContext()
             val submissionsGraph = file.toSubmissionsGraph().calculateDistances(context)
             submissionsGraph.writeOutputData()
-        } catch (ex: Throwable) {
-            logger.severe { ex.toString() }
-        } finally {
-            exitProcess(0)
         }
     }
 

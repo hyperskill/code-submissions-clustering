@@ -3,18 +3,17 @@ package org.jetbrains.research.code.submissions.clustering.cli
 import com.xenomachina.argparser.ArgParser
 import org.jetbrains.kotlinx.dataframe.DataFrame
 import org.jetbrains.kotlinx.dataframe.io.readCSV
+import org.jetbrains.research.code.submissions.clustering.cli.models.AbstractGraphBuilderArgs
 import org.jetbrains.research.code.submissions.clustering.util.loadGraph
 import java.nio.file.Paths
-import kotlin.system.exitProcess
 
 object LoadRunner : AbstractGraphBuilder() {
     private lateinit var inputFilename: String
 
     override fun getCommandName(): String = "load"
 
-    @Suppress("TooGenericExceptionCaught")
     override fun main(args: MutableList<String>) {
-        try {
+        startRunner(args) {
             parseArgs(args, ::LoadRunnerArgs).run {
                 inputFilename = Paths.get(inputFile).toString()
             }
@@ -22,10 +21,6 @@ object LoadRunner : AbstractGraphBuilder() {
             val context = buildGraphContext()
             val submissionsGraph = df.loadGraph(context)
             submissionsGraph.writeOutputData()
-        } catch (ex: Throwable) {
-            logger.severe { ex.toString() }
-        } finally {
-            exitProcess(0)
         }
     }
 
