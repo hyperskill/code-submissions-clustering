@@ -81,7 +81,7 @@ tasks {
         setArgs()
 
         distanceLimit?.let {
-            args.add("--distanceLimit=$it")
+            args?.add("--distanceLimit=$it")
         }
         dependsOn(build)
     }
