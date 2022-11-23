@@ -2,6 +2,7 @@ package org.jetbrains.research.code.submissions.clustering.load.distance
 
 import com.intellij.openapi.command.WriteCommandAction
 import org.jetbrains.research.code.submissions.clustering.ProtoSubmissionsGraph
+import org.jetbrains.research.code.submissions.clustering.model.SubmissionInfo
 import org.jetbrains.research.code.submissions.clustering.util.*
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.Arguments
@@ -28,13 +29,13 @@ class DistanceCalculationTest : ParametrizedBaseWithUnifierTest(getTmpProjectDir
                 ProtoGraphBuilder(1000)
                     .addNode {
                         code = "print(1)\n"
-                        addIdList(1)
+                        addInfo(SubmissionInfo(1, 1).toProto())
                     }
                     .build(),
                 ProtoGraphBuilder(1000)
                     .addNode {
                         code = "print(1)\n"
-                        addIdList(1)
+                        addInfo(SubmissionInfo(1, 1).toProto())
                     }
                     .build()
             ),
@@ -42,21 +43,21 @@ class DistanceCalculationTest : ParametrizedBaseWithUnifierTest(getTmpProjectDir
                 ProtoGraphBuilder(1000)
                     .addNode {
                         code = "print(1)\n"
-                        addIdList(1)
+                        addInfo(SubmissionInfo(1, 1).toProto())
                     }
                     .addNode {
                         code = "v1 = 1\nprint(1)\n"
-                        addIdList(2)
+                        addInfo(SubmissionInfo(2, 1).toProto())
                     }
                     .build(),
                 ProtoGraphBuilder(1000)
                     .addNode {
                         code = "print(1)\n"
-                        addIdList(1)
+                        addInfo(SubmissionInfo(1, 1).toProto())
                     }
                     .addNode {
                         code = "v1 = 1\nprint(1)\n"
-                        addIdList(2)
+                        addInfo(SubmissionInfo(2, 1).toProto())
                     }
                     .addEdge(0, 1, 3.0)
                     .build()
@@ -65,21 +66,31 @@ class DistanceCalculationTest : ParametrizedBaseWithUnifierTest(getTmpProjectDir
                 ProtoGraphBuilder(1000)
                     .addNode {
                         code = "for v1 in [1, 2, 3]: print(v1)\n"
-                        addAllIdList(listOf(1))
+                        addAllInfo(listOf(
+                            SubmissionInfo(1, 1),
+                        ).map { it.toProto() })
                     }
                     .addNode {
                         code = "v1 = [1, 2, 3]\nfor v2 in v1: print(v2)\n"
-                        addAllIdList(listOf(2, 3))
+                        addAllInfo(listOf(
+                            SubmissionInfo(2, 1),
+                            SubmissionInfo(3, 1),
+                        ).map { it.toProto() })
                     }
                     .build(),
                 ProtoGraphBuilder(1000)
                     .addNode {
                         code = "for v1 in [1, 2, 3]: print(v1)\n"
-                        addAllIdList(listOf(1))
+                        addAllInfo(listOf(
+                            SubmissionInfo(1, 1),
+                        ).map { it.toProto() })
                     }
                     .addNode {
                         code = "v1 = [1, 2, 3]\nfor v2 in v1: print(v2)\n"
-                        addAllIdList(listOf(2, 3))
+                        addAllInfo(listOf(
+                            SubmissionInfo(2, 1),
+                            SubmissionInfo(3, 1),
+                        ).map { it.toProto() })
                     }
                     .addEdge(0, 1, 87.0)
                     .build()
@@ -88,29 +99,29 @@ class DistanceCalculationTest : ParametrizedBaseWithUnifierTest(getTmpProjectDir
                 ProtoGraphBuilder(1000)
                     .addNode {
                         code = "print(1)\n"
-                        addIdList(1)
+                        addInfo(SubmissionInfo(1, 1).toProto())
                     }
                     .addNode {
                         code = "print(2)\n"
-                        addIdList(2)
+                        addInfo(SubmissionInfo(2, 1).toProto())
                     }
                     .addNode {
                         code = "print(3)\n"
-                        addIdList(3)
+                        addInfo(SubmissionInfo(3, 1).toProto())
                     }
                     .build(),
                 ProtoGraphBuilder(1000)
                     .addNode {
                         code = "print(1)\n"
-                        addIdList(1)
+                        addInfo(SubmissionInfo(1, 1).toProto())
                     }
                     .addNode {
                         code = "print(2)\n"
-                        addIdList(2)
+                        addInfo(SubmissionInfo(2, 1).toProto())
                     }
                     .addNode {
                         code = "print(3)\n"
-                        addIdList(3)
+                        addInfo(SubmissionInfo(3, 1).toProto())
                     }
                     .addEdge(0, 1, 1.0)
                     .addEdge(0, 2, 1.0)

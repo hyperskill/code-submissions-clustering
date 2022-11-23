@@ -6,6 +6,7 @@ import org.jetbrains.kotlinx.dataframe.api.dataFrameOf
 import org.jetbrains.kotlinx.dataframe.io.toCsv
 import org.jetbrains.research.code.submissions.clustering.ProtoSubmissionsGraph
 import org.jetbrains.research.code.submissions.clustering.load.clustering.submissions.SubmissionsGraphHAC
+import org.jetbrains.research.code.submissions.clustering.model.SubmissionInfo
 import org.jetbrains.research.code.submissions.clustering.util.*
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.Arguments
@@ -41,7 +42,7 @@ class ClusteringResultTest : ParametrizedBaseWithUnifierTest(getTmpProjectDir())
                 ProtoGraphBuilder(1000)
                     .addNode {
                         code = "print(1)\n"
-                        addIdList(1)
+                        addInfo(SubmissionInfo(1, 1).toProto())
                     }
                     .build(),
                 1.0,
@@ -53,11 +54,11 @@ class ClusteringResultTest : ParametrizedBaseWithUnifierTest(getTmpProjectDir())
                 ProtoGraphBuilder(1000)
                     .addNode {
                         code = "print(1)\n"
-                        addIdList(1)
+                        addInfo(SubmissionInfo(1, 1).toProto())
                     }
                     .addNode {
                         code = "v1 = 1\nprint(1)\n"
-                        addIdList(2)
+                        addInfo(SubmissionInfo(2, 1).toProto())
                     }
                     .addEdge(0, 1, 3.0)
                     .build(),
@@ -71,11 +72,11 @@ class ClusteringResultTest : ParametrizedBaseWithUnifierTest(getTmpProjectDir())
                 ProtoGraphBuilder(1000)
                     .addNode {
                         code = "print(1)\n"
-                        addIdList(1)
+                        addInfo(SubmissionInfo(1, 1).toProto())
                     }
                     .addNode {
                         code = "v1 = 1\nprint(1)\n"
-                        addIdList(2)
+                        addInfo(SubmissionInfo(2, 1).toProto())
                     }
                     .addEdge(0, 1, 3.0)
                     .build(),
@@ -89,15 +90,15 @@ class ClusteringResultTest : ParametrizedBaseWithUnifierTest(getTmpProjectDir())
                 ProtoGraphBuilder(1000)
                     .addNode {
                         code = "print(1)\n"
-                        addIdList(1)
+                        addInfo(SubmissionInfo(1, 1).toProto())
                     }
                     .addNode {
                         code = "v1 = 1\nprint(1)\n"
-                        addIdList(2)
+                        addInfo(SubmissionInfo(2, 1).toProto())
                     }
                     .addNode {
                         code = "v1 = 1\nprint(v1)\n"
-                        addIdList(3)
+                        addInfo(SubmissionInfo(3, 1).toProto())
                     }
                     .addEdge(0, 1, 1.0)
                     .addEdge(0, 2, 2.0)
@@ -114,15 +115,15 @@ class ClusteringResultTest : ParametrizedBaseWithUnifierTest(getTmpProjectDir())
                 ProtoGraphBuilder(1000)
                     .addNode {
                         code = "print(1)\n"
-                        addIdList(1)
+                        addInfo(SubmissionInfo(1, 1).toProto())
                     }
                     .addNode {
                         code = "v1 = 1\nprint(1)\n"
-                        addIdList(2)
+                        addInfo(SubmissionInfo(2, 1).toProto())
                     }
                     .addNode {
                         code = "v1 = 1\nprint(v1)\n"
-                        addIdList(3)
+                        addInfo(SubmissionInfo(3, 1).toProto())
                     }
                     .addEdge(0, 1, 1.0)
                     .addEdge(0, 2, 2.0)
@@ -139,15 +140,15 @@ class ClusteringResultTest : ParametrizedBaseWithUnifierTest(getTmpProjectDir())
                 ProtoGraphBuilder(1000)
                     .addNode {
                         code = "print(1)\n"
-                        addIdList(1)
+                        addInfo(SubmissionInfo(1, 1).toProto())
                     }
                     .addNode {
                         code = "v1 = 1\nprint(1)\n"
-                        addIdList(2)
+                        addInfo(SubmissionInfo(2, 1).toProto())
                     }
                     .addNode {
                         code = "v1 = 1\nprint(v1)\n"
-                        addIdList(3)
+                        addInfo(SubmissionInfo(3, 1).toProto())
                     }
                     .addEdge(0, 1, 1.0)
                     .addEdge(0, 2, 2.0)
@@ -164,15 +165,15 @@ class ClusteringResultTest : ParametrizedBaseWithUnifierTest(getTmpProjectDir())
                 ProtoGraphBuilder(1000)
                     .addNode {
                         code = "print(1)\n"
-                        addIdList(1)
+                        addInfo(SubmissionInfo(1, 1).toProto())
                     }
                     .addNode {
                         code = "v1 = 1\nprint(1)\n"
-                        addIdList(2)
+                        addInfo(SubmissionInfo(2, 1).toProto())
                     }
                     .addNode {
                         code = "v1 = 1\nprint(v1)\n"
-                        addIdList(3)
+                        addInfo(SubmissionInfo(3, 1).toProto())
                     }
                     .addEdge(0, 1, 1.0)
                     .addEdge(0, 2, 2.0)

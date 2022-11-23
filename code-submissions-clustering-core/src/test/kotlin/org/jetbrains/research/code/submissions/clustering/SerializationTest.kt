@@ -58,19 +58,19 @@ class SerializationTest : ParametrizedBaseWithUnifierTest(getTmpProjectDir()) {
         @Suppress("WRONG_NEWLINES", "TOO_LONG_FUNCTION")
         @JvmStatic
         fun getTestData(): List<DataFrame<*>> = listOf(
-            dataFrameOf("id", "step_id", "code")(emptySequence()),
-            dataFrameOf("id", "step_id", "code")(
-                1, 1000, "print(1)",
+            dataFrameOf("id", "step_id", "code", "quality")(emptySequence()),
+            dataFrameOf("id", "step_id", "code", "quality")(
+                1, 1000, "print(1)", 1,
             ),
-            dataFrameOf("id", "step_id", "code")(
-                1, 1000, "y = 1\n",
-                2, 1000, "var = 1\n",
-                3, 1000, "a=1\n",
+            dataFrameOf("id", "step_id", "code", "quality")(
+                1, 1000, "y = 1\n", 1,
+                2, 1000, "var = 1\n", 1,
+                3, 1000, "a=1\n", 1,
             ),
-            dataFrameOf("id", "step_id", "code")(
-                1, 1000, "y =         1\n",
-                2, 1000, "var       = 1\n",
-                3, 1000, "a=1\n",
+            dataFrameOf("id", "step_id", "code", "quality")(
+                1, 1000, "y =         1\n", 1,
+                2, 1000, "var       = 1\n", 1,
+                3, 1000, "a=1\n", 1,
             ),
         )
     }
