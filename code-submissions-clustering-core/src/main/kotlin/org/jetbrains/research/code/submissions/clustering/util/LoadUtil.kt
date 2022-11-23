@@ -16,12 +16,13 @@ fun <T> DataFrame<*>.loadGraph(context: SubmissionsGraphContext<T>): Submissions
     val id by column<Int>()
     val step_id by column<Int>()
     val code by column<String>()
+    val quality by column<Int>()
     val graph = let { dataFrame ->
         transformGraph(context) {
             dataFrame.forEach {
                 add(
                     Submission(
-                        id = getValue(id),
+                        info = SubmissionInfo(getValue(id), getValue(quality)),
                         stepId = getValue(step_id),
                         code = getValue(code)
                     )
@@ -51,7 +52,7 @@ fun SubmissionsGraph.writeClusteringResult(outputPath: String) {
 fun SubmissionsGraph.toDataFrame(): DataFrame<*> {
     val vertices = graph.vertexSet()
     val code = vertices.map { it.code }.toColumn() named "code"
-    val idList = vertices.map { it.idList }.toColumn() named "idList"
+    val idList = vertices.map { it.submissionsList }.toColumn() named "idList"
     return dataFrameOf(code, idList)
 }
 
@@ -103,8 +104,8 @@ fun SubmissionsGraph.toClusteringDataFrame(): DataFrame<*> {
     val clusters = mutableListOf<Int>()
     val positions = mutableListOf<Int>()
     getClusteredGraph().graph.vertexSet().forEach { cluster ->
-        cluster.entities.flatMap { it.idList }.sorted().forEachIndexed { index, submissionId ->
-            submissions.add(submissionId)
+        cluster.entities.flatMap { it.submissionsList }.sorted().forEachIndexed { index, submissionInfo ->
+            submissions.add(submissionInfo.id)
             clusters.add(cluster.id)
             positions.add(index)
         }

@@ -51,7 +51,7 @@ class GraphTransformer<T>(
             vertexByCode.compute(unifiedSubmission.code) { _, vertex ->
                 vertex?.let {
                     // Update existing vertex
-                    vertex.idList.add(unifiedSubmission.id)
+                    vertex.submissionsList.add(unifiedSubmission.info)
                     vertex
                 } ?:  // Add new vertex with single id
                 SubmissionsNode(unifiedSubmission, idFactory.uniqueIdentifier()).also {

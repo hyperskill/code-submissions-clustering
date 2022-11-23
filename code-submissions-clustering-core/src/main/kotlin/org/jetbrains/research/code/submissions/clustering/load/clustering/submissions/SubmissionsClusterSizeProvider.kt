@@ -5,5 +5,5 @@ import org.jetbrains.research.code.submissions.clustering.load.clustering.Cluste
 import org.jetbrains.research.code.submissions.clustering.model.SubmissionsNode
 
 class SubmissionsClusterSizeProvider : ClusterSizeProvider<SubmissionsNode> {
-    override fun getSize(cluster: Cluster<SubmissionsNode>): Int = cluster.entities.sumOf { it.idList.size }
+    override fun getSize(cluster: Cluster<SubmissionsNode>): Int = cluster.entities.sumOf { it.submissionsList.size }
 }
