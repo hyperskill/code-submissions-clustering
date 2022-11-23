@@ -9,10 +9,15 @@ package org.jetbrains.research.code.submissions.clustering.model
  */
 data class Submission(val info: SubmissionInfo, val stepId: Int, val code: String)
 
+/**
+ * @property id submission id
+ * @property quality submission quality of code
+ */
 data class SubmissionInfo(val id: Int, val quality: Int) : Comparable<SubmissionInfo> {
     override fun compareTo(other: SubmissionInfo): Int {
-        if (quality != other.quality)
+        if (quality != other.quality) {
             return other.quality - quality
+        }
         return id - other.id
     }
 }
