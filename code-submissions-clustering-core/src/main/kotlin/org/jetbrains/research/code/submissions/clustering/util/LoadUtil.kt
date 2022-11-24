@@ -52,7 +52,7 @@ fun SubmissionsGraph.writeClusteringResult(outputPath: String) {
 fun SubmissionsGraph.toDataFrame(): DataFrame<*> {
     val vertices = graph.vertexSet()
     val code = vertices.map { it.code }.toColumn() named "code"
-    val idList = vertices.map { it.submissionsList }.toColumn() named "idList"
+    val idList = vertices.map { it.submissionsList.map { info -> info.id } }.toColumn() named "idList"
     return dataFrameOf(code, idList)
 }
 

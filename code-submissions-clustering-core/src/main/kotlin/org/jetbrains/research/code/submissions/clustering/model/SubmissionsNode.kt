@@ -27,5 +27,6 @@ data class SubmissionsNode(
 
     override fun hashCode(): Int = code.hashCode()
 
-    override fun toString(): String = "\nSubmissionsNode(code = \n$code, \nidList = ${submissionsList.toList().sorted()})"
+    override fun toString(): String =
+        "\nSubmissionsNode(code = \n$code, \nidList = ${submissionsList.map { it.id }.sorted()})"
 }
