@@ -3,6 +3,7 @@ package org.jetbrains.research.code.submissions.clustering.cluster
 import com.intellij.openapi.command.WriteCommandAction
 import org.jetbrains.research.code.submissions.clustering.ProtoSubmissionsGraph
 import org.jetbrains.research.code.submissions.clustering.load.clustering.submissions.SubmissionsGraphHAC
+import org.jetbrains.research.code.submissions.clustering.model.SubmissionInfo
 import org.jetbrains.research.code.submissions.clustering.model.SubmissionsGraph
 import org.jetbrains.research.code.submissions.clustering.model.SubmissionsNode
 import org.jetbrains.research.code.submissions.clustering.util.*
@@ -62,13 +63,15 @@ class ClusteringTest : ParametrizedBaseWithUnifierTest(getTmpProjectDir()) {
                 ProtoGraphBuilder(1000)
                     .addNode {
                         code = "print(1)\n"
-                        addIdList(1)
+                        addInfo(SubmissionInfo(1, 1).toProto())
                     }
                     .build(),
                 1.0,
                 ClusteringImpl(
                     listOf(
-                        setOf(SubmissionsNode(1, "print(1)\n", 1000, mutableSetOf(1))),
+                        setOf(SubmissionsNode(1, "print(1)\n", 1000, mutableSetOf(
+                            SubmissionInfo(1, 1)
+                        ))),
                     )
                 )
             ),
@@ -76,11 +79,11 @@ class ClusteringTest : ParametrizedBaseWithUnifierTest(getTmpProjectDir()) {
                 ProtoGraphBuilder(1000)
                     .addNode {
                         code = "print(1)\n"
-                        addIdList(1)
+                        addInfo(SubmissionInfo(1, 1).toProto())
                     }
                     .addNode {
                         code = "v1 = 1\nprint(1)\n"
-                        addIdList(2)
+                        addInfo(SubmissionInfo(2, 1).toProto())
                     }
                     .addEdge(0, 1, 3.0)
                     .build(),
@@ -88,8 +91,12 @@ class ClusteringTest : ParametrizedBaseWithUnifierTest(getTmpProjectDir()) {
                 ClusteringImpl(
                     listOf(
                         setOf(
-                            SubmissionsNode(1, "print(1)\n", 1000, mutableSetOf(1)),
-                            SubmissionsNode(2, "v1 = 1\nprint(1)\n", 1000, mutableSetOf(2)),
+                            SubmissionsNode(1, "print(1)\n", 1000, mutableSetOf(
+                                SubmissionInfo(1, 1)
+                            )),
+                            SubmissionsNode(2, "v1 = 1\nprint(1)\n", 1000, mutableSetOf(
+                                SubmissionInfo(2, 1)
+                            )),
                         )
                     )
                 )
@@ -98,19 +105,23 @@ class ClusteringTest : ParametrizedBaseWithUnifierTest(getTmpProjectDir()) {
                 ProtoGraphBuilder(1000)
                     .addNode {
                         code = "print(1)\n"
-                        addIdList(1)
+                        addInfo(SubmissionInfo(1, 1).toProto())
                     }
                     .addNode {
                         code = "v1 = 1\nprint(1)\n"
-                        addIdList(2)
+                        addInfo(SubmissionInfo(2, 1).toProto())
                     }
                     .addEdge(0, 1, 3.0)
                     .build(),
                 2.0,
                 ClusteringImpl(
                     listOf(
-                        setOf(SubmissionsNode(1, "print(1)\n", 1000, mutableSetOf(1))),
-                        setOf(SubmissionsNode(2, "v1 = 1\nprint(1)\n", 1000, mutableSetOf(2))),
+                        setOf(SubmissionsNode(1, "print(1)\n", 1000, mutableSetOf(
+                            SubmissionInfo(1, 1)
+                        ))),
+                        setOf(SubmissionsNode(2, "v1 = 1\nprint(1)\n", 1000, mutableSetOf(
+                            SubmissionInfo(2, 1)
+                        ))),
                     )
                 )
             ),
@@ -118,15 +129,15 @@ class ClusteringTest : ParametrizedBaseWithUnifierTest(getTmpProjectDir()) {
                 ProtoGraphBuilder(1000)
                     .addNode {
                         code = "print(1)\n"
-                        addIdList(1)
+                        addInfo(SubmissionInfo(1, 1).toProto())
                     }
                     .addNode {
                         code = "v1 = 1\nprint(1)\n"
-                        addIdList(2)
+                        addInfo(SubmissionInfo(2, 1).toProto())
                     }
                     .addNode {
                         code = "v1 = 1\nprint(v1)\n"
-                        addIdList(3)
+                        addInfo(SubmissionInfo(3, 1).toProto())
                     }
                     .addEdge(0, 1, 1.0)
                     .addEdge(0, 2, 2.0)
@@ -135,9 +146,15 @@ class ClusteringTest : ParametrizedBaseWithUnifierTest(getTmpProjectDir()) {
                 0.0,
                 ClusteringImpl(
                     listOf(
-                        setOf(SubmissionsNode(1, "print(1)\n", 1000, mutableSetOf(1))),
-                        setOf(SubmissionsNode(2, "v1 = 1\nprint(1)\n", 1000, mutableSetOf(2))),
-                        setOf(SubmissionsNode(2, "v1 = 1\nprint(v1)\n", 1000, mutableSetOf(3))),
+                        setOf(SubmissionsNode(1, "print(1)\n", 1000, mutableSetOf(
+                            SubmissionInfo(1, 1)
+                        ))),
+                        setOf(SubmissionsNode(2, "v1 = 1\nprint(1)\n", 1000, mutableSetOf(
+                            SubmissionInfo(2, 1)
+                        ))),
+                        setOf(SubmissionsNode(2, "v1 = 1\nprint(v1)\n", 1000, mutableSetOf(
+                            SubmissionInfo(3, 1)
+                        ))),
                     )
                 )
             ),
@@ -145,15 +162,15 @@ class ClusteringTest : ParametrizedBaseWithUnifierTest(getTmpProjectDir()) {
                 ProtoGraphBuilder(1000)
                     .addNode {
                         code = "print(1)\n"
-                        addIdList(1)
+                        addInfo(SubmissionInfo(1, 1).toProto())
                     }
                     .addNode {
                         code = "v1 = 1\nprint(1)\n"
-                        addIdList(2)
+                        addInfo(SubmissionInfo(2, 1).toProto())
                     }
                     .addNode {
                         code = "v1 = 1\nprint(v1)\n"
-                        addIdList(3)
+                        addInfo(SubmissionInfo(3, 1).toProto())
                     }
                     .addEdge(0, 1, 1.0)
                     .addEdge(0, 2, 2.0)
@@ -163,10 +180,16 @@ class ClusteringTest : ParametrizedBaseWithUnifierTest(getTmpProjectDir()) {
                 ClusteringImpl(
                     listOf(
                         setOf(
-                            SubmissionsNode(1, "print(1)\n", 1000, mutableSetOf(1)),
-                            SubmissionsNode(2, "v1 = 1\nprint(1)\n", 1000, mutableSetOf(2)),
+                            SubmissionsNode(1, "print(1)\n", 1000, mutableSetOf(
+                                SubmissionInfo(1, 1)
+                            )),
+                            SubmissionsNode(2, "v1 = 1\nprint(1)\n", 1000, mutableSetOf(
+                                SubmissionInfo(2, 1)
+                            )),
                         ),
-                        setOf(SubmissionsNode(2, "v1 = 1\nprint(v1)\n", 1000, mutableSetOf(3))),
+                        setOf(SubmissionsNode(2, "v1 = 1\nprint(v1)\n", 1000, mutableSetOf(
+                            SubmissionInfo(3, 1)
+                        ))),
                     )
                 )
             ),
@@ -174,15 +197,15 @@ class ClusteringTest : ParametrizedBaseWithUnifierTest(getTmpProjectDir()) {
                 ProtoGraphBuilder(1000)
                     .addNode {
                         code = "print(1)\n"
-                        addIdList(1)
+                        addInfo(SubmissionInfo(1, 1).toProto())
                     }
                     .addNode {
                         code = "v1 = 1\nprint(1)\n"
-                        addIdList(2)
+                        addInfo(SubmissionInfo(2, 1).toProto())
                     }
                     .addNode {
                         code = "v1 = 1\nprint(v1)\n"
-                        addIdList(3)
+                        addInfo(SubmissionInfo(3, 1).toProto())
                     }
                     .addEdge(0, 1, 1.0)
                     .addEdge(0, 2, 2.0)
@@ -192,10 +215,16 @@ class ClusteringTest : ParametrizedBaseWithUnifierTest(getTmpProjectDir()) {
                 ClusteringImpl(
                     listOf(
                         setOf(
-                            SubmissionsNode(1, "print(1)\n", 1000, mutableSetOf(1)),
-                            SubmissionsNode(2, "v1 = 1\nprint(1)\n", 1000, mutableSetOf(2)),
+                            SubmissionsNode(1, "print(1)\n", 1000, mutableSetOf(
+                                SubmissionInfo(1, 1)
+                            )),
+                            SubmissionsNode(2, "v1 = 1\nprint(1)\n", 1000, mutableSetOf(
+                                SubmissionInfo(2, 1)
+                            )),
                         ),
-                        setOf(SubmissionsNode(2, "v1 = 1\nprint(v1)\n", 1000, mutableSetOf(3))),
+                        setOf(SubmissionsNode(2, "v1 = 1\nprint(v1)\n", 1000, mutableSetOf(
+                            SubmissionInfo(3, 1)
+                        ))),
                     )
                 )
             ),
@@ -203,15 +232,15 @@ class ClusteringTest : ParametrizedBaseWithUnifierTest(getTmpProjectDir()) {
                 ProtoGraphBuilder(1000)
                     .addNode {
                         code = "print(1)\n"
-                        addIdList(1)
+                        addInfo(SubmissionInfo(1, 1).toProto())
                     }
                     .addNode {
                         code = "v1 = 1\nprint(1)\n"
-                        addIdList(2)
+                        addInfo(SubmissionInfo(2, 1).toProto())
                     }
                     .addNode {
                         code = "v1 = 1\nprint(v1)\n"
-                        addIdList(3)
+                        addInfo(SubmissionInfo(3, 1).toProto())
                     }
                     .addEdge(0, 1, 1.0)
                     .addEdge(0, 2, 2.0)
@@ -221,9 +250,15 @@ class ClusteringTest : ParametrizedBaseWithUnifierTest(getTmpProjectDir()) {
                 ClusteringImpl(
                     listOf(
                         setOf(
-                            SubmissionsNode(1, "print(1)\n", 1000, mutableSetOf(1)),
-                            SubmissionsNode(2, "v1 = 1\nprint(1)\n", 1000, mutableSetOf(2)),
-                            SubmissionsNode(2, "v1 = 1\nprint(v1)\n", 1000, mutableSetOf(3)),
+                            SubmissionsNode(1, "print(1)\n", 1000, mutableSetOf(
+                                SubmissionInfo(1, 1)
+                            )),
+                            SubmissionsNode(2, "v1 = 1\nprint(1)\n", 1000, mutableSetOf(
+                                SubmissionInfo(2, 1)
+                            )),
+                            SubmissionsNode(2, "v1 = 1\nprint(v1)\n", 1000, mutableSetOf(
+                                SubmissionInfo(3, 1)
+                            )),
                         )
                     )
                 )

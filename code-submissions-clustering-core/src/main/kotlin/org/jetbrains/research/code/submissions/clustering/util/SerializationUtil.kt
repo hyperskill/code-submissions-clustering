@@ -5,11 +5,13 @@ package org.jetbrains.research.code.submissions.clustering.util
 import org.jetbrains.research.code.submissions.clustering.ProtoCluster
 import org.jetbrains.research.code.submissions.clustering.ProtoClusterEdge
 import org.jetbrains.research.code.submissions.clustering.ProtoClusteredGraph
+import org.jetbrains.research.code.submissions.clustering.ProtoSubmissionInfo
 import org.jetbrains.research.code.submissions.clustering.ProtoSubmissionsEdge
 import org.jetbrains.research.code.submissions.clustering.ProtoSubmissionsGraph
 import org.jetbrains.research.code.submissions.clustering.ProtoSubmissionsNode
 import org.jetbrains.research.code.submissions.clustering.load.clustering.*
 import org.jetbrains.research.code.submissions.clustering.load.context.builder.Identifier
+import org.jetbrains.research.code.submissions.clustering.model.SubmissionInfo
 import org.jetbrains.research.code.submissions.clustering.model.SubmissionsGraph
 import org.jetbrains.research.code.submissions.clustering.model.SubmissionsGraphEdge
 import org.jetbrains.research.code.submissions.clustering.model.SubmissionsNode
@@ -33,17 +35,26 @@ fun File.toSubmissionsGraph() = ProtoSubmissionsGraph.parseFrom(this.inputStream
 
 fun File.toClusteredGraph() = ProtoClusteredGraph.parseFrom(this.inputStream()).toGraph()
 
+fun SubmissionInfo.toProto(): ProtoSubmissionInfo = let { info ->
+    ProtoSubmissionInfo.newBuilder().apply {
+        id = info.id
+        quality = info.quality
+    }.build()
+}
+
+fun ProtoSubmissionInfo.toInfo(): SubmissionInfo = SubmissionInfo(id, quality)
+
 fun SubmissionsNode.toProto(): ProtoSubmissionsNode = let { node ->
     ProtoSubmissionsNode.newBuilder().apply {
         id = node.id
         code = node.code
         stepId = node.stepId
-        addAllIdList(idList)
+        addAllInfo(node.submissionsList.map { it.toProto() })
     }.build()
 }
 
 fun ProtoSubmissionsNode.toNode(): SubmissionsNode =
-    SubmissionsNode(id, code, stepId, idListList.toMutableSet())
+    SubmissionsNode(id, code, stepId, infoList.map { it.toInfo() }.toMutableSet())
 
 fun SubmissionsGraph.toProto(): ProtoSubmissionsGraph =
     ProtoSubmissionsGraph.newBuilder().apply {

@@ -1,32 +1,31 @@
 
-ä*w
+Å/
 dimport math
 
 
 def f1(f1_p1, f1_p2): print(int(math.fabs((f1_p1 % f1_p2) - math.pow(f1_p2, f1_p1))))
-ä^
-Þæ¡ÐÑ ]
+ä^~†Áðñ ‚
 Ddef f1(f1_p1, f1_p2): print(abs(f1_p1 % f1_p2 - pow(f1_p2, f1_p1)))
-ä^ßøùú‹ŒÏè j
+ä^˜™š«¬ïˆ r
 ]def f1(f1_p1, f1_p2):
     f1_v1 = f1_p1 % f1_p2
 
 
 v1 = f1_p2 ** f1_p1
 print(abs(v1 - f1_v1))
-ä^àž —
+ä^€¾ É
 Fdef f1(f1_p1, f1_p2): print(abs((f1_p1 % f1_p2) - pow(f1_p2, f1_p1)))
-ä^Háçèñòûü„…†‘”–Ÿ ©«­¯°³º¾ÄÆËÍÎÒÚÛáêë g
+ä^‡ˆ‘’›œ¡¤¥¦¯±´¶¿ÀÉËÍÏÐÓÚÞäæëíîòúûŠ‹ o
 Zdef f1(f1_p1, f1_p2):
     f1_v1 = (f1_p1 % f1_p2) - pow(f1_p2, f1_p1)
 
 
 print(abs(f1_v1))
-ä^âÇ R
+ä^‚ç U
 Gdef f1(f1_p1, f1_p2): print(abs(((f1_p1 % f1_p2) - (f1_p2 ** f1_p1))))
-ä^ã X
+ä^ƒ t
 Cdef f1(f1_p1, f1_p2): print(abs((f1_p1 % f1_p2) - f1_p2 ** f1_p1))
-ä^äð÷ÔÕä p
+ä^„—ôõ„ s
 edef f1(f1_p1, f1_p2):
     f1_v1 = f1_p1 % f1_p2
 
@@ -34,18 +33,18 @@ edef f1(f1_p1, f1_p2):
 v1 = f1_p2 ** f1_p1
 v2 = f1_v1 - v1
 print(abs(v2))
-ä^å o
+ä^… w
 bfrom math import pow
 
 
 def f1(f1_p1, f1_p2): print(int(abs((f1_p1 % f1_p2) - pow(f1_p2, f1_p1))))
-ä^éê 	m
+ä^‰Š 	“
 Timport math
 
 
 def f1(f1_p1, f1_p2): print(abs((f1_p1 % f1_p2) - pow(f1_p2, f1_p1)))
-ä^ëì“—›²ÜÝ 
-t
+ä^‹Œ³·»Òüý 
+
 edef f1(f1_p1, f1_p2):
     f1_v1 = f1_p1 % f1_p2
 
@@ -53,27 +52,27 @@ edef f1(f1_p1, f1_p2):
 v1 = f1_p2 ** f1_p1
 v2 = abs(f1_v1 - v1)
 print(v2)
-ä^íîï Z
+ä^Ž v
 Edef f1(f1_p1, f1_p2): print(abs((f1_p1 % f1_p2) - (f1_p2 ** f1_p1)))
-ä^óý•¹à e
+ä^“°µÙ€ m
 Xdef f1(f1_p1, f1_p2):
     f1_v1 = f1_p1 % f1_p2
 
 
 print(abs(f1_v1 - pow(f1_p2, f1_p1)))
-ä^ôõ o
+ä^”• 
 ^import math
 
 
 def f1(f1_p1, f1_p2): print(int(abs((f1_p1 % f1_p2) - math.pow(f1_p2, f1_p1))))
-ä^ö‰ÌÙ S
+ä^–©ìù [
 Fdef f1(f1_p1, f1_p2): print(pow(f1_p2, f1_p1) - abs((f1_p1 % f1_p2)))
-ä^þÿ n
+ä^žŸ v
 aimport math
 
 
 def f1(f1_p1, f1_p2): print(round(math.fabs((f1_p1 % f1_p2) - pow(f1_p2, f1_p1))))
-ä^€É …
+ä^ é ˆ
 zimport math
 
 
@@ -83,7 +82,7 @@ def f1(f1_p1, f1_p2):
 
 v1 = math.pow(f1_p2, f1_p1)
 print(int(abs(f1_v1 - v1)))
-ä^‚ ’
+ä^¢ •
 †import math
 
 
@@ -94,14 +93,14 @@ def f1(f1_p1, f1_p2):
 v1 = math.pow(f1_p2, f1_p1)
 v2 = f1_v1 - v1
 print(int(math.fabs(v2)))
-ä^ƒ €
+ä^£ ƒ
 udef f1(f1_p1, f1_p2): print(abs((f1_p1 % f1_p2) - pow(f1_p2, f1_p1)))
 
 
 exit()
 f1(int(input()), int(input()))
 exit()
-ä^‡ Š
+ä^§ 
 import sys
 
 
@@ -110,21 +109,21 @@ def f1(f1_p1, f1_p2): print(abs((f1_p1 % f1_p2) - pow(f1_p2, f1_p1)))
 
 f1(int(input()), int(input()))
 sys.exit()
-ä^ˆ i
+ä^¨ q
 \import math
 
 
 def f1(f1_p1, f1_p2): print(int(abs(f1_p1 % f1_p2 - math.pow(f1_p2, f1_p1))))
-ä^Š¥ Z
+ä^ªÅ b
 Mdef f1(f1_p1, f1_p2): return print(abs((f1_p1 % f1_p2) - pow(f1_p2, f1_p1)))
-ä^Ž i
+ä^­® l
 ^import math
 
 
 def f1(f1_p1, f1_p2): print(abs((f1_p1 % f1_p2) - int(math.pow(f1_p2, f1_p1))))
-ä^’ S
+ä^² V
 Hdef f1(f1_p1, f1_p2): print(abs((pow(f1_p2, f1_p1) - (f1_p1 % f1_p2))))
-ä^˜ ƒ
+ä^¸ †
 ximport math
 
 
@@ -133,45 +132,45 @@ def f1(f1_p1, f1_p2):
 
 
 print(f1_v1)
-ä^™ S
+ä^¹ [
 Fdef f1(f1_p1, f1_p2): print(abs((f1_p1 % f1_p2 - pow(f1_p2, f1_p1))))
-ä^šÊ Y
+ä^ºê k
 Hdef f1(f1_p1, f1_p2): print(abs((f1_p1 % f1_p2) - (pow(f1_p2, f1_p1))))
-ä^œ»¼Å S
+ä^¼ÛÜå V
 Hdef f1(f1_p1, f1_p2): print(abs(((f1_p1 % f1_p2) - pow(f1_p2, f1_p1))))
-ä^ d
+ä^½ g
 Yimport math
 
 
 def f1(f1_p1, f1_p2): print(int(abs((f1_p1 % f1_p2) - pow(f1_p2, f1_p1))))
-ä^¢ V
+ä^Â Y
 Kdef f1(f1_p1, f1_p2): print(int(abs((f1_p1 % f1_p2) - pow(f1_p2, f1_p1))))
-ä^£ m
+ä^Ã z
 ^import math
 
 
 def f1(f1_p1, f1_p2): print(abs(int((f1_p1 % f1_p2) - math.pow(f1_p2, f1_p1))))
-ä^¤¿À Y
+ä^Äßà \
 Ndef f1(f1_p1, f1_p2): print(abs(divmod(f1_p1, f1_p2)[1] - pow(f1_p2, f1_p1)))
-ä^¦  V
+ä^Æ  ^
 Idef f1(f1_p1, f1_p2): print(abs(int(f1_p1 % f1_p2) - pow(f1_p2, f1_p1)))
-ä^§¨ !o
+ä^ÇÈ !r
 ddef f1(f1_p1, f1_p2):
     f1_p1 = int(f1_p1)
 
 
 v1 = int(v1)
 print(abs(f1_p1 % v1 - pow(v1, f1_p1)))
-ä^ª "c
+ä^Ê "f
 Xdef f1(f1_p1, f1_p2): print(abs(int(f1_p1) % int(f1_p2) - pow(int(f1_p2), int(f1_p1))))
-ä^¬ #j
+ä^Ì #r
 ]def f1(f1_p1, f1_p2):
     f1_v1 = f1_p1 % f1_p2
 
 
 v1 = f1_p2 ** f1_p1
 print(abs(f1_v1 - v1))
-ä^®· $p
+ä^Î× $s
 edef f1(f1_p1, f1_p2):
     f1_v1 = f1_p1 % f1_p2
 
@@ -179,32 +178,32 @@ edef f1(f1_p1, f1_p2):
 v1 = pow(f1_p2, v2)
 v2 = abs(f1_v1 - v1)
 print(v2)
-ä^± %R
+ä^Ñ %d
 Adef f1(f1_p1, f1_p2): print(abs(f1_p1 % f1_p2 - f1_p2 ** f1_p1))
-ä^´Ö×Þ &m
+ä^Ôö÷þ &p
 bimport math
 
 
 def f1(f1_p1, f1_p2): print(int(math.fabs(f1_p1 % f1_p2 - math.pow(f1_p2, f1_p1))))
-ä^µ 'P
+ä^Õ 'X
 Cdef f1(f1_p1, f1_p2): print(abs((f1_p1 % f1_p2 - f1_p2 ** f1_p1)))
-ä^¶Â (^
+ä^Öâ (a
 Simport math
 
 
 def f1(f1_p1, f1_p2): print(abs((f1_p1 % f1_p2) - (f1_p2 ** f1_p1)))
-ä^¸ )o
+ä^Ø )r
 dfrom math import pow
 
 
 def f1(f1_p1, f1_p2): print(round(abs((f1_p1 % f1_p2) - pow(f1_p2, f1_p1))))
-ä^½ *T
+ä^Ý *W
 Idef f1(f1_p1, f1_p2): print(abs(abs(f1_p1 % f1_p2) - pow(f1_p2, f1_p1)))
-ä^Á +e
+ä^á +h
 Zdef f1(f1_p1, f1_p2): print(abs((int(f1_p1) % int(f1_p2)) - pow(int(f1_p2), int(f1_p1))))
-ä^Ã ,Z
+ä^ã ,]
 Odef f1(f1_p1, f1_p2): print(abs(pow(f1_p2, f1_p1) - (f1_p1 // f1_p2) - f1_p1))
-ä^È -†
+ä^è -‰
 {def f1(f1_p1, f1_p2):
     f1_v1 = f1_p1 % f1_p2 - f1_p2 ** f1_p1
 
@@ -213,27 +212,27 @@ if f1_v1 >= 0:
     print(f1_v1)
 else:
     print(-f1_v1)
-ä^Ó .g
+ä^ó .j
 \def f1(f1_p1, f1_p2): print(abs((int(f1_p1) % int(f1_p2)) - (pow(int(f1_p2), int(f1_p1)))))
-ä^Ø /e
+ä^ø /h
 Zdef f1(f1_p1, f1_p2):
     f1_v1 = abs((f1_p1 % f1_p2) - pow(f1_p2, f1_p1))
 
 
 print(f1_v1)
-ä^ß 0m
+ä^ÿ 0u
 `from math import *
 
 
 def f1(f1_p1, f1_p2): print(int(abs((f1_p1 % f1_p2) - pow(f1_p2, f1_p1))))
-ä^âã 1V
+ä^‚ƒ 1Y
 Kdef f1(f1_p1, f1_p2): print(abs(int((f1_p1 % f1_p2)) - pow(f1_p2, f1_p1)))
-ä^å 2g
+ä^… 2o
 Zdef f1(f1_p1, f1_p2):
     f1_v1 = f1_p1 % f1_p2
 
 
 print(abs((f1_v1) - pow(f1_p2, f1_p1)))
-ä^æç 3Q
+ä^†‡ 3T
 Fdef f1(f1_p1, f1_p2): print(abs(pow(f1_p2, f1_p1) - (f1_p1 % f1_p2)))
-ä^é 4
+ä^‰ 4

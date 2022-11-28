@@ -34,7 +34,7 @@ class SubmissionsGraphToDotConverter {
     ): String {
         val vsb = StringBuilder()
         val csb = StringBuilder()
-        val totalSubmissionsCnt = vertexSet().sumOf { it.idList.size }
+        val totalSubmissionsCnt = vertexSet().sumOf { it.submissionsList.size }
         val clusters = clusteredGraph.graph.vertexSet()
         clusters.forEach { cluster ->
             val entities = cluster.entities
@@ -86,7 +86,7 @@ class SubmissionsGraphToDotConverter {
     }
 
     private fun vertexToDot(vertex: SubmissionsNode, totalSubmissionsCnt: Int): String {
-        val color = calculateColor(vertex.idList.size, totalSubmissionsCnt)
+        val color = calculateColor(vertex.submissionsList.size, totalSubmissionsCnt)
         return "v${vertex.id} [label = \"v${vertex.id}\", style = filled, fillcolor = $color]"
     }
 

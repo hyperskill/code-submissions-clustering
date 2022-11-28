@@ -5,20 +5,20 @@ import org.jetbrains.research.code.submissions.clustering.load.context.builder.I
 /**
  * @property code submissions code
  * @property stepId submissions step id
- * @property idList list of submission ids corresponding to [code]
+ * @property submissionsList list of submission infos corresponding to [code]
  * @property id
  */
 data class SubmissionsNode(
     val id: Identifier,
     val code: String,
     val stepId: Int,
-    val idList: MutableSet<Int>
+    val submissionsList: MutableSet<SubmissionInfo>
 ) : Comparable<SubmissionsNode> {
     constructor(submission: Submission, id: Identifier) : this(
         id,
         submission.code,
         submission.stepId,
-        mutableSetOf(submission.id)
+        mutableSetOf(submission.info)
     )
 
     override fun compareTo(other: SubmissionsNode): Int = id - other.id
@@ -27,5 +27,6 @@ data class SubmissionsNode(
 
     override fun hashCode(): Int = code.hashCode()
 
-    override fun toString(): String = "\nSubmissionsNode(code = \n$code, \nidList = ${idList.toList().sorted()})"
+    override fun toString(): String =
+        "\nSubmissionsNode(code = \n$code, \nidList = ${submissionsList.map { it.id }.sorted()})"
 }
