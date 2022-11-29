@@ -11,6 +11,10 @@ class TaskNamedArgs(Enum):
     LANGUAGE = 'language'
     BINARY_INPUT = 'binaryInput'
     DISTANCE_LIMIT = 'distanceLimit'
+    MIN_DISTANCE_LIMIT = 'min_distance_limit'
+    MAX_DISTANCE_LIMIT = 'max_distance_limit'
+    STEP_DISTANCE_LIMIT = 'step_distance_limit'
+    CSV_DIR = 'csv_dir'
 
 
 @unique

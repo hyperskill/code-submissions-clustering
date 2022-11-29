@@ -1,8 +1,8 @@
 from argparse import Namespace
 from typing import Any, Dict, Tuple
 
-from utils.models.cli_models import TaskFlagArgs, TaskNamedArgs
-from utils.runners.abstract_task_runner import AbstractTaskRunner
+from src.utils.models.cli_models import TaskFlagArgs, TaskNamedArgs
+from src.utils.runners.abstract_task_runner import AbstractTaskRunner
 
 
 class ClusteringRunner(AbstractTaskRunner):

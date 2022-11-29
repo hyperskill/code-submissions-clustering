@@ -30,11 +30,13 @@ containing single .csv file with resulting clustering for initial code submissio
 import argparse
 import os.path
 
-from plugin_runner.utils import configure_parser
-from utils.file_utils import create_dir, list_files
-from utils.logger_utils import set_logger
-from utils.runners.clustering_runner import ClusteringRunner
-from utils.steps_processing_utils import process_steps
+from src.plugin_runner.utils import configure_parser
+from src.utils.file_utils import create_dir, list_files
+from src.utils.logger_utils import set_logger
+from src.utils.models.cli_arguments import ClusteringArguments
+from src.utils.models.cli_models import TaskNamedArgs
+from src.utils.runners.clustering_runner import ClusteringRunner
+from src.utils.steps_processing_utils import process_steps
 
 SERIALIZATION_DIR = 'serialization'
 
@@ -75,31 +77,27 @@ def build_binary_input_file_name(step_id: int, args: argparse.Namespace) -> str:
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument(
-        'csv_dir',
+        TaskNamedArgs.CSV_DIR.value,
         help='Input directory with .csv files containing code submissions',
     )
     parser.add_argument(
-        '--preprocess_dir',
-        help='Input directory with preprocessed data',
-    )
-    parser.add_argument(
-        'min_distance_limit',
+        TaskNamedArgs.MIN_DISTANCE_LIMIT.value,
         help='Min distance limit',
         type=int,
     )
     parser.add_argument(
-        'max_distance_limit',
+        TaskNamedArgs.MAX_DISTANCE_LIMIT.value,
         help='Max distance limit',
         type=int,
     )
     parser.add_argument(
-        'step_distance_limit',
+        TaskNamedArgs.STEP_DISTANCE_LIMIT.value,
         help='Distance limit step',
         type=int,
     )
 
     configure_parser(parser)
-    args = parser.parse_args()
+    args = ClusteringArguments(parser.parse_args())
 
     create_dir(args.output_path)
     logger = set_logger(args.output_path)
