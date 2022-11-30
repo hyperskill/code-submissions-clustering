@@ -2,7 +2,8 @@ package org.jetbrains.research.code.submissions.clustering.cli
 
 import com.intellij.openapi.application.ApplicationStarter
 import com.xenomachina.argparser.ArgParser
-import com.xenomachina.argparser.default
+import org.jetbrains.research.code.submissions.clustering.cli.models.AbstractGraphBuilderArgs
+import org.jetbrains.research.code.submissions.clustering.cli.models.Writer
 import org.jetbrains.research.code.submissions.clustering.load.context.builder.gumtree.GumTreeGraphContextBuilder
 import org.jetbrains.research.code.submissions.clustering.model.Language
 import org.jetbrains.research.code.submissions.clustering.model.SubmissionsGraph
@@ -10,6 +11,7 @@ import org.jetbrains.research.code.submissions.clustering.util.*
 import java.nio.file.Path
 import java.nio.file.Paths
 import java.util.logging.Logger
+import kotlin.system.exitProcess
 
 abstract class AbstractGraphBuilder : ApplicationStarter {
     protected val logger: Logger = Logger.getLogger(javaClass.name)
@@ -21,6 +23,15 @@ abstract class AbstractGraphBuilder : ApplicationStarter {
     protected var binInput: Path? = null
     private lateinit var lang: Language
     private lateinit var outputPath: String
+
+    private fun getWriters() = listOf(
+        Writer(SubmissionsGraph::writeToTxt, true),
+        Writer(SubmissionsGraph::writeToBinary, toBinary),
+        Writer(SubmissionsGraph::writeToCsv, toCSV),
+        Writer(SubmissionsGraph::writeToPng, toPNG),
+        Writer(SubmissionsGraph::writeClustersToTxt, clustersToTxt),
+        Writer(SubmissionsGraph::writeClusteringResult, clusteringRes),
+    )
 
     protected fun <T : AbstractGraphBuilderArgs> parseArgs(
         args: MutableList<String>,
@@ -43,65 +54,27 @@ abstract class AbstractGraphBuilder : ApplicationStarter {
 
     protected fun SubmissionsGraph.writeOutputData() {
         createFolder(outputPath)
-        tryToWrite(::writeToTxt)
-        if (toBinary) {
-            tryToWrite(::writeToBinary)
-        }
-        if (toCSV) {
-            tryToWrite(::writeToCsv)
-        }
-        if (toPNG) {
-            tryToWrite(::writeToPng)
-        }
-        if (clustersToTxt) {
-            tryToWrite(::writeClustersToTxt)
-        }
-        if (clusteringRes) {
-            tryToWrite(::writeClusteringResult)
+        getWriters().filter { it.toWrite }.forEach { tryToWrite(it.writer) }
+    }
+
+    @Suppress("TooGenericExceptionCaught")
+    protected fun startRunner(args: MutableList<String>, run: (MutableList<String>) -> Unit) {
+        try {
+            run(args)
+        } catch (ex: Throwable) {
+            logger.severe { ex.stackTraceToString() }
+            exitProcess(1)
+        } finally {
+            exitProcess(0)
         }
     }
 
     @Suppress("TooGenericExceptionCaught")
-    private fun tryToWrite(write: (String) -> Unit) {
+    private fun SubmissionsGraph.tryToWrite(write: SubmissionsGraph.(String) -> Unit) {
         try {
             write(outputPath)
         } catch (ex: Throwable) {
             logger.severe { "Writing failed: $ex" }
         }
     }
-}
-
-open class AbstractGraphBuilderArgs(parser: ArgParser) {
-    val language by parser.storing(
-        "-l", "--language",
-        help = "Programming language of code submissions"
-    )
-    val outputDir by parser.storing(
-        "-o", "--outputDir",
-        help = "Directory to store all output files",
-    )
-    val binaryInput by parser.storing(
-        "-b", "--binaryInput",
-        help = "Directory storing previously serialized graph"
-    ).default<String?>(null)
-    val serializeGraph by parser.flagging(
-        "--serialize",
-        help = "Save submissions graph and its clustered structure to binary files"
-    )
-    val saveCSV by parser.flagging(
-        "--saveCSV",
-        help = "Save unified solutions to .csv file"
-    )
-    val visualize by parser.flagging(
-        "--visualize",
-        help = "Save submissions graph and its clustered structure visualization to .png files"
-    )
-    val saveClusters by parser.flagging(
-        "--saveClusters",
-        help = "Save submissions graph clusters to .txt file"
-    )
-    val clusteringResult by parser.flagging(
-        "--clusteringResult",
-        help = "Save the result of clustering to .csv.gz file"
-    )
 }

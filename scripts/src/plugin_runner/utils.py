@@ -1,15 +1,15 @@
 from argparse import ArgumentParser
 
-from utils.models.cli_models import TaskFlagArgs, TaskNamedArgs
+from src.utils.models.cli_models import TaskFlagArgs, TaskNamedArgs
 
 
 def configure_parser(parser: ArgumentParser):
     parser.add_argument(
-        'output_path',
+        TaskNamedArgs.OUTPUT_PATH.value,
         help='Output directory to store folders with output files',
     )
     parser.add_argument(
-        'language',
+        TaskNamedArgs.LANGUAGE.value,
         help='Programming language of code submissions',
     )
     parser.add_argument(

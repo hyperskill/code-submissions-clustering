@@ -34,6 +34,10 @@ ignore =
   I101,
 # Isort found an unexpected missing import
   I005,
+# Isort found an import in the wrong position
+  I001,
+# Missing docstring in __init__
+  D107,
 
 exclude = .git, */data, env/, venv/
 
