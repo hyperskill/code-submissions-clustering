@@ -21,3 +21,12 @@ def get_absolute_path(path: Optional[str]) -> Optional[str]:
     if path is None:
         return None
     return str(Path(path).resolve())
+
+
+def list_files(path: str) -> List[str]:
+    files = []
+    for file in os.listdir(path):
+        path_to_file = os.path.join(path, file)
+        if os.path.isfile(path_to_file):
+            files.append(file)
+    return files

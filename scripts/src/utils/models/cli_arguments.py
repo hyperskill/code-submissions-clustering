@@ -17,3 +17,7 @@ class ClusteringArguments:
         self.visualize = args.visualize
         self.save_clusters = args.saveClusters
         self.clustering_result = args.clusteringResult
+        self.csv_dir = args.csv_dir
+        self.min_distance_limit = args.min_distance_limit
+        self.max_distance_limit = args.max_distance_limit
+        self.step_distance_limit = args.step_distance_limit
