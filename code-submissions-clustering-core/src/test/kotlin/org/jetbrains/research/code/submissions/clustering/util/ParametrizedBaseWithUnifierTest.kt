@@ -17,11 +17,9 @@ import java.awt.EventQueue
 
 @Ignore
 open class ParametrizedBaseWithUnifierTest(testDataRoot: String) : ParametrizedBaseWithPythonSdkTest(testDataRoot) {
-    init {
+    override fun setUp() {
+        super.setUp()
         mockProject ?: run {
-            EventQueue.invokeAndWait {
-                super.setUp()
-            }
             mockProject = project
             mockPsiManager = psiManager
             mockFixture = myFixture

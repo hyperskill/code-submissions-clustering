@@ -16,7 +16,7 @@ import org.junit.runner.RunWith
 import org.junit.runners.Parameterized
 
 @RunWith(Parameterized::class)
-class ClusteringResultTest : ClusteringResultBaseTest() {
+class ClusteringRangingResultTest : ClusteringResultBaseTest() {
     @Test
     fun testToClusteringDataFrame() {
         testToClusteringDataFrameHelper()
@@ -26,17 +26,12 @@ class ClusteringResultTest : ClusteringResultBaseTest() {
         @Suppress("WRONG_NEWLINES", "TOO_LONG_FUNCTION", "LongMethod")
         @JvmStatic
         @Parameterized.Parameters(name = "{index}: ({0}, {1}, {2})")
-        fun getClusteringTestData() = listOf(
-            arrayOf(
-                ProtoGraphBuilder().build(),
-                1.0,
-                dataFrameOf("submission_id", "cluster_id", "position")(emptySequence())
-            ),
+        fun getRangingTestData() = listOf(
             arrayOf(
                 ProtoGraphBuilder(1000)
                     .addNode {
                         code = "print(1)\n"
-                        addInfo(SubmissionInfo(1, 1).toProto())
+                        addInfo(SubmissionInfo(1, 4).toProto())
                     }
                     .build(),
                 1.0,
@@ -48,29 +43,29 @@ class ClusteringResultTest : ClusteringResultBaseTest() {
                 ProtoGraphBuilder(1000)
                     .addNode {
                         code = "print(1)\n"
-                        addInfo(SubmissionInfo(1, 1).toProto())
+                        addInfo(SubmissionInfo(1, 2).toProto())
                     }
                     .addNode {
                         code = "v1 = 1\nprint(1)\n"
-                        addInfo(SubmissionInfo(2, 1).toProto())
+                        addInfo(SubmissionInfo(2, 4).toProto())
                     }
                     .addEdge(0, 1, 3.0)
                     .build(),
                 5.0,
                 dataFrameOf("submission_id", "cluster_id", "position")(
-                    1, 0, 0,
-                    2, 0, 1,
+                    1, 0, 1,
+                    2, 0, 0,
                 )
             ),
             arrayOf(
                 ProtoGraphBuilder(1000)
                     .addNode {
                         code = "print(1)\n"
-                        addInfo(SubmissionInfo(1, 1).toProto())
+                        addInfo(SubmissionInfo(1, 2).toProto())
                     }
                     .addNode {
                         code = "v1 = 1\nprint(1)\n"
-                        addInfo(SubmissionInfo(2, 1).toProto())
+                        addInfo(SubmissionInfo(2, 4).toProto())
                     }
                     .addEdge(0, 1, 3.0)
                     .build(),
@@ -84,11 +79,11 @@ class ClusteringResultTest : ClusteringResultBaseTest() {
                 ProtoGraphBuilder(1000)
                     .addNode {
                         code = "print(1)\n"
-                        addInfo(SubmissionInfo(1, 1).toProto())
+                        addInfo(SubmissionInfo(1, 3).toProto())
                     }
                     .addNode {
                         code = "v1 = 1\nprint(1)\n"
-                        addInfo(SubmissionInfo(2, 1).toProto())
+                        addInfo(SubmissionInfo(2, 2).toProto())
                     }
                     .addNode {
                         code = "v1 = 1\nprint(v1)\n"
@@ -109,11 +104,11 @@ class ClusteringResultTest : ClusteringResultBaseTest() {
                 ProtoGraphBuilder(1000)
                     .addNode {
                         code = "print(1)\n"
-                        addInfo(SubmissionInfo(1, 1).toProto())
+                        addInfo(SubmissionInfo(1, 3).toProto())
                     }
                     .addNode {
                         code = "v1 = 1\nprint(1)\n"
-                        addInfo(SubmissionInfo(2, 1).toProto())
+                        addInfo(SubmissionInfo(2, 2).toProto())
                     }
                     .addNode {
                         code = "v1 = 1\nprint(v1)\n"
@@ -134,11 +129,11 @@ class ClusteringResultTest : ClusteringResultBaseTest() {
                 ProtoGraphBuilder(1000)
                     .addNode {
                         code = "print(1)\n"
-                        addInfo(SubmissionInfo(1, 1).toProto())
+                        addInfo(SubmissionInfo(1, 3).toProto())
                     }
                     .addNode {
                         code = "v1 = 1\nprint(1)\n"
-                        addInfo(SubmissionInfo(2, 1).toProto())
+                        addInfo(SubmissionInfo(2, 2).toProto())
                     }
                     .addNode {
                         code = "v1 = 1\nprint(v1)\n"
@@ -159,11 +154,11 @@ class ClusteringResultTest : ClusteringResultBaseTest() {
                 ProtoGraphBuilder(1000)
                     .addNode {
                         code = "print(1)\n"
-                        addInfo(SubmissionInfo(1, 1).toProto())
+                        addInfo(SubmissionInfo(1, 3).toProto())
                     }
                     .addNode {
                         code = "v1 = 1\nprint(1)\n"
-                        addInfo(SubmissionInfo(2, 1).toProto())
+                        addInfo(SubmissionInfo(2, 2).toProto())
                     }
                     .addNode {
                         code = "v1 = 1\nprint(v1)\n"
@@ -178,6 +173,131 @@ class ClusteringResultTest : ClusteringResultBaseTest() {
                     1, 0, 0,
                     2, 0, 1,
                     3, 0, 2,
+                )
+            ),
+            arrayOf(
+                ProtoGraphBuilder(1000)
+                    .addNode {
+                        code = "print(1)\n"
+                        addInfo(SubmissionInfo(1, 1).toProto())
+                    }
+                    .addNode {
+                        code = "v1 = 1\nprint(1)\n"
+                        addInfo(SubmissionInfo(2, 2).toProto())
+                    }
+                    .addNode {
+                        code = "v1 = 1\nprint(v1)\n"
+                        addInfo(SubmissionInfo(3, 3).toProto())
+                    }
+                    .addEdge(0, 1, 1.0)
+                    .addEdge(0, 2, 2.0)
+                    .addEdge(1, 2, 3.0)
+                    .build(),
+                3.0,
+                dataFrameOf("submission_id", "cluster_id", "position")(
+                    1, 0, 2,
+                    2, 0, 1,
+                    3, 0, 0,
+                )
+            ),
+            arrayOf(
+                ProtoGraphBuilder(1000)
+                    .addNode {
+                        code = "print(1)\n"
+                        addInfo(SubmissionInfo(1, 1).toProto())
+                    }
+                    .addNode {
+                        code = "v1 = 1\nprint(1)\n"
+                        addInfo(SubmissionInfo(2, 3).toProto())
+                    }
+                    .addNode {
+                        code = "v1 = 1\nprint(v1)\n"
+                        addInfo(SubmissionInfo(3, 2).toProto())
+                    }
+                    .addEdge(0, 1, 1.0)
+                    .addEdge(0, 2, 2.0)
+                    .addEdge(1, 2, 3.0)
+                    .build(),
+                3.0,
+                dataFrameOf("submission_id", "cluster_id", "position")(
+                    1, 0, 2,
+                    2, 0, 0,
+                    3, 0, 1,
+                )
+            ),
+            arrayOf(
+                ProtoGraphBuilder(1000)
+                    .addNode {
+                        code = "print(1)\n"
+                        addInfo(SubmissionInfo(1, 2).toProto())
+                    }
+                    .addNode {
+                        code = "v1 = 1\nprint(1)\n"
+                        addInfo(SubmissionInfo(2, 1).toProto())
+                    }
+                    .addNode {
+                        code = "v1 = 1\nprint(v1)\n"
+                        addInfo(SubmissionInfo(3, 3).toProto())
+                    }
+                    .addEdge(0, 1, 1.0)
+                    .addEdge(0, 2, 2.0)
+                    .addEdge(1, 2, 3.0)
+                    .build(),
+                3.0,
+                dataFrameOf("submission_id", "cluster_id", "position")(
+                    1, 0, 1,
+                    2, 0, 2,
+                    3, 0, 0,
+                )
+            ),
+            arrayOf(
+                ProtoGraphBuilder(1000)
+                    .addNode {
+                        code = "print(1)\n"
+                        addInfo(SubmissionInfo(1, 2).toProto())
+                    }
+                    .addNode {
+                        code = "v1 = 1\nprint(1)\n"
+                        addInfo(SubmissionInfo(2, 3).toProto())
+                    }
+                    .addNode {
+                        code = "v1 = 1\nprint(v1)\n"
+                        addInfo(SubmissionInfo(3, 1).toProto())
+                    }
+                    .addEdge(0, 1, 1.0)
+                    .addEdge(0, 2, 2.0)
+                    .addEdge(1, 2, 3.0)
+                    .build(),
+                3.0,
+                dataFrameOf("submission_id", "cluster_id", "position")(
+                    1, 0, 1,
+                    2, 0, 0,
+                    3, 0, 2,
+                )
+            ),
+            arrayOf(
+                ProtoGraphBuilder(1000)
+                    .addNode {
+                        code = "print(1)\n"
+                        addInfo(SubmissionInfo(1, 3).toProto())
+                    }
+                    .addNode {
+                        code = "v1 = 1\nprint(1)\n"
+                        addInfo(SubmissionInfo(2, 1).toProto())
+                    }
+                    .addNode {
+                        code = "v1 = 1\nprint(v1)\n"
+                        addInfo(SubmissionInfo(3, 2).toProto())
+                    }
+                    .addEdge(0, 1, 1.0)
+                    .addEdge(0, 2, 2.0)
+                    .addEdge(1, 2, 3.0)
+                    .build(),
+                3.0,
+                dataFrameOf("submission_id", "cluster_id", "position")(
+                    1, 0, 0,
+                    2, 0, 2,
+                    3, 0, 1,
                 )
             ),
         )

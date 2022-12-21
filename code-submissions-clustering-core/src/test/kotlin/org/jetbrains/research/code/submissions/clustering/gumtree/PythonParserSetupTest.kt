@@ -1,6 +1,7 @@
 package org.jetbrains.research.code.submissions.clustering.gumtree
 
 import org.jetbrains.research.code.submissions.clustering.load.context.builder.gumtree.GumTreeParserUtil
+import org.junit.Ignore
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 import java.io.File
@@ -8,6 +9,7 @@ import java.io.File
 /*
 * Check if python parser setup works correctly
 * */
+@Ignore
 internal class PythonParserSetupTest : PythonGumTreeBaseTest() {
     private val parserRepoFile = File(GumTreeParserUtil.parserRepoPath)
     private val parserZipFile = File(GumTreeParserUtil.parserZipPath)

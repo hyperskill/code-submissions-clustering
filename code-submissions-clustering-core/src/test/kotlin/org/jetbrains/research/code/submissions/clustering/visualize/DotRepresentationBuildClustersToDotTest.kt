@@ -6,34 +6,33 @@ import org.jetbrains.research.code.submissions.clustering.load.clustering.submis
 import org.jetbrains.research.code.submissions.clustering.load.visualization.SubmissionsGraphToDotConverter
 import org.jetbrains.research.code.submissions.clustering.model.SubmissionInfo
 import org.jetbrains.research.code.submissions.clustering.util.*
-import org.junit.jupiter.params.ParameterizedTest
+import org.junit.Test
 import org.junit.jupiter.params.provider.Arguments
-import org.junit.jupiter.params.provider.MethodSource
+import org.junit.runner.RunWith
+import org.junit.runners.Parameterized
 
-class DotRepresentationBuildTest : ParametrizedBaseWithUnifierTest(getTmpProjectDir()) {
-    @ParameterizedTest
-    @MethodSource("getClustersTestData")
-    fun testClustersToDot(protoGraph: ProtoSubmissionsGraph, distanceLimit: Double, expectedDotRepr: String) {
+@RunWith(Parameterized::class)
+class DotRepresentationBuildClustersToDotTest : ParametrizedBaseWithUnifierTest(getTmpProjectDir()) {
+    @JvmField
+    @Parameterized.Parameter(0)
+    var protoGraph: ProtoSubmissionsGraph? = null
+
+    @JvmField
+    @Parameterized.Parameter(1)
+    var distanceLimit: Double? = null
+
+    @JvmField
+    @Parameterized.Parameter(2)
+    var expectedDotRepr: String? = null
+
+    @Test
+    fun testClustersToDot() {
         WriteCommandAction.runWriteCommandAction(mockProject) {
-            val submissionsGraph = protoGraph.toGraph()
-            val clusterer = SubmissionsGraphHAC(distanceLimit)
+            val submissionsGraph = protoGraph!!.toGraph()
+            val clusterer = SubmissionsGraphHAC(distanceLimit!!)
             submissionsGraph.cluster(clusterer)
             with(SubmissionsGraphToDotConverter()) {
-                assertEquals(expectedDotRepr, submissionsGraph.toDot())
-            }
-        }
-    }
-
-    @ParameterizedTest
-    @MethodSource("getStructureTestData")
-    fun testStructureToDot(protoGraph: ProtoSubmissionsGraph, distanceLimit: Double, expectedDotRepr: String) {
-        WriteCommandAction.runWriteCommandAction(mockProject) {
-            val submissionsGraph = protoGraph.toGraph()
-            val clusterer = SubmissionsGraphHAC(distanceLimit)
-            submissionsGraph.cluster(clusterer)
-            with(SubmissionsGraphToDotConverter()) {
-                val clusteredGraph = submissionsGraph.getClusteredGraph()
-                assertEquals(expectedDotRepr, clusteredGraph.toDot())
+                assertEquals(expectedDotRepr!!, submissionsGraph.toDot())
             }
         }
     }
@@ -41,8 +40,9 @@ class DotRepresentationBuildTest : ParametrizedBaseWithUnifierTest(getTmpProject
     companion object {
         @Suppress("WRONG_NEWLINES", "TOO_LONG_FUNCTION", "LongMethod")
         @JvmStatic
-        fun getClustersTestData(): List<Arguments> = listOf(
-            Arguments.of(
+        @Parameterized.Parameters(name = "{index}: ({0}, {1}, {2})")
+        fun getClustersTestData() = listOf(
+            arrayOf(
                 ProtoGraphBuilder().build(),
                 1.0,
                 """graph ? {
@@ -51,7 +51,7 @@ class DotRepresentationBuildTest : ParametrizedBaseWithUnifierTest(getTmpProject
                     |}
                 """.trimMargin()
             ),
-            Arguments.of(
+            arrayOf(
                 ProtoGraphBuilder(1000)
                     .addNode {
                         code = "print(1)\n"
@@ -71,7 +71,7 @@ class DotRepresentationBuildTest : ParametrizedBaseWithUnifierTest(getTmpProject
                     |}
                 """.trimMargin()
             ),
-            Arguments.of(
+            arrayOf(
                 ProtoGraphBuilder(1000)
                     .addNode {
                         code = "v1 = 1\n"
@@ -95,7 +95,7 @@ class DotRepresentationBuildTest : ParametrizedBaseWithUnifierTest(getTmpProject
                     |}
                 """.trimMargin()
             ),
-            Arguments.of(
+            arrayOf(
                 ProtoGraphBuilder(1000)
                     .addNode {
                         code = "print(1)\n"
@@ -121,7 +121,7 @@ class DotRepresentationBuildTest : ParametrizedBaseWithUnifierTest(getTmpProject
                     |}
                 """.trimMargin()
             ),
-            Arguments.of(
+            arrayOf(
                 ProtoGraphBuilder(1000)
                     .addNode {
                         code = "print(1)\n"
@@ -153,92 +153,6 @@ class DotRepresentationBuildTest : ParametrizedBaseWithUnifierTest(getTmpProject
                     |  subgraph cluster_1 {
                     |    label = < <B>C1</B>  [1 node] >
                     |    v3
-                    |  }
-                    |
-                    |}
-                """.trimMargin()
-            ),
-        )
-
-        @Suppress("WRONG_NEWLINES", "TOO_LONG_FUNCTION", "LongMethod")
-        @JvmStatic
-        fun getStructureTestData(): List<Arguments> = listOf(
-            Arguments.of(
-                ProtoGraphBuilder().build(),
-                1.0,
-                """graph ? {
-                    |
-                    |  subgraph {
-                    |    node [shape = box]
-                    |  }
-                    |
-                    |}
-                """.trimMargin()
-            ),
-            Arguments.of(
-                ProtoGraphBuilder(1000)
-                    .addNode {
-                        code = "print(1)\n"
-                        addInfo(SubmissionInfo(1, 1).toProto())
-                    }
-                    .build(),
-                1.0,
-                """graph 1000 {
-                    |
-                    |  subgraph {
-                    |    node [shape = box]
-                    |    C0
-                    |  }
-                    |
-                    |}
-                """.trimMargin()
-            ),
-            Arguments.of(
-                ProtoGraphBuilder(1000)
-                    .addNode {
-                        code = "v1 = 1\n"
-                        addAllInfo(listOf(
-                            SubmissionInfo(1, 1),
-                            SubmissionInfo(2, 1),
-                            SubmissionInfo(3, 1),
-                        ).map { it.toProto() })
-                    }
-                    .build(),
-                1.0,
-                """graph 1000 {
-                    |
-                    |  subgraph {
-                    |    node [shape = box]
-                    |    C0
-                    |  }
-                    |
-                    |}
-                """.trimMargin()
-            ),
-            Arguments.of(
-                ProtoGraphBuilder(1000)
-                    .addNode {
-                        code = "print(1)\n"
-                        addInfo(SubmissionInfo(1, 1).toProto())
-                    }
-                    .addNode {
-                        code = "v1 = 1\nprint(1)\n"
-                        addInfo(SubmissionInfo(2, 1).toProto())
-                    }
-                    .addNode {
-                        code = "v1 = 1\nprint(v1)\n"
-                        addInfo(SubmissionInfo(3, 1).toProto())
-                    }
-                    .addEdge(0, 1, 1.0)
-                    .addEdge(0, 2, 2.0)
-                    .addEdge(1, 2, 3.0)
-                    .build(),
-                1.0,
-                """graph 1000 {
-                    |
-                    |  subgraph {
-                    |    node [shape = box]
-                    |    C0 -- C1 [label = "3"]
                     |  }
                     |
                     |}

@@ -7,6 +7,7 @@ import org.jetbrains.research.code.submissions.clustering.util.toSubmissionsGrap
 import java.io.File
 import java.nio.file.Paths
 
+@Suppress("WRONG_ORDER_IN_CLASS_LIKE_STRUCTURES")
 object DistanceCalculationRunner : AbstractGraphBuilder() {
     private lateinit var inputFilename: String
 

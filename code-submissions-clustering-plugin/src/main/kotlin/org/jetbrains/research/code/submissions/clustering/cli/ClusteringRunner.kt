@@ -9,6 +9,7 @@ import org.jetbrains.research.code.submissions.clustering.util.loadGraph
 import org.jetbrains.research.code.submissions.clustering.util.toSubmissionsGraph
 import java.nio.file.Paths
 
+@Suppress("WRONG_ORDER_IN_CLASS_LIKE_STRUCTURES")
 object ClusteringRunner : AbstractGraphBuilder() {
     private lateinit var inputFilename: String
     private lateinit var distLimit: String

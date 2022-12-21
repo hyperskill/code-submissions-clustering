@@ -4,62 +4,50 @@ import com.intellij.openapi.command.WriteCommandAction
 import org.jetbrains.research.code.submissions.clustering.ProtoSubmissionsGraph
 import org.jetbrains.research.code.submissions.clustering.load.clustering.submissions.SubmissionsGraphHAC
 import org.jetbrains.research.code.submissions.clustering.model.SubmissionInfo
-import org.jetbrains.research.code.submissions.clustering.model.SubmissionsGraph
 import org.jetbrains.research.code.submissions.clustering.model.SubmissionsNode
 import org.jetbrains.research.code.submissions.clustering.util.*
 import org.jgrapht.alg.interfaces.ClusteringAlgorithm.Clustering
 import org.jgrapht.alg.interfaces.ClusteringAlgorithm.ClusteringImpl
-import org.junit.jupiter.params.ParameterizedTest
-import org.junit.jupiter.params.provider.Arguments
-import org.junit.jupiter.params.provider.MethodSource
-import java.io.File
-import java.nio.file.Paths
+import org.junit.Test
+import org.junit.runner.RunWith
+import org.junit.runners.Parameterized
 
+@RunWith(Parameterized::class)
 class ClusteringTest : ParametrizedBaseWithUnifierTest(getTmpProjectDir()) {
-    @ParameterizedTest
-    @MethodSource("getTestData")
-    fun testClustering(
-        protoGraph: ProtoSubmissionsGraph,
-        distanceLimit: Double,
-        expectedClustering: Clustering<SubmissionsNode>
-    ) {
+    @JvmField
+    @Parameterized.Parameter(0)
+    var protoGraph: ProtoSubmissionsGraph? = null
+
+    @JvmField
+    @Parameterized.Parameter(1)
+    var distanceLimit: Double? = null
+
+    @JvmField
+    @Parameterized.Parameter(2)
+    var expectedClustering: Clustering<SubmissionsNode>? = null
+
+    @Test
+    fun testClustering() {
         WriteCommandAction.runWriteCommandAction(mockProject) {
-            val submissionsGraph = protoGraph.toGraph()
-            val clusterer = SubmissionsGraphHAC(distanceLimit)
+            val submissionsGraph = protoGraph!!.toGraph()
+            val clusterer = SubmissionsGraphHAC(distanceLimit!!)
             submissionsGraph.cluster(clusterer)
             val clusteredGraph = submissionsGraph.getClusteredGraph()
-            expectedClustering.assertEquals(clusteredGraph.getClustering())
-        }
-    }
-
-    @ParameterizedTest
-    @MethodSource("getTestDataFromBin")
-    fun testInfiniteEdgesClustering(
-        submissionsGraph: SubmissionsGraph,
-        distanceLimit: Double
-    ) {
-        WriteCommandAction.runWriteCommandAction(mockProject) {
-            val clusterer = SubmissionsGraphHAC(distanceLimit)
-            submissionsGraph.cluster(clusterer)
-            val clusteredGraph = submissionsGraph.getClusteredGraph().graph
-            assert(
-                (clusteredGraph.edgeSet().maxOfOrNull {
-                    clusteredGraph.getEdgeWeight(it)
-                } ?: 0).toDouble() < Double.POSITIVE_INFINITY
-            )
+            expectedClustering!!.assertEquals(clusteredGraph.getClustering())
         }
     }
 
     companion object {
         @Suppress("WRONG_NEWLINES", "TOO_LONG_FUNCTION", "LongMethod")
         @JvmStatic
-        fun getTestData(): List<Arguments> = listOf(
-            Arguments.of(
+        @Parameterized.Parameters(name = "{index}: ({0}, {1}, {2})")
+        fun getTestData() = listOf(
+            arrayOf(
                 ProtoGraphBuilder().build(),
                 1.0,
                 ClusteringImpl<SubmissionsNode>(listOf())
             ),
-            Arguments.of(
+            arrayOf(
                 ProtoGraphBuilder(1000)
                     .addNode {
                         code = "print(1)\n"
@@ -69,13 +57,17 @@ class ClusteringTest : ParametrizedBaseWithUnifierTest(getTmpProjectDir()) {
                 1.0,
                 ClusteringImpl(
                     listOf(
-                        setOf(SubmissionsNode(1, "print(1)\n", 1000, mutableSetOf(
-                            SubmissionInfo(1, 1)
-                        ))),
+                        setOf(
+                            SubmissionsNode(
+                                1, "print(1)\n", 1000, mutableSetOf(
+                                    SubmissionInfo(1, 1)
+                                )
+                            )
+                        ),
                     )
                 )
             ),
-            Arguments.of(
+            arrayOf(
                 ProtoGraphBuilder(1000)
                     .addNode {
                         code = "print(1)\n"
@@ -91,17 +83,21 @@ class ClusteringTest : ParametrizedBaseWithUnifierTest(getTmpProjectDir()) {
                 ClusteringImpl(
                     listOf(
                         setOf(
-                            SubmissionsNode(1, "print(1)\n", 1000, mutableSetOf(
-                                SubmissionInfo(1, 1)
-                            )),
-                            SubmissionsNode(2, "v1 = 1\nprint(1)\n", 1000, mutableSetOf(
-                                SubmissionInfo(2, 1)
-                            )),
+                            SubmissionsNode(
+                                1, "print(1)\n", 1000, mutableSetOf(
+                                    SubmissionInfo(1, 1)
+                                )
+                            ),
+                            SubmissionsNode(
+                                2, "v1 = 1\nprint(1)\n", 1000, mutableSetOf(
+                                    SubmissionInfo(2, 1)
+                                )
+                            ),
                         )
                     )
                 )
             ),
-            Arguments.of(
+            arrayOf(
                 ProtoGraphBuilder(1000)
                     .addNode {
                         code = "print(1)\n"
@@ -116,16 +112,24 @@ class ClusteringTest : ParametrizedBaseWithUnifierTest(getTmpProjectDir()) {
                 2.0,
                 ClusteringImpl(
                     listOf(
-                        setOf(SubmissionsNode(1, "print(1)\n", 1000, mutableSetOf(
-                            SubmissionInfo(1, 1)
-                        ))),
-                        setOf(SubmissionsNode(2, "v1 = 1\nprint(1)\n", 1000, mutableSetOf(
-                            SubmissionInfo(2, 1)
-                        ))),
+                        setOf(
+                            SubmissionsNode(
+                                1, "print(1)\n", 1000, mutableSetOf(
+                                    SubmissionInfo(1, 1)
+                                )
+                            )
+                        ),
+                        setOf(
+                            SubmissionsNode(
+                                2, "v1 = 1\nprint(1)\n", 1000, mutableSetOf(
+                                    SubmissionInfo(2, 1)
+                                )
+                            )
+                        ),
                     )
                 )
             ),
-            Arguments.of(
+            arrayOf(
                 ProtoGraphBuilder(1000)
                     .addNode {
                         code = "print(1)\n"
@@ -146,19 +150,31 @@ class ClusteringTest : ParametrizedBaseWithUnifierTest(getTmpProjectDir()) {
                 0.0,
                 ClusteringImpl(
                     listOf(
-                        setOf(SubmissionsNode(1, "print(1)\n", 1000, mutableSetOf(
-                            SubmissionInfo(1, 1)
-                        ))),
-                        setOf(SubmissionsNode(2, "v1 = 1\nprint(1)\n", 1000, mutableSetOf(
-                            SubmissionInfo(2, 1)
-                        ))),
-                        setOf(SubmissionsNode(2, "v1 = 1\nprint(v1)\n", 1000, mutableSetOf(
-                            SubmissionInfo(3, 1)
-                        ))),
+                        setOf(
+                            SubmissionsNode(
+                                1, "print(1)\n", 1000, mutableSetOf(
+                                    SubmissionInfo(1, 1)
+                                )
+                            )
+                        ),
+                        setOf(
+                            SubmissionsNode(
+                                2, "v1 = 1\nprint(1)\n", 1000, mutableSetOf(
+                                    SubmissionInfo(2, 1)
+                                )
+                            )
+                        ),
+                        setOf(
+                            SubmissionsNode(
+                                2, "v1 = 1\nprint(v1)\n", 1000, mutableSetOf(
+                                    SubmissionInfo(3, 1)
+                                )
+                            )
+                        ),
                     )
                 )
             ),
-            Arguments.of(
+            arrayOf(
                 ProtoGraphBuilder(1000)
                     .addNode {
                         code = "print(1)\n"
@@ -180,20 +196,28 @@ class ClusteringTest : ParametrizedBaseWithUnifierTest(getTmpProjectDir()) {
                 ClusteringImpl(
                     listOf(
                         setOf(
-                            SubmissionsNode(1, "print(1)\n", 1000, mutableSetOf(
-                                SubmissionInfo(1, 1)
-                            )),
-                            SubmissionsNode(2, "v1 = 1\nprint(1)\n", 1000, mutableSetOf(
-                                SubmissionInfo(2, 1)
-                            )),
+                            SubmissionsNode(
+                                1, "print(1)\n", 1000, mutableSetOf(
+                                    SubmissionInfo(1, 1)
+                                )
+                            ),
+                            SubmissionsNode(
+                                2, "v1 = 1\nprint(1)\n", 1000, mutableSetOf(
+                                    SubmissionInfo(2, 1)
+                                )
+                            ),
                         ),
-                        setOf(SubmissionsNode(2, "v1 = 1\nprint(v1)\n", 1000, mutableSetOf(
-                            SubmissionInfo(3, 1)
-                        ))),
+                        setOf(
+                            SubmissionsNode(
+                                2, "v1 = 1\nprint(v1)\n", 1000, mutableSetOf(
+                                    SubmissionInfo(3, 1)
+                                )
+                            )
+                        ),
                     )
                 )
             ),
-            Arguments.of(
+            arrayOf(
                 ProtoGraphBuilder(1000)
                     .addNode {
                         code = "print(1)\n"
@@ -215,20 +239,28 @@ class ClusteringTest : ParametrizedBaseWithUnifierTest(getTmpProjectDir()) {
                 ClusteringImpl(
                     listOf(
                         setOf(
-                            SubmissionsNode(1, "print(1)\n", 1000, mutableSetOf(
-                                SubmissionInfo(1, 1)
-                            )),
-                            SubmissionsNode(2, "v1 = 1\nprint(1)\n", 1000, mutableSetOf(
-                                SubmissionInfo(2, 1)
-                            )),
+                            SubmissionsNode(
+                                1, "print(1)\n", 1000, mutableSetOf(
+                                    SubmissionInfo(1, 1)
+                                )
+                            ),
+                            SubmissionsNode(
+                                2, "v1 = 1\nprint(1)\n", 1000, mutableSetOf(
+                                    SubmissionInfo(2, 1)
+                                )
+                            ),
                         ),
-                        setOf(SubmissionsNode(2, "v1 = 1\nprint(v1)\n", 1000, mutableSetOf(
-                            SubmissionInfo(3, 1)
-                        ))),
+                        setOf(
+                            SubmissionsNode(
+                                2, "v1 = 1\nprint(v1)\n", 1000, mutableSetOf(
+                                    SubmissionInfo(3, 1)
+                                )
+                            )
+                        ),
                     )
                 )
             ),
-            Arguments.of(
+            arrayOf(
                 ProtoGraphBuilder(1000)
                     .addNode {
                         code = "print(1)\n"
@@ -250,43 +282,25 @@ class ClusteringTest : ParametrizedBaseWithUnifierTest(getTmpProjectDir()) {
                 ClusteringImpl(
                     listOf(
                         setOf(
-                            SubmissionsNode(1, "print(1)\n", 1000, mutableSetOf(
-                                SubmissionInfo(1, 1)
-                            )),
-                            SubmissionsNode(2, "v1 = 1\nprint(1)\n", 1000, mutableSetOf(
-                                SubmissionInfo(2, 1)
-                            )),
-                            SubmissionsNode(2, "v1 = 1\nprint(v1)\n", 1000, mutableSetOf(
-                                SubmissionInfo(3, 1)
-                            )),
+                            SubmissionsNode(
+                                1, "print(1)\n", 1000, mutableSetOf(
+                                    SubmissionInfo(1, 1)
+                                )
+                            ),
+                            SubmissionsNode(
+                                2, "v1 = 1\nprint(1)\n", 1000, mutableSetOf(
+                                    SubmissionInfo(2, 1)
+                                )
+                            ),
+                            SubmissionsNode(
+                                2, "v1 = 1\nprint(v1)\n", 1000, mutableSetOf(
+                                    SubmissionInfo(3, 1)
+                                )
+                            ),
                         )
                     )
                 )
             ),
         )
-
-        @JvmStatic
-        fun getTestDataFromBin(): List<Arguments> {
-            val binDirName = "bin.data"
-            val classLoader = Thread.currentThread().contextClassLoader
-            val binDir = classLoader.getResource(binDirName)?.toURI()?.let { Paths.get(it) }
-                ?: error("The bin folder was not found")
-
-            val submissionsGraphs = binDir.toFile().walkTopDown().mapNotNull {
-                (if (it.isSerializationFolder()) Paths.get(it.toURI()) else null)?.toSubmissionsGraph()
-            }
-
-            return submissionsGraphs.map { graph ->
-                (25..600 step 50).map { limit ->
-                    Arguments.of(graph, limit)
-                }
-            }.flatten().toList()
-        }
-
-        private fun File.isSerializationFolder(): Boolean {
-            val graphSerName = "graph.bin"
-            val clusterSerName = "clusters.bin"
-            return this.isDirectory && File(this, graphSerName).exists() && File(this, clusterSerName).exists()
-        }
     }
 }
