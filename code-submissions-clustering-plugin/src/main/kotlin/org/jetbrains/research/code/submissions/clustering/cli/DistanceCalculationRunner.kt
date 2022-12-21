@@ -10,11 +10,14 @@ import java.nio.file.Paths
 object DistanceCalculationRunner : AbstractGraphBuilder() {
     private lateinit var inputFilename: String
 
-    override fun getCommandName(): String = "calculate-dist"
+    @Deprecated("Specify it as `id` for extension definition in a plugin descriptor")
+    override val commandName: String
+        get() = "calculate-dist"
 
-    override fun main(args: MutableList<String>) {
-        startRunner(args) {
-            parseArgs(args, ::DistanceCalculationRunnerArgs).run {
+    override fun main(args: List<String>) {
+        val mutableArgs = args.toMutableList()
+        startRunner(mutableArgs) {
+            parseArgs(mutableArgs, ::DistanceCalculationRunnerArgs).run {
                 inputFilename = Paths.get(inputFile).toString()
             }
             val file = File(inputFilename)

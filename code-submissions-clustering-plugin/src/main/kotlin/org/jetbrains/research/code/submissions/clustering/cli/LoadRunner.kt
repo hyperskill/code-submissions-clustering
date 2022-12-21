@@ -10,11 +10,14 @@ import java.nio.file.Paths
 object LoadRunner : AbstractGraphBuilder() {
     private lateinit var inputFilename: String
 
-    override fun getCommandName(): String = "load"
+    @Deprecated("Specify it as `id` for extension definition in a plugin descriptor")
+    override val commandName: String
+        get() = "load"
 
-    override fun main(args: MutableList<String>) {
-        startRunner(args) {
-            parseArgs(args, ::LoadRunnerArgs).run {
+    override fun main(args: List<String>) {
+        val mutableArgs = args.toMutableList()
+        startRunner(mutableArgs) {
+            parseArgs(mutableArgs, ::LoadRunnerArgs).run {
                 inputFilename = Paths.get(inputFile).toString()
             }
             val df = DataFrame.readCSV(inputFilename)

@@ -13,11 +13,14 @@ object ClusteringRunner : AbstractGraphBuilder() {
     private lateinit var inputFilename: String
     private lateinit var distLimit: String
 
-    override fun getCommandName() = "cluster"
+    @Deprecated("Specify it as `id` for extension definition in a plugin descriptor")
+    override val commandName: String
+        get() = "cluster"
 
-    override fun main(args: MutableList<String>) {
-        startRunner(args) {
-            parseArgs(args, ::GraphClusteringRunnerArgs).run {
+    override fun main(args: List<String>) {
+        val mutableArgs = args.toMutableList()
+        startRunner(mutableArgs) {
+            parseArgs(mutableArgs, ::GraphClusteringRunnerArgs).run {
                 inputFilename = Paths.get(inputFile).toString()
                 distLimit = distanceLimit
             }
