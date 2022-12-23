@@ -26,18 +26,6 @@ jobs:
           virtualenv ./scripts/venv/
           source ./scripts/venv/bin/activate
           pip install -r ./scripts/requirements.txt -r ./scripts/requirements-code-style.txt
-  code-style:
-    needs: setup
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-
-      - name: Cache Python virtual environment
-        id: pip-cache
-        uses: actions/cache@v2
-        with:
-          path: ./scripts/venv
-          key: ${{ runner.os }}-pip-cache-v4-${{ hashFiles('./scripts/requirements*.txt') }}
 
       - name: Run python static code analyzers
         run: |
