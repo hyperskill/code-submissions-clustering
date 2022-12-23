@@ -15,8 +15,8 @@ dependencies {
     implementation(libs.gumtreediff.gen.python)
     implementation(libs.zip4j)
 
-    implementation("it.unimi.dsi:fastutil-core:8.5.11")
-    implementation("com.google.guava:guava:31.1-jre")
+    implementation(libs.fastutil)
+    implementation(libs.guava)
 
     // Need for tests
     testImplementation(libs.junit.jupiter.api)
