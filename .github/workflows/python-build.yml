@@ -3,7 +3,7 @@ name: Python build
 on: [push, pull_request]
 
 jobs:
-  setup:
+  build:
     runs-on: ubuntu-20.04
     steps:
       - uses: actions/checkout@v3
