@@ -4,28 +4,37 @@ import com.intellij.openapi.command.WriteCommandAction
 import org.jetbrains.research.code.submissions.clustering.ProtoSubmissionsGraph
 import org.jetbrains.research.code.submissions.clustering.model.SubmissionInfo
 import org.jetbrains.research.code.submissions.clustering.util.*
-import org.junit.jupiter.params.ParameterizedTest
-import org.junit.jupiter.params.provider.Arguments
-import org.junit.jupiter.params.provider.MethodSource
+import org.junit.Test
+import org.junit.runner.RunWith
+import org.junit.runners.Parameterized
 
+@RunWith(Parameterized::class)
 class DistanceCalculationTest : ParametrizedBaseWithUnifierTest(getTmpProjectDir()) {
-    @ParameterizedTest
-    @MethodSource("getTestData")
-    fun testCalculateDistances(protoGraph: ProtoSubmissionsGraph, expectedProtoGraph: ProtoSubmissionsGraph) {
+    @JvmField
+    @Parameterized.Parameter(0)
+    var protoGraph: ProtoSubmissionsGraph? = null
+
+    @JvmField
+    @Parameterized.Parameter(1)
+    var expectedProtoGraph: ProtoSubmissionsGraph? = null
+
+    @Test
+    fun testCalculateDistances() {
         WriteCommandAction.runWriteCommandAction(mockProject) {
-            expectedProtoGraph.assertEquals(protoGraph.toGraph().calculateDistances(mockContext).toProto())
+            expectedProtoGraph!!.assertEquals(protoGraph!!.toGraph().calculateDistances(mockContext).toProto())
         }
     }
 
     companion object {
         @Suppress("TOO_LONG_FUNCTION", "LongMethod")
         @JvmStatic
-        fun getTestData(): List<Arguments> = listOf(
-            Arguments.of(
+        @Parameterized.Parameters(name = "{index}: ({0}, {1})")
+        fun getTestData() = listOf(
+            arrayOf(
                 ProtoGraphBuilder().build(),
                 ProtoGraphBuilder().build()
             ),
-            Arguments.of(
+            arrayOf(
                 ProtoGraphBuilder(1000)
                     .addNode {
                         code = "print(1)\n"
@@ -39,7 +48,7 @@ class DistanceCalculationTest : ParametrizedBaseWithUnifierTest(getTmpProjectDir
                     }
                     .build()
             ),
-            Arguments.of(
+            arrayOf(
                 ProtoGraphBuilder(1000)
                     .addNode {
                         code = "print(1)\n"
@@ -62,7 +71,7 @@ class DistanceCalculationTest : ParametrizedBaseWithUnifierTest(getTmpProjectDir
                     .addEdge(0, 1, 3.0)
                     .build()
             ),
-            Arguments.of(
+            arrayOf(
                 ProtoGraphBuilder(1000)
                     .addNode {
                         code = "for v1 in [1, 2, 3]: print(v1)\n"
@@ -95,7 +104,7 @@ class DistanceCalculationTest : ParametrizedBaseWithUnifierTest(getTmpProjectDir
                     .addEdge(0, 1, 87.0)
                     .build()
             ),
-            Arguments.of(
+            arrayOf(
                 ProtoGraphBuilder(1000)
                     .addNode {
                         code = "print(1)\n"

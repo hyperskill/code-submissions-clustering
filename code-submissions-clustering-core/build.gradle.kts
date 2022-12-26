@@ -14,6 +14,10 @@ dependencies {
     implementation(libs.gumtreediff.core)
     implementation(libs.gumtreediff.gen.python)
     implementation(libs.zip4j)
+
+    implementation(libs.fastutil)
+    implementation(libs.guava)
+
     // Need for tests
     testImplementation(libs.junit.jupiter.api)
     testRuntimeOnly(libs.junit.jupiter.engine)
@@ -23,7 +27,7 @@ dependencies {
 
 tasks {
     test {
-        useJUnitPlatform()
+//        useJUnitPlatform()
         jvmArgs = listOf(
             "-Dgt.pp.path=${Paths.get(project.parent!!.projectDir.toString(), "libs", "pythonparser")}"
         )

@@ -5,28 +5,37 @@ import org.jetbrains.kotlinx.dataframe.DataFrame
 import org.jetbrains.kotlinx.dataframe.api.dataFrameOf
 import org.jetbrains.research.code.submissions.clustering.model.SubmissionInfo
 import org.jetbrains.research.code.submissions.clustering.util.*
-import org.junit.jupiter.params.ParameterizedTest
-import org.junit.jupiter.params.provider.Arguments
-import org.junit.jupiter.params.provider.MethodSource
+import org.junit.Test
+import org.junit.runner.RunWith
+import org.junit.runners.Parameterized
 
+@RunWith(Parameterized::class)
 class LoadGraphTest : ParametrizedBaseWithUnifierTest(getTmpProjectDir()) {
-    @ParameterizedTest
-    @MethodSource("getTestData")
-    fun testLoadGraphFromDataFrame(dataFrame: DataFrame<*>, expectedProtoGraph: ProtoSubmissionsGraph) {
+    @JvmField
+    @Parameterized.Parameter(0)
+    var dataFrame: DataFrame<*>? = null
+
+    @JvmField
+    @Parameterized.Parameter(1)
+    var expectedProtoGraph: ProtoSubmissionsGraph? = null
+
+    @Test
+    fun testLoadGraphFromDataFrame() {
         WriteCommandAction.runWriteCommandAction(mockProject) {
-            expectedProtoGraph.assertEquals(dataFrame.loadGraph(mockContext).toProto())
+            expectedProtoGraph!!.assertEquals(dataFrame!!.loadGraph(mockContext).toProto())
         }
     }
 
     companion object {
         @Suppress("WRONG_NEWLINES", "TOO_LONG_FUNCTION", "LongMethod")
         @JvmStatic
-        fun getTestData(): List<Arguments> = listOf(
-            Arguments.of(
+        @Parameterized.Parameters(name = "{index}: ({0}, {1})")
+        fun getTestData() = listOf(
+            arrayOf(
                 dataFrameOf("id", "step_id", "code", "quality")(emptySequence()),
                 ProtoGraphBuilder().build()
             ),
-            Arguments.of(
+            arrayOf(
                 dataFrameOf("id", "step_id", "code", "quality")(
                     1, 1000, "print(1)", 1,
                 ),
@@ -37,7 +46,7 @@ class LoadGraphTest : ParametrizedBaseWithUnifierTest(getTmpProjectDir()) {
                     }
                     .build()
             ),
-            Arguments.of(
+            arrayOf(
                 dataFrameOf("id", "step_id", "code", "quality")(
                     1, 1000, "y = 1\n", 1,
                     2, 1000, "var = 1\n", 1,
@@ -54,7 +63,7 @@ class LoadGraphTest : ParametrizedBaseWithUnifierTest(getTmpProjectDir()) {
                     }
                     .build()
             ),
-            Arguments.of(
+            arrayOf(
                 dataFrameOf("id", "step_id", "code", "quality")(
                     1, 1000, "y =         1\n", 1,
                     2, 1000, "var       = 1\n", 1,
@@ -71,7 +80,7 @@ class LoadGraphTest : ParametrizedBaseWithUnifierTest(getTmpProjectDir()) {
                     }
                     .build()
             ),
-            Arguments.of(
+            arrayOf(
                 dataFrameOf("id", "step_id", "code", "quality")(
                     1, 1000, "print(1)\n", 1,
                     2, 1000, "x = 1\nprint(1)\n", 1,

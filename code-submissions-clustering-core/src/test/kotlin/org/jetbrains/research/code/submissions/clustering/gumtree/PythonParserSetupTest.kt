@@ -1,14 +1,15 @@
 package org.jetbrains.research.code.submissions.clustering.gumtree
 
 import org.jetbrains.research.code.submissions.clustering.load.context.builder.gumtree.GumTreeParserUtil
-import org.junit.jupiter.api.DisplayName
-import org.junit.jupiter.api.Test
+import org.junit.Test
+import org.junit.runner.RunWith
 import java.io.File
 
 /*
 * Check if python parser setup works correctly
 * */
-internal class PythonParserSetupTest : PythonGumTreeBaseTest() {
+@RunWith(PythonGumTreeRunner::class)
+internal class PythonParserSetupTest {
     private val parserRepoFile = File(GumTreeParserUtil.parserRepoPath)
     private val parserZipFile = File(GumTreeParserUtil.parserZipPath)
     private val targetParserFile = File(GumTreeParserUtil.targetParserPath)
@@ -16,8 +17,9 @@ internal class PythonParserSetupTest : PythonGumTreeBaseTest() {
     private fun getLastModified() = listOf(parserZipFile, parserRepoFile, targetParserFile).map { it.lastModified() }
 
     @Test
-    @DisplayName("Check if parser setup works without both parser zip and parser repo")
     fun testEmptyParser() {
+        // Check if parser setup works without both parser zip and parser repo
+
         parserRepoFile.deleteRecursively()
         parserZipFile.deleteRecursively()
         GumTreeParserUtil.checkSetup()
@@ -26,8 +28,9 @@ internal class PythonParserSetupTest : PythonGumTreeBaseTest() {
     }
 
     @Test
-    @DisplayName("Check if parser setup works without parser repo")
     fun testParserWithoutRepo() {
+        // Check if parser setup works without parser repo
+
         assert(parserZipFile.exists()) { PARSER_ZIP_FILE_EXIST_ERROR }
         parserRepoFile.deleteRecursively()
 
@@ -41,8 +44,9 @@ internal class PythonParserSetupTest : PythonGumTreeBaseTest() {
     }
 
     @Test
-    @DisplayName("Check if parser setup works without parser zip")
     fun testParserWithoutZip() {
+        // Check if parser setup works without parser zip
+
         assert(parserRepoFile.exists()) { PARSER_REPO_FILE_EXIST_ERROR }
         parserZipFile.deleteRecursively()
 
@@ -56,8 +60,9 @@ internal class PythonParserSetupTest : PythonGumTreeBaseTest() {
     }
 
     @Test
-    @DisplayName("Check if updates works with already existing parser zip and repo")
     fun testFullParser() {
+        // Check if updates works with already existing parser zip and repo
+
         assertParserFies()
         val lastModifiedBeforeSetup = getLastModified()
         GumTreeParserUtil.checkSetup(true)
