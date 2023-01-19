@@ -14,9 +14,6 @@ plugins {
     alias(libs.plugins.dokka)
 }
 
-val utilitiesProjectName = "org.jetbrains.research.pluginUtilities"
-val protobufRuntime = libs.protobuf.runtime
-
 allprojects {
     apply {
         apply {
@@ -36,27 +33,16 @@ allprojects {
 
     repositories {
         mavenCentral()
+        maven("https://packages.jetbrains.team/maven/p/big-code/bigcode")
     }
 
     dependencies {
         implementation(kotlin("stdlib-jdk8"))
-        implementation(protobufRuntime)
+        implementation(rootProject.libs.protobuf.runtime)
 
-        testImplementation("$utilitiesProjectName:plugin-utilities-core") {
-            version {
-                branch = "main"
-            }
-        }
-        testImplementation("$utilitiesProjectName:plugin-utilities-python") {
-            version {
-                branch = "main"
-            }
-        }
-        testImplementation("$utilitiesProjectName:plugin-utilities-test") {
-            version {
-                branch = "main"
-            }
-        }
+        implementation(rootProject.libs.plugin.utilities.core)
+        implementation(rootProject.libs.plugin.utilities.test)
+        implementation(rootProject.libs.plugin.utilities.python)
     }
 
     tasks {
