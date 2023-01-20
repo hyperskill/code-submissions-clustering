@@ -16,12 +16,6 @@ sourceControl {
     gitRepository(URI.create("https://github.com/JetBrains-Research/ast-transformations.git")) {
         producesModule("org.jetbrains.research.ml.ast.transformations:ast-transformations-core")
     }
-
-    gitRepository(URI.create(utilitiesRepo)) {
-        producesModule("$utilitiesProjectName:plugin-utilities-core")
-        producesModule("$utilitiesProjectName:plugin-utilities-python")
-        producesModule("$utilitiesProjectName:plugin-utilities-test")
-    }
 }
 
 include(
