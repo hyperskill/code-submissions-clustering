@@ -88,7 +88,7 @@ it is highly recommended to load and serialize submissions graphs before running
 Run the following command from the **root** of the **scripts** folder:
 
 ```
-python3 -m plugin_runner.clustering /path/to/csv/dir 10 100 20 /path/to/output/dir PYTHON --serialize --saveClusters --clusteringResult
+python3 -m src.plugin_runner.clustering /path/to/csv/dir 10 100 20 /path/to/output/dir PYTHON --serialize --saveClusters --clusteringResult
 ```
 
 **Note**: you need to install all requirements from the
@@ -133,7 +133,7 @@ Now it is pretty convenient to launch clustering of the serialized submissions g
 advanced clustering analysis):
 
 ```
-python3 -m plugin_runner.clustering /path/to/load_output/solutions 15 230 15 /path/to/clustering_output PYTHON --binaryInput=/path/to/load_output/output --clusteringResult
+python3 -m src.plugin_runner.clustering /path/to/load_output/solutions 15 230 15 /path/to/clustering_output PYTHON --binaryInput=/path/to/load_output/output --clusteringResult
 ```
 
 These are the contents of the passed clustering output directory after running the `clustering` script:
