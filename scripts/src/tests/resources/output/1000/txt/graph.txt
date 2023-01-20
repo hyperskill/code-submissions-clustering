@@ -1,0 +1,9 @@
+vertices {
+  code: "print(\"Hello world!\")\n"
+  stepId: 1000
+  info {
+    id: 1
+    quality: 1
+  }
+  id: 1
+}
