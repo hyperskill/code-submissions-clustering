@@ -2,7 +2,7 @@ import time
 from logging import Logger
 from typing import List
 
-from src.utils.models.cli_arguments import ClusteringArguments
+from src.utils.models.script_parameters import BaseRunnerParameters
 from src.utils.runners.abstract_task_runner import AbstractTaskRunner
 from src.utils.time_utils import time_to_str
 
@@ -10,7 +10,7 @@ from src.utils.time_utils import time_to_str
 def process_steps(
         step_ids: List[int],
         task_runner: AbstractTaskRunner,
-        script_arguments: ClusteringArguments,
+        script_params: BaseRunnerParameters,
         logger: Logger,
         **kwargs,
 ):
@@ -18,7 +18,7 @@ def process_steps(
 
     :param step_ids: list of step ids to operate
     :param task_runner: runs specified gradle task
-    :param script_arguments: arguments passed to initial python script
+    :param script_params: arguments passed to initial python script
     :param logger: logger
     """
     total_execution_time = 0
@@ -27,7 +27,7 @@ def process_steps(
         logger.info(f'Operating step {step_id}...')
         start = time.time()
         try:
-            stderr_output = task_runner.run(step_id, script_arguments, **kwargs)
+            stderr_output = task_runner.run(step_id, script_params, **kwargs)
         except Exception as e:
             logger.error(e)
             logger.info(f'Operating step {step_id} is stopped due to above exception')
