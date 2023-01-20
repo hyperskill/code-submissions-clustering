@@ -21,8 +21,8 @@ from src.plugin_runner.utils import ScriptArgsParser
 from src.utils.df_utils import read_df, write_df
 from src.utils.file_utils import create_dir
 from src.utils.logger_utils import set_logger
-from src.utils.models.script_arguments import LoadScriptArguments
 from src.utils.models.df_column_name import SubmissionColumns
+from src.utils.models.script_arguments import LoadScriptArguments
 from src.utils.models.script_parameters import LoadSubmissionsGraphParameters
 from src.utils.runners.load_runner import LoadRunner
 from src.utils.steps_processing_utils import process_steps

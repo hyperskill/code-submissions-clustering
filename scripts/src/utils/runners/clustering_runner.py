@@ -1,7 +1,7 @@
 from typing import Any, Dict, Tuple
 
-from src.utils.models.script_parameters import ClusteringParameters
 from src.utils.models.cli_models import TaskFlagArgs, TaskNamedArgs
+from src.utils.models.script_parameters import ClusteringParameters
 from src.utils.runners.abstract_task_runner import AbstractTaskRunner, get_common_named_arguments
 
 

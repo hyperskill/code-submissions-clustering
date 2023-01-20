@@ -2,8 +2,8 @@ from abc import ABC, abstractmethod
 from pathlib import Path
 from typing import Any, Dict, Tuple
 
-from src.utils.models.script_parameters import BaseRunnerParameters
 from src.utils.models.cli_models import TaskFlagArgs, TaskNamedArgs
+from src.utils.models.script_parameters import BaseRunnerParameters
 from src.utils.run_process_utils import run_in_subprocess
 
 

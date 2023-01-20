@@ -4,7 +4,7 @@ from dataclasses import dataclass
 @dataclass
 class ScriptArgument:
     name: str
-    help: str
+    help_text: str
     is_optional: bool = False
     is_flag: bool = False
     data_type: type = str

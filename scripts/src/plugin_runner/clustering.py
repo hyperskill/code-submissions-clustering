@@ -86,7 +86,11 @@ if __name__ == '__main__':
 
     task_runner = ClusteringRunner()
 
-    for dl in range(params.min_distance_limit, params.max_distance_limit, params.step_distance_limit):
+    for dl in range(
+            params.min_distance_limit,
+            params.max_distance_limit,
+            params.step_distance_limit,
+    ):
         params.distance_limit = dl
         logger.info(f'Clustering code submissions with distance limit: {dl}')
         process_steps(

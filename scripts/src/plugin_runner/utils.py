@@ -13,9 +13,9 @@ class ScriptArgsParser:
         name = arg.name if not arg.is_optional else f'--{arg.name}'
         if arg.is_flag:
 
-            self._parser.add_argument(name, help=arg.help, action='store_true')
+            self._parser.add_argument(name, help=arg.help_text, action='store_true')
         else:
-            self._parser.add_argument(name, help=arg.help, type=arg.data_type)
+            self._parser.add_argument(name, help=arg.help_text, type=arg.data_type)
 
     def parse_args(self) -> Namespace:
         return self._parser.parse_args()
