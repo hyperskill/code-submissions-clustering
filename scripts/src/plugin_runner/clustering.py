@@ -75,7 +75,9 @@ def build_binary_input_file_name(step_id: int, params: ClusteringParameters) -> 
 
 if __name__ == '__main__':
     parser = ScriptArgsParser(ClusterScriptArguments())
-    params = ClusteringParameters(parser.parse_args())
+    args = parser.parse_args()
+
+    params = ClusteringParameters.from_args(args)
 
     create_dir(params.output_path)
     logger = set_logger(params.output_path)
@@ -91,7 +93,7 @@ if __name__ == '__main__':
             params.max_distance_limit,
             params.step_distance_limit,
     ):
-        params.distance_limit = dl
+        params = ClusteringParameters.from_args(args, distance_limit=dl)
         logger.info(f'Clustering code submissions with distance limit: {dl}')
         process_steps(
             step_ids, task_runner, params, logger,

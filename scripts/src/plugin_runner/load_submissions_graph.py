@@ -84,7 +84,7 @@ def parse_solutions(params: LoadSubmissionsGraphParameters) -> List[int]:
 
 if __name__ == '__main__':
     parser = ScriptArgsParser(LoadScriptArguments())
-    params = LoadSubmissionsGraphParameters(parser.parse_args())
+    params = LoadSubmissionsGraphParameters.from_args(parser.parse_args())
 
     create_directories(params.output_path)
     logger = set_logger(params.output_path)

@@ -44,7 +44,7 @@ def build_output_dir_name(step_id: int, params: CalculateDistancesParameters) ->
 
 if __name__ == '__main__':
     parser = ScriptArgsParser(CalculateDistScriptArguments())
-    params = CalculateDistancesParameters(parser.parse_args())
+    params = CalculateDistancesParameters.from_args(parser.parse_args())
 
     create_dir(params.output_path)
     logger = set_logger(params.output_path)
