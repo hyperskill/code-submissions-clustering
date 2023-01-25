@@ -6,7 +6,7 @@ from typing import List, Tuple
 
 def run_in_subprocess(command: List[str], cwd: Path,
                       stdout_file=subprocess.PIPE,
-                      stderr_file=subprocess.PIPE) -> Tuple[int, str]:
+                      stderr_file=subprocess.PIPE) -> Tuple[int, str, str]:
     process = subprocess.run(
         command,
         cwd=cwd,
@@ -22,4 +22,4 @@ def run_in_subprocess(command: List[str], cwd: Path,
     if stderr:
         logging.debug("%s's stderr:\n%s" % (command[0], stderr))
 
-    return process.returncode, stdout
+    return process.returncode, stdout, stderr

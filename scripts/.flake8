@@ -24,6 +24,8 @@ ignore =
   DAR101,
 # Missing "Returns" in Docstring
   DAR201,
+# Use of assert detected
+  S101,
 # Consider possible security implications associated with the subprocess module
   S404,
 # Subprocess call - check for execution of untrusted input
