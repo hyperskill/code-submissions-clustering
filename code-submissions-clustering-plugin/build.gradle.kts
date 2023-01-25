@@ -33,7 +33,7 @@ abstract class BaseCLITask : RunIdeTask() {
         standardOutput = System.`out`
     }
 
-    fun setArgs() {
+    fun setArgs(block: MutableList<String>.() -> Unit = {}) {
         args = mutableListOf<String>().apply {
             add(taskName.get())
             inputFile?.let { add("--inputFile=$it") }
@@ -55,6 +55,7 @@ abstract class BaseCLITask : RunIdeTask() {
             if (project.hasProperty("clusteringResult")) {
                 add("--clusteringResult")
             }
+            block()
         }
     }
 }
@@ -76,12 +77,12 @@ tasks {
 
     val clusterTaskName = "cluster"
     register<BaseCLITask>(clusterTaskName) {
-        val distanceLimit: Int? by project
+        val distanceLimit: String? by project
         taskName.set(clusterTaskName)
-        setArgs()
-
-        distanceLimit?.let {
-            args?.add("--distanceLimit=$it")
+        setArgs {
+            distanceLimit?.let {
+                add("--distanceLimit=$it")
+            }
         }
         dependsOn(build)
     }

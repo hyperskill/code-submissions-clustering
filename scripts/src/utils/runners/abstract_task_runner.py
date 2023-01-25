@@ -2,24 +2,29 @@ from abc import ABC, abstractmethod
 from pathlib import Path
 from typing import Any, Dict, Tuple
 
-from src.utils.models.cli_arguments import ClusteringArguments
 from src.utils.models.cli_models import TaskFlagArgs, TaskNamedArgs
+from src.utils.models.script_parameters import BaseRunnerParameters
 from src.utils.run_process_utils import run_in_subprocess
 
 
 def get_common_named_arguments(
         step_id: int,
-        script_arguments: ClusteringArguments,
+        script_params: BaseRunnerParameters,
         input_file_name_in_kwargs: str,
         **kwargs,
 ) -> Dict[TaskNamedArgs, str]:
-    return {
+    named_args = {
         TaskNamedArgs.INPUT_FILE:
-            kwargs[input_file_name_in_kwargs](step_id, script_arguments),
-        TaskNamedArgs.OUTPUT_PATH:
-            kwargs['build_output_dir_name'](step_id, script_arguments),
-        TaskNamedArgs.LANGUAGE: script_arguments.language,
+            kwargs[input_file_name_in_kwargs](step_id, script_params),
+        TaskNamedArgs.OUTPUT_DIR:
+            kwargs['build_output_dir_name'](step_id, script_params),
+        TaskNamedArgs.LANGUAGE: script_params.language,
     }
+    if script_params.binary_input is not None:
+        named_args[TaskNamedArgs.BINARY_INPUT] = kwargs['build_binary_input_file_name'](
+            step_id, script_params,
+        )
+    return named_args
 
 
 class AbstractTaskRunner(ABC):

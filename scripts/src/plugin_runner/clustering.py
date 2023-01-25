@@ -27,92 +27,76 @@ representation of resulting clustering for unified code submissions
 containing single .csv file with resulting clustering for initial code submissions
 """
 
-import argparse
 import os.path
 
-from src.plugin_runner.utils import configure_parser
+from src.plugin_runner.utils import ScriptArgsParser
 from src.utils.file_utils import create_dir, list_files
 from src.utils.logger_utils import set_logger
-from src.utils.models.cli_arguments import ClusteringArguments
-from src.utils.models.cli_models import TaskNamedArgs
+from src.utils.models.script_arguments import ClusterScriptArguments
+from src.utils.models.script_parameters import ClusteringParameters
 from src.utils.runners.clustering_runner import ClusteringRunner
 from src.utils.steps_processing_utils import process_steps
 
 SERIALIZATION_DIR = 'serialization'
 
 
-def build_solutions_file_name(step_id: int, args: argparse.Namespace) -> str:
+def build_solutions_file_name(step_id: int, params: ClusteringParameters) -> str:
     """
     Build .csv file name storing submissions for step step_id.
 
     :param step_id: step id
-    :param args: script arguments
+    :param params: script arguments
     :return: built .csv file name
     """
-    return f'{args.csv_dir}/{step_id}.csv'
+    return f'{params.csv_dir}/{step_id}.csv'
 
 
-def build_output_dir_name(step_id: int, args: argparse.Namespace) -> str:
+def build_output_dir_name(step_id: int, params: ClusteringParameters) -> str:
     """
     Build directory name to store submissions graph output files for step step_id.
 
     :param step_id: step id
-    :param args: script arguments
+    :param params: script arguments
     :return: built directory name
     """
-    return f'{args.output_path}/{step_id}/{args.distance_limit}'
+    return f'{params.output_path}/{step_id}/{params.distance_limit}'
 
 
-def build_binary_input_file_name(step_id: int, args: argparse.Namespace) -> str:
+def build_binary_input_file_name(step_id: int, params: ClusteringParameters) -> str:
     """
     Build directory name containing submissions graph serialization for step step_id.
 
     :param step_id: step id
-    :param args: script arguments
+    :param params: script arguments
     :return: built directory name
     """
-    return f'{args.preprocess_dir}/{step_id}/{SERIALIZATION_DIR}'
+    return f'{params.binary_input}/{step_id}/{SERIALIZATION_DIR}'
 
 
 if __name__ == '__main__':
-    parser = argparse.ArgumentParser()
-    parser.add_argument(
-        TaskNamedArgs.CSV_DIR.value,
-        help='Input directory with .csv files containing code submissions',
-    )
-    parser.add_argument(
-        TaskNamedArgs.MIN_DISTANCE_LIMIT.value,
-        help='Min distance limit',
-        type=int,
-    )
-    parser.add_argument(
-        TaskNamedArgs.MAX_DISTANCE_LIMIT.value,
-        help='Max distance limit',
-        type=int,
-    )
-    parser.add_argument(
-        TaskNamedArgs.STEP_DISTANCE_LIMIT.value,
-        help='Distance limit step',
-        type=int,
-    )
+    parser = ScriptArgsParser(ClusterScriptArguments())
+    args = parser.parse_args()
 
-    configure_parser(parser)
-    args = ClusteringArguments(parser.parse_args())
+    params = ClusteringParameters.from_args(args)
 
-    create_dir(args.output_path)
-    logger = set_logger(args.output_path)
+    create_dir(params.output_path)
+    logger = set_logger(params.output_path)
 
-    step_ids = [int(os.path.splitext(f)[0]) for f in list_files(args.csv_dir)]
+    step_ids = [int(os.path.splitext(f)[0]) for f in list_files(params.csv_dir)]
     for step_id in step_ids:
-        create_dir(f'{args.output_path}/{step_id}')
+        create_dir(f'{params.output_path}/{step_id}')
 
     task_runner = ClusteringRunner()
 
-    for dl in range(args.min_distance_limit, args.max_distance_limit, args.step_distance_limit):
-        args.distance_limit = dl
+    for dl in range(
+            params.min_distance_limit,
+            params.max_distance_limit,
+            params.step_distance_limit,
+    ):
+        params = ClusteringParameters.from_args(args, distance_limit=dl)
         logger.info(f'Clustering code submissions with distance limit: {dl}')
         process_steps(
-            step_ids, task_runner, args, logger,
+            step_ids, task_runner, params, logger,
             build_solutions_file_name=build_solutions_file_name,
             build_output_dir_name=build_output_dir_name,
             build_binary_input_file_name=build_binary_input_file_name,

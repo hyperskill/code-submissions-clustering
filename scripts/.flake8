@@ -16,6 +16,8 @@ ignore =
   D102,
 # Missing docstring in public function
   D103,
+# Missing docstring in magic method
+  D105,
 # First line should end with a period
   D400,
 # Missing parameter(s) in Docstring
