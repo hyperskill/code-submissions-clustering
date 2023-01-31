@@ -60,7 +60,7 @@ class AbstractTaskRunner(ABC):
         """Run task and return process stderr."""
         named_args, flag_args = self.build_arguments(*args, **kwargs)
         cmd = self.configure_cmd(named_args, flag_args)
-        return_code, stdout, _ = run_in_subprocess(cmd.split(), self.PROJECT_DIR)
+        return_code, stdout, stderr = run_in_subprocess(cmd.split(), self.PROJECT_DIR)
         if return_code != 0:
             return ''
-        return stdout
+        return stderr

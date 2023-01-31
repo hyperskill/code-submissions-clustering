@@ -12,6 +12,7 @@ import org.jetbrains.research.code.submissions.clustering.model.Language
 import org.jetbrains.research.code.submissions.clustering.model.Submission
 import org.jetbrains.research.code.submissions.clustering.util.asPsiFile
 import org.jetbrains.research.code.submissions.clustering.util.getTmpProjectDir
+import org.jetbrains.research.code.submissions.clustering.util.logging.TransformationsStatisticsBuilder
 import org.jetbrains.research.code.submissions.clustering.util.reformatInWriteAction
 import org.jetbrains.research.ml.ast.transformations.Transformation
 import java.util.logging.Logger
@@ -30,9 +31,12 @@ abstract class AbstractUnifier(
     private val codeToUnifiedCode = HashMap<String, String>()
 
     @Suppress("TooGenericExceptionCaught")
-    private fun PsiFile.applyTransformations(transformations: List<Transformation>, previousTree: PsiElement? = null) {
+    private fun PsiFile.applyTransformations(
+        transformations: List<Transformation>,
+        statsBuilder: TransformationsStatisticsBuilder,
+        previousTree: PsiElement? = null,
+    ) {
         logger.fine { "Tree Started: ${this.text}" }
-        anonymization?.forwardApply(this)
 
         val psiDocumentManager = this.project.service<PsiDocumentManager>()
         val document = this.let { psiDocumentManager.getDocument(it) }
@@ -42,7 +46,7 @@ abstract class AbstractUnifier(
                     psiDocumentManager.commitDocument(document)
                 }
                 logger.finer { "Transformation Started: ${it.key}" }
-                it.forwardApply(this)
+                statsBuilder.forwardApplyMeasured(it, this)
                 logger.finer { "Transformation Ended: ${it.key}" }
             }
         } catch (e: Throwable) {
@@ -57,22 +61,30 @@ abstract class AbstractUnifier(
 
     @Suppress("TOO_MANY_LINES_IN_LAMBDA")
     fun Submission.unify(): Submission {
+        val statsBuilder = TransformationsStatisticsBuilder()
         val code = codeToUnifiedCode.getOrDefault(this.code, this.code.asPsiFile(language, psiManager) {
             ApplicationManager.getApplication().invokeAndWait {
                 ApplicationManager.getApplication().runWriteAction {
+                    anonymization?.let { anon ->
+                        statsBuilder.forwardApplyMeasured(anon, it)
+                    }
                     var iterationNumber = 0
                     do {
                         ++iterationNumber
                         val previousTree = it.copy()
-                        it.applyTransformations(transformations, previousTree)
+                        it.applyTransformations(transformations, statsBuilder, previousTree)
                         logger.finer { "Previous text[$iterationNumber]:\n${previousTree.text}\n" }
                         logger.finer { "Current text[$iterationNumber]:\n${it.text}\n\n" }
                     } while (!previousTree.textMatches(it.text) && iterationNumber <= MAX_ITERATIONS && codeToUnifiedCode[it.text] == null)
                     logger.fine { "Tree Ended[[$iterationNumber]]: ${it.text}\n\n\n" }
+                    logger.info { "Total iterations number: $iterationNumber" }
                 }
             }
             codeToUnifiedCode.getOrPut(it.text) { it.reformatInWriteAction().text }
         })
+        logger.info {
+            statsBuilder.buildStatistics(listOfNotNull(anonymization) + transformations)
+        }
         return this.copy(code = code)
     }
 
