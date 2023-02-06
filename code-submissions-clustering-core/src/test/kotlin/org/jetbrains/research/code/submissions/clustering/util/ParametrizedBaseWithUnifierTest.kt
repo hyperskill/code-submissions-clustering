@@ -13,7 +13,6 @@ import org.jetbrains.research.code.submissions.clustering.model.SubmissionsNode
 import org.jetbrains.research.pluginUtilities.util.ParametrizedBaseWithPythonSdkTest
 import org.jgrapht.alg.interfaces.ClusteringAlgorithm.Clustering
 import org.junit.Ignore
-import java.awt.EventQueue
 
 @Ignore
 open class ParametrizedBaseWithUnifierTest(testDataRoot: String) : ParametrizedBaseWithPythonSdkTest(testDataRoot) {

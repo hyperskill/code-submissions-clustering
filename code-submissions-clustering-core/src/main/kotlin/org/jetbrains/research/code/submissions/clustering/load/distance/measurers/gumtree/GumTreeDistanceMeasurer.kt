@@ -12,7 +12,7 @@ import org.jetbrains.research.code.submissions.clustering.load.unifiers.createTe
 import org.jetbrains.research.code.submissions.clustering.model.Language
 import org.jetbrains.research.code.submissions.clustering.model.SubmissionsGraphAlias
 import org.jetbrains.research.code.submissions.clustering.model.SubmissionsGraphEdge
-import org.jetbrains.research.code.submissions.clustering.util.asPsiFile
+import org.jetbrains.research.code.submissions.clustering.util.psi.PsiFileFactory
 import org.jetbrains.research.code.submissions.clustering.util.trimCode
 
 abstract class GumTreeDistanceMeasurerBase : CodeDistanceMeasurerBase<List<Action>>() {
@@ -102,15 +102,16 @@ class GumTreeDistanceMeasurerByParser(
 class GumTreeDistanceMeasurerByPsi(
     project: Project = createTempProject(),
     private val psiManager: PsiManager = PsiManager.getInstance(project),
+    private val psiFileFactory: PsiFileFactory = PsiFileFactory(psiManager, Language.PYTHON),
 ) : GumTreeDistanceMeasurerBase() {
     private val codeToTreeContext: HashMap<String, TreeContext> = HashMap()
     override fun String.parseTree(): TreeContext {
         val trimmedCode = this.trimCode()
         return codeToTreeContext.getOrPut(trimmedCode) {
-            this.asPsiFile(
-                Language.PYTHON,
-                psiManager
-            ) { getTreeContext(it) }
+            val psi = psiFileFactory.getPsiFile(this)
+            val treeContext = getTreeContext(psi)
+            psiFileFactory.releasePsiFile(psi)
+            treeContext
         }
     }
 }

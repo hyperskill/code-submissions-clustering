@@ -3,6 +3,7 @@ package org.jetbrains.research.code.submissions.clustering.load.unifiers
 import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiManager
 import org.jetbrains.research.code.submissions.clustering.model.Language
+import org.jetbrains.research.code.submissions.clustering.util.psi.PsiFileFactory
 import org.jetbrains.research.code.submissions.clustering.util.getTmpProjectDir
 import org.jetbrains.research.ml.ast.transformations.anonymization.AnonymizationTransformation
 import org.jetbrains.research.ml.ast.transformations.augmentedAssignment.AugmentedAssignmentTransformation
@@ -40,6 +41,7 @@ class PyUnifier(
         MultipleTargetAssignmentTransformation,
         OuterNotEliminationTransformation,
     )
+    override val psiFileFactory = PsiFileFactory(psiManager, language)
 
     init {
         if (toSetSdk) {
