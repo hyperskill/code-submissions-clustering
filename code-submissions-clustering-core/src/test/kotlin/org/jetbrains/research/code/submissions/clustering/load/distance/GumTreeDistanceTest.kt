@@ -4,9 +4,7 @@ import com.github.gumtreediff.tree.TreeContext
 import com.intellij.openapi.command.WriteCommandAction
 import org.jetbrains.research.code.submissions.clustering.load.context.builder.gumtree.converter.getTreeContext
 import org.jetbrains.research.code.submissions.clustering.load.distance.measurers.gumtree.GumTreeDistanceMeasurerByPsi
-import org.jetbrains.research.code.submissions.clustering.model.Language
 import org.jetbrains.research.code.submissions.clustering.util.ParametrizedBaseWithUnifierTest
-import org.jetbrains.research.code.submissions.clustering.util.psi.PsiFileFactory
 import org.jetbrains.research.code.submissions.clustering.util.getTmpProjectDir
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -14,7 +12,6 @@ import org.junit.runners.Parameterized
 
 @RunWith(Parameterized::class)
 class GumTreeDistanceTest : ParametrizedBaseWithUnifierTest(getTmpProjectDir()) {
-    private val psiFileFactory = PsiFileFactory(mockPsiManager!!, Language.PYTHON)
 
     @JvmField
     @Parameterized.Parameter(0)
@@ -40,7 +37,7 @@ class GumTreeDistanceTest : ParametrizedBaseWithUnifierTest(getTmpProjectDir()) 
         WriteCommandAction.runWriteCommandAction(mockProject) {
             requireNotNull(mockProject)
             requireNotNull(mockPsiManager)
-            val measurer = GumTreeDistanceMeasurerByPsi(mockProject!!)
+            val measurer = GumTreeDistanceMeasurerByPsi(psiFileFactory)
             val actions = measurer.calculateDistance(from!!.getTreeContext(), to!!.getTreeContext())
             val dist = with(measurer) {
                 actions.calculateWeight()

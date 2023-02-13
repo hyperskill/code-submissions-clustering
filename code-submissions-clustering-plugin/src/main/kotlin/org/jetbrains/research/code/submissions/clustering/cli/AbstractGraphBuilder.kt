@@ -50,7 +50,9 @@ abstract class AbstractGraphBuilder : ApplicationStarter {
         }
     }
 
-    protected fun buildGraphContext() = GumTreeGraphContextBuilder.getContext(lang)
+    protected fun buildGraphContext() = GumTreeGraphContextBuilder()
+        .setLanguage(lang)
+        .buildContext()
 
     protected fun SubmissionsGraph.writeOutputData() {
         createFolder(outputPath)

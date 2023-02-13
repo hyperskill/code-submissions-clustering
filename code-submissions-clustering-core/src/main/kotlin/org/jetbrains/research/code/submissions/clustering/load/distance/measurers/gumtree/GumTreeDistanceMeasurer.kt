@@ -4,16 +4,12 @@ import com.github.gumtreediff.actions.model.*
 import com.github.gumtreediff.gen.TreeGenerator
 import com.github.gumtreediff.tree.Tree
 import com.github.gumtreediff.tree.TreeContext
-import com.intellij.openapi.project.Project
-import com.intellij.psi.PsiManager
 import org.jetbrains.research.code.submissions.clustering.load.context.builder.gumtree.converter.getTreeContext
 import org.jetbrains.research.code.submissions.clustering.load.distance.measurers.CodeDistanceMeasurerBase
-import org.jetbrains.research.code.submissions.clustering.load.unifiers.createTempProject
-import org.jetbrains.research.code.submissions.clustering.model.Language
 import org.jetbrains.research.code.submissions.clustering.model.SubmissionsGraphAlias
 import org.jetbrains.research.code.submissions.clustering.model.SubmissionsGraphEdge
 import org.jetbrains.research.code.submissions.clustering.util.psi.PsiFileFactory
-import org.jetbrains.research.code.submissions.clustering.util.trimCode
+import org.jetbrains.research.code.submissions.clustering.util.psi.trimCode
 
 abstract class GumTreeDistanceMeasurerBase : CodeDistanceMeasurerBase<List<Action>>() {
     private fun Tree.toMapKey() = this.toString()
@@ -100,9 +96,7 @@ class GumTreeDistanceMeasurerByParser(
 }
 
 class GumTreeDistanceMeasurerByPsi(
-    project: Project = createTempProject(),
-    private val psiManager: PsiManager = PsiManager.getInstance(project),
-    private val psiFileFactory: PsiFileFactory = PsiFileFactory(psiManager, Language.PYTHON),
+    private val psiFileFactory: PsiFileFactory,
 ) : GumTreeDistanceMeasurerBase() {
     private val codeToTreeContext: HashMap<String, TreeContext> = HashMap()
     override fun String.parseTree(): TreeContext {

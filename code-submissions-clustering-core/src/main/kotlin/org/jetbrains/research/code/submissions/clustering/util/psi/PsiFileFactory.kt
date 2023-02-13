@@ -13,7 +13,10 @@ import org.jetbrains.research.code.submissions.clustering.util.deleteFromProject
 import org.jetbrains.research.code.submissions.clustering.util.getTmpProjectDir
 import java.io.File
 
-class PsiFileFactory(private val psiManager: PsiManager, private val language: Language) {
+class PsiFileFactory(
+    private val language: Language,
+    private val psiManager: PsiManager,
+) {
     private val idFactory = IdentifierFactoryImpl()
     private val basePath = getTmpProjectDir(toCreateFolder = false)
     private val files = mutableListOf<File>()

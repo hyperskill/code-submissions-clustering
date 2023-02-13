@@ -2,7 +2,10 @@ package org.jetbrains.research.code.submissions.clustering.load.distance
 
 import org.jetbrains.research.code.submissions.clustering.load.context.SubmissionsGraphContext
 import org.jetbrains.research.code.submissions.clustering.load.context.builder.IdentifierFactoryImpl
-import org.jetbrains.research.code.submissions.clustering.model.*
+import org.jetbrains.research.code.submissions.clustering.model.SubmissionsGraph
+import org.jetbrains.research.code.submissions.clustering.model.SubmissionsGraphAlias
+import org.jetbrains.research.code.submissions.clustering.model.SubmissionsGraphEdge
+import org.jetbrains.research.code.submissions.clustering.model.transformGraph
 import org.jgrapht.graph.SimpleWeightedGraph
 
 fun <T> SubmissionsGraph.calculateDistances(context: SubmissionsGraphContext<T>): SubmissionsGraph {

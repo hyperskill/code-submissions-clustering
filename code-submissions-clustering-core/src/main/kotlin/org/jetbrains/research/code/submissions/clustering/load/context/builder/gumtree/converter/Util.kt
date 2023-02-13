@@ -6,7 +6,7 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
 import com.jetbrains.python.PyTokenTypes
 import com.jetbrains.python.psi.impl.*
-import org.jetbrains.research.code.submissions.clustering.util.isLeaf
+import org.jetbrains.research.code.submissions.clustering.util.psi.isLeaf
 
 // TODO: it does not support async and yield keywords
 val PsiElement.intermediateElementLabel: String

@@ -1,14 +1,13 @@
 package org.jetbrains.research.code.submissions.clustering.load.clustering.hac
 
 import org.jetbrains.research.code.submissions.clustering.load.clustering.*
-import org.jetbrains.research.code.submissions.clustering.util.parallel.ParallelContext
 import org.jetbrains.research.code.submissions.clustering.load.context.builder.IdentifierFactoryImpl
+import org.jetbrains.research.code.submissions.clustering.util.parallel.ParallelContext
 import org.jetbrains.research.code.submissions.clustering.util.parallel.ParallelUtils.combineWith
 import org.jgrapht.Graph
 import java.util.*
 import java.util.function.Consumer
 import java.util.logging.Logger
-import kotlin.collections.HashMap
 import kotlin.collections.set
 
 /**
