@@ -34,7 +34,7 @@ from src.utils.file_utils import create_dir, list_files
 from src.utils.logger_utils import set_logger
 from src.utils.models.script_arguments import ClusterScriptArguments
 from src.utils.models.script_parameters import ClusteringParameters
-from src.utils.runners.clustering_runner import ClusteringRunner
+from src.utils.runners.gradle_task_runners.clustering_runner import ClusteringRunner
 from src.utils.steps_processing_utils import process_steps
 
 SERIALIZATION_DIR = 'serialization'
@@ -96,7 +96,7 @@ if __name__ == '__main__':
         params = ClusteringParameters.from_args(args, distance_limit=dl)
         logger.info(f'Clustering code submissions with distance limit: {dl}')
         process_steps(
-            step_ids, task_runner, params, logger,
+            step_ids, task_runner, logger, params,
             build_solutions_file_name=build_solutions_file_name,
             build_output_dir_name=build_output_dir_name,
             build_binary_input_file_name=build_binary_input_file_name,

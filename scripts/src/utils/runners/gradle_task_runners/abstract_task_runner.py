@@ -1,10 +1,10 @@
-from abc import ABC, abstractmethod
+from abc import abstractmethod
 from pathlib import Path
 from typing import Any, Dict, Tuple
 
 from src.utils.models.cli_models import TaskFlagArgs, TaskNamedArgs
 from src.utils.models.script_parameters import BaseRunnerParameters
-from src.utils.run_process_utils import run_in_subprocess
+from src.utils.runners.abstract_runner import AbstractRunner
 
 
 def get_common_named_arguments(
@@ -27,7 +27,7 @@ def get_common_named_arguments(
     return named_args
 
 
-class AbstractTaskRunner(ABC):
+class AbstractTaskRunner(AbstractRunner):
     """Abstract gradle task runner."""
 
     task_name: str
@@ -55,12 +55,3 @@ class AbstractTaskRunner(ABC):
             if arg_value:
                 cmd = cmd + f' -P{arg_name.value}'
         return cmd
-
-    def run(self, *args, **kwargs) -> str:
-        """Run task and return process stderr."""
-        named_args, flag_args = self.build_arguments(*args, **kwargs)
-        cmd = self.configure_cmd(named_args, flag_args)
-        return_code, stdout, stderr = run_in_subprocess(cmd.split(), self.PROJECT_DIR)
-        if return_code != 0:
-            return ''
-        return stderr

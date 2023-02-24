@@ -24,7 +24,7 @@ from src.utils.logger_utils import set_logger
 from src.utils.models.df_column_name import SubmissionColumns
 from src.utils.models.script_arguments import LoadScriptArguments
 from src.utils.models.script_parameters import LoadSubmissionsGraphParameters
-from src.utils.runners.load_runner import LoadRunner
+from src.utils.runners.gradle_task_runners.load_runner import LoadRunner
 from src.utils.steps_processing_utils import process_steps
 from src.utils.time_utils import time_to_str
 
@@ -105,7 +105,7 @@ if __name__ == '__main__':
     task_runner = LoadRunner()
 
     process_steps(
-        step_ids, task_runner, params, logger,
+        step_ids, task_runner, logger, params,
         build_solutions_file_name=build_solutions_file_name,
         build_output_dir_name=build_output_dir_name,
     )
