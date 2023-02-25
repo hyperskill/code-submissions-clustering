@@ -38,6 +38,8 @@ ignore =
   I101,
 # Additional newline in a group of imports
   I202,
+# Isort found an unexpected blank line in imports
+  I004,
 # Isort found an unexpected missing import
   I005,
 # Isort found an import in the wrong position
