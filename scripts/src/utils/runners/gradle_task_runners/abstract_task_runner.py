@@ -34,7 +34,7 @@ class AbstractTaskRunner(AbstractRunner):
     task_prefix = ':code-submissions-clustering-plugin:'
 
     # The root folder of the initial project
-    PROJECT_DIR = Path(__file__).parent.parent.parent.parent.parent
+    WORKING_DIR = Path(__file__).parent.parent.parent.parent.parent.parent
 
     @abstractmethod
     def build_arguments(self, *args, **kwargs) \

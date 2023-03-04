@@ -6,6 +6,7 @@ from os.path import join
 from pathlib import Path
 from typing import List
 
+import numpy as np
 import pandas as pd
 import wget
 from github import Github
@@ -88,6 +89,15 @@ if __name__ == '__main__':
                         help='Language of passed submissions {python3}')
     parser.add_argument('--jplag_jar_directory',
                         help='Path to JPlag jar file')
+    parser.add_argument('--threshold_min',
+                        help='Min clustering threshold',
+                        default=0.2)
+    parser.add_argument('--threshold_max',
+                        help='Max clustering threshold',
+                        default=0.25)
+    parser.add_argument('--threshold_step',
+                        help='Clustering threshold step',
+                        default=0.1)
     args = parser.parse_args()
 
     create_dir(args.output_directory)
@@ -105,9 +115,19 @@ if __name__ == '__main__':
 
     create_dir(join(args.output_directory, RESULTS_FOLDER_NAME))
     jplag_runner = JPlagRunner()
-    process_steps(
-        step_ids, jplag_runner, logger,
-        args.language,
-        args.output_directory,
-        jplag_jar_dir,
+
+    thresholds = np.arange(
+        float(args.threshold_min),
+        float(args.threshold_max),
+        float(args.threshold_step),
     )
+    for threshold in thresholds:
+        threshold_rounded = round(threshold, 5)
+        logger.info(f'Clustering code submissions with threshold: {threshold_rounded}')
+        process_steps(
+            step_ids, jplag_runner, logger,
+            args.language,
+            args.output_directory,
+            jplag_jar_dir,
+            threshold_rounded,
+        )

@@ -14,11 +14,12 @@ RESULT_ARCHIVE_NAME = 'result'
 SUBMISSIONS_FOLDER_NAME = 'submissions'
 
 
-def get_clusters(step_id: int, output_dir: Path) -> List[List[int]]:
+def get_clusters(step_id: int, threshold: float, output_dir: Path) -> List[List[int]]:
     """
     Parse clusters from JPlag results
 
     :param step_id: step id
+    :param threshold: clustering threshold
     :param output_dir: directory storing all output files (including JPlag result)
     :return: list of all found clusters (as lists of submissions ids)
     """
@@ -29,6 +30,7 @@ def get_clusters(step_id: int, output_dir: Path) -> List[List[int]]:
         output_dir,
         RESULTS_FOLDER_NAME,
         str(step_id),
+        str(threshold),
         f'{RESULT_ARCHIVE_NAME}.zip',
     )
     with zipfile.ZipFile(result_archive_path) as z:
@@ -38,11 +40,17 @@ def get_clusters(step_id: int, output_dir: Path) -> List[List[int]]:
     return [cluster_members_to_submission_ids(cl['members']) for cl in data['clusters']]
 
 
-def write_clustering_result(clusters: List[List[int]], step_id: int, output_dir: Path):
+def write_clustering_result(
+        clusters: List[List[int]],
+        step_id: int,
+        threshold: float,
+        output_dir: Path,
+):
     """
     Write clustering result in Code Submissions Clustering format
 
     :param step_id: step id
+    :param threshold: clustering threshold
     :param clusters: list of all found clusters (as lists of submissions ids)
     :param output_dir: directory storing all output files
     """
@@ -56,6 +64,7 @@ def write_clustering_result(clusters: List[List[int]], step_id: int, output_dir:
         output_dir,
         RESULTS_FOLDER_NAME,
         str(step_id),
+        str(threshold),
         'clustering.csv.gz',
     )
     clustering_result_df.to_csv(clustering_result_path, compression='gzip', index=False)
@@ -70,11 +79,18 @@ class JPlagRunner(AbstractRunner):
             language: str,
             output_dir: Path,
             jar_dir: Path,
+            threshold: float,
             *args,
             **kwargs,
     ) -> Tuple[Dict[str, Any], Dict[str, bool]]:
         submissions_path = join(output_dir, 'submissions', str(step_id))
-        result_dir = join(output_dir, RESULTS_FOLDER_NAME, str(step_id), RESULT_ARCHIVE_NAME)
+        result_dir = join(
+            output_dir,
+            RESULTS_FOLDER_NAME,
+            str(step_id),
+            str(threshold),
+            RESULT_ARCHIVE_NAME,
+        )
         named_args = {
             'jarDir': jar_dir,
             'rootDir': submissions_path,
@@ -83,6 +99,7 @@ class JPlagRunner(AbstractRunner):
             '-r': result_dir,
             '--cluster-alg': 'AGGLOMERATIVE',
             '--cluster-agglomerative-inter-cluster-similarity': 'MIN',
+            '--cluster-agglomerative-threshold': threshold,
         }
         flag_args = {
             '--cluster-pp-none': True,
@@ -111,11 +128,12 @@ class JPlagRunner(AbstractRunner):
             language: str,
             output_dir: Path,
             jar_dir: Path,
+            threshold: float,
             *args,
             **kwargs,
     ) -> str:
-        create_dir(join(output_dir, RESULTS_FOLDER_NAME, str(step_id)))
-        stderr = AbstractRunner.run(self, step_id, language, output_dir, jar_dir)
-        clusters = get_clusters(step_id, output_dir)
-        write_clustering_result(clusters, step_id, output_dir)
+        create_dir(join(output_dir, RESULTS_FOLDER_NAME, str(step_id), str(threshold)))
+        stderr = AbstractRunner.run(self, step_id, language, output_dir, jar_dir, threshold)
+        clusters = get_clusters(step_id, threshold, output_dir)
+        write_clustering_result(clusters, step_id, threshold, output_dir)
         return stderr
