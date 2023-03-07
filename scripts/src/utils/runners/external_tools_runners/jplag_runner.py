@@ -82,7 +82,13 @@ def write_clusters(
         language: str,
 ):
     submissions_path = join(output_dir, SUBMISSIONS_FOLDER_NAME, str(step_id))
-    clusters_file = join(output_dir, RESULTS_FOLDER_NAME, str(step_id), str(threshold), 'clusters.txt')
+    clusters_file = join(
+        output_dir,
+        RESULTS_FOLDER_NAME,
+        str(step_id),
+        str(threshold),
+        'clusters.txt',
+    )
 
     clusters_sep = '=' * 30
     solutions_sep = f'\n{"-" * 60}\n'
