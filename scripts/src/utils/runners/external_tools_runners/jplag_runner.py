@@ -13,6 +13,10 @@ RESULTS_FOLDER_NAME = 'results'
 RESULT_ARCHIVE_NAME = 'result'
 SUBMISSIONS_FOLDER_NAME = 'submissions'
 
+language_to_extension = {
+    'python3': 'py',
+}
+
 
 def get_clusters(step_id: int, threshold: float, output_dir: Path) -> List[List[int]]:
     """
@@ -70,6 +74,29 @@ def write_clustering_result(
     clustering_result_df.to_csv(clustering_result_path, compression='gzip', index=False)
 
 
+def write_clusters(
+        clusters: List[List[int]],
+        step_id: int,
+        threshold: float,
+        output_dir: Path,
+        language: str,
+):
+    submissions_path = join(output_dir, SUBMISSIONS_FOLDER_NAME, str(step_id))
+    clusters_file = join(output_dir, RESULTS_FOLDER_NAME, str(step_id), str(threshold), 'clusters.txt')
+
+    clusters_sep = '=' * 30
+    solutions_sep = f'\n{"-" * 60}\n'
+
+    with open(clusters_file, 'w') as f:
+        for i, ids in enumerate(clusters):
+            f.write(f'\n{clusters_sep} Cluster {i} {clusters_sep}\n\n')
+            for sol_id in ids:
+                sol_file = join(submissions_path, f'{sol_id}.{language_to_extension[language]}')
+                with open(sol_file) as sol_f:
+                    f.write(''.join(sol_f.readlines()))
+                    f.write(solutions_sep)
+
+
 class JPlagRunner(AbstractRunner):
     """JPlag runner"""
 
@@ -83,7 +110,7 @@ class JPlagRunner(AbstractRunner):
             *args,
             **kwargs,
     ) -> Tuple[Dict[str, Any], Dict[str, bool]]:
-        submissions_path = join(output_dir, 'submissions', str(step_id))
+        submissions_path = join(output_dir, SUBMISSIONS_FOLDER_NAME, str(step_id))
         result_dir = join(
             output_dir,
             RESULTS_FOLDER_NAME,
@@ -134,6 +161,12 @@ class JPlagRunner(AbstractRunner):
     ) -> str:
         create_dir(join(output_dir, RESULTS_FOLDER_NAME, str(step_id), str(threshold)))
         stderr = AbstractRunner.run(self, step_id, language, output_dir, jar_dir, threshold)
-        clusters = get_clusters(step_id, threshold, output_dir)
+
+        try:
+            clusters = get_clusters(step_id, threshold, output_dir)
+        except FileNotFoundError:
+            raise RuntimeError('JPlag did not execute successfully: not enough valid submissions')
+
         write_clustering_result(clusters, step_id, threshold, output_dir)
+        write_clusters(clusters, step_id, threshold, output_dir, language)
         return stderr
