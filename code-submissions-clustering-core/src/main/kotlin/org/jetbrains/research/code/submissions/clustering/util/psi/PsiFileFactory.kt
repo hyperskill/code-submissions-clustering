@@ -22,6 +22,8 @@ class PsiFileFactory(
     private val files = mutableListOf<File>()
     private val availablePsiFiles = mutableSetOf<PsiFile>()
 
+    fun clearFactory() = availablePsiFiles.clear()
+
     fun getPsiFile(text: String): PsiFile = (availablePsiFiles.firstOrNull()?.also { psiFile ->
         availablePsiFiles.remove(psiFile)
     } ?: run {
@@ -40,6 +42,7 @@ class PsiFileFactory(
     private fun PsiFile.setText(text: String) {
         val document = viewProvider.document
             ?: error("No document for file found")
+        PsiDocumentManager.getInstance(project).doPostponedOperationsAndUnblockDocument(document)
         WriteAction.run<Throwable> {
             document.setText(text)
         }

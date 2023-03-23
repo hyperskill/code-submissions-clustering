@@ -35,6 +35,7 @@ class GumTreeDistanceTest : ParametrizedBaseWithUnifierTest(getTmpProjectDir()) 
     @Test
     fun testCalculateDistances() {
         WriteCommandAction.runWriteCommandAction(mockProject) {
+            mockContext.unifier.clearFactory()
             requireNotNull(mockProject)
             requireNotNull(mockPsiManager)
             val measurer = GumTreeDistanceMeasurerByPsi(psiFileFactory)

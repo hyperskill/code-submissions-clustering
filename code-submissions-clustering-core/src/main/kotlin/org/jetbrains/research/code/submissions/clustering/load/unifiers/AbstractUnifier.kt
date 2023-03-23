@@ -29,6 +29,8 @@ abstract class AbstractUnifier(
     private val codeToUnifiedCode = HashMap<String, String>()
     protected abstract val psiFileFactory: PsiFileFactory
 
+    fun clearFactory() = psiFileFactory.clearFactory()
+
     @Suppress("TooGenericExceptionCaught")
     private fun PsiFile.applyTransformations(
         transformations: List<Transformation>,
