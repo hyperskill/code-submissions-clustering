@@ -1,8 +1,6 @@
-import os
-import re
 import sys
 from argparse import ArgumentParser
-from os.path import join
+from os.path import basename, isfile, join
 from pathlib import Path
 from typing import List
 
@@ -31,8 +29,12 @@ def download_jplag(directory) -> str:
     g = Github()
     repo = g.get_repo('jplag/jplag')
     url = repo.get_latest_release().assets[0].browser_download_url
-    resp = wget.download(url, out=str(directory.absolute()), bar=None)
-    return resp
+    filename = basename(url)
+
+    if not isfile(filename):
+        filename = wget.download(url, out=str(directory.absolute()), bar=None)
+
+    return filename
 
 
 def get_jplag_jar_dir(jplag_jar_directory_arg) -> str:
@@ -44,11 +46,7 @@ def get_jplag_jar_dir(jplag_jar_directory_arg) -> str:
     :param jplag_jar_directory_arg: JPlag jar directory passed to script arguments
     :return: actual JPlag jar directory
     """
-    jplag_jar_regex = re.compile('jplag-[0-9.]+-jar-with-dependencies.jar$')
-
-    if jplag_jar_directory_arg is not None \
-            and jplag_jar_regex.search(jplag_jar_directory_arg) is not None \
-            and os.path.exists(jplag_jar_directory_arg):
+    if jplag_jar_directory_arg is not None and isfile(jplag_jar_directory_arg):
         return jplag_jar_directory_arg
 
     return download_jplag(WORKING_DIR)
@@ -110,7 +108,6 @@ if __name__ == '__main__':
         logger.error('Could not locate existing JPlag jar or download the latest release of JPlag')
         sys.exit(1)
 
-    print(jplag_jar_dir)
     step_ids = create_submission_files(args.submissions_csv_file_path, args.output_directory)
 
     create_dir(join(args.output_directory, RESULTS_FOLDER_NAME))
