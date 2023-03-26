@@ -53,9 +53,9 @@ def write_clustering_result(
     """
     Write clustering result in Code Submissions Clustering format
 
+    :param clusters: list of all found clusters (as lists of submissions ids)
     :param step_id: step id
     :param threshold: clustering threshold
-    :param clusters: list of all found clusters (as lists of submissions ids)
     :param output_dir: directory storing all output files
     """
     clustering_result_df = pd.DataFrame({
@@ -81,6 +81,15 @@ def write_clusters(
         output_dir: Path,
         language: str,
 ):
+    """
+    Write clusters in Code Submissions Clustering format
+
+    :param clusters: list of all found clusters (as lists of submissions ids)
+    :param step_id: step id
+    :param threshold: clustering threshold
+    :param output_dir: directory storing all output files
+    :param language: language of code submissions
+    """
     submissions_path = join(output_dir, SUBMISSIONS_FOLDER_NAME, str(step_id))
     clusters_file = join(
         output_dir,
