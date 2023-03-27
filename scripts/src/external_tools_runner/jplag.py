@@ -5,10 +5,10 @@ from pathlib import Path
 from typing import List
 
 import numpy as np
-import pandas as pd
 import wget
 from github import Github
 
+from src.utils.df_utils import read_df
 from src.utils.file_utils import create_dir
 from src.utils.logger_utils import set_logger
 from src.utils.models.df_column_name import SubmissionColumns
@@ -61,7 +61,7 @@ def create_submission_files(submissions_csv_file_path: str, output_dir: str) -> 
 
     :return list of all step ids
     """
-    submissions_df = pd.read_csv(submissions_csv_file_path)
+    submissions_df = read_df(submissions_csv_file_path)
     steps = submissions_df[SubmissionColumns.STEP_ID.value].unique()
 
     submissions_dir = join(output_dir, SUBMISSIONS_FOLDER_NAME)

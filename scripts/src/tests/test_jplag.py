@@ -1,3 +1,5 @@
+import sys
+
 from src.external_tools_runner.jplag import download_jplag
 from src.tests import SCRIPTS_ROOT_FOLDER, RESOURCES_FOLDER, TMP_FOLDER
 from src.utils.file_utils import list_files
@@ -6,7 +8,7 @@ from src.utils.run_process_utils import run_in_subprocess
 
 def test_incorrect_arguments():
     cmd = [
-        'python3',
+        sys.executable,
         '-m',
         'src.external_tools_runner.jplag',
     ]
@@ -20,7 +22,7 @@ def test_incorrect_arguments():
 
 def test_correct_arguments_required():
     cmd = [
-        'python3',
+        sys.executable,
         '-m',
         'src.external_tools_runner.jplag',
         str(RESOURCES_FOLDER / 'solutions' / '1000.csv'),
@@ -37,7 +39,7 @@ def test_correct_arguments_required():
 
 def test_correct_arguments_optional():
     cmd = [
-        'python3',
+        sys.executable,
         '-m',
         'src.external_tools_runner.jplag',
         str(RESOURCES_FOLDER / 'solutions' / '1000.csv'),

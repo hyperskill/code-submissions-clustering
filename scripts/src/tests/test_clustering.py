@@ -1,10 +1,12 @@
+import sys
+
 from src.tests import SCRIPTS_ROOT_FOLDER, RESOURCES_FOLDER, TMP_FOLDER
 from src.utils.run_process_utils import run_in_subprocess
 
 
 def test_incorrect_arguments():
     cmd = [
-        'python3',
+        sys.executable,
         '-m',
         'src.plugin_runner.clustering',
     ]
@@ -18,7 +20,7 @@ def test_incorrect_arguments():
 
 def test_correct_arguments_required():
     cmd = [
-        'python3',
+        sys.executable,
         '-m',
         'src.plugin_runner.clustering',
         str(RESOURCES_FOLDER / 'solutions'),
@@ -37,7 +39,7 @@ def test_correct_arguments_required():
 
 def test_correct_arguments_optional():
     cmd = [
-        'python3',
+        sys.executable,
         '-m',
         'src.plugin_runner.clustering',
         str(RESOURCES_FOLDER / 'solutions'),
