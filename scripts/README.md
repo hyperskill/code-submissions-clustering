@@ -1,5 +1,8 @@
 # Code submissions clustering scripts
 
+*This readme contains instructions on code submissions clustering scripts.
+If you would like to run external tools preserving the same input and output format, consider [external_tools_runner](/src/external_tools_runner) folder.*
+
 Here is a brief instruction on how to use code submissions clustering scripts.
 
 The process consists of two main steps - loading submissions graphs from the data and clustering loaded submissions graphs.

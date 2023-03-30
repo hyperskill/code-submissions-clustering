@@ -14,7 +14,7 @@ from src.utils.file_utils import create_dir, list_dirs
 from src.utils.logger_utils import set_logger
 from src.utils.models.script_arguments import CalculateDistScriptArguments
 from src.utils.models.script_parameters import CalculateDistancesParameters
-from src.utils.runners.calculate_dist_runner import CalculateDistRunner
+from src.utils.runners.gradle_task_runners.calculate_dist_runner import CalculateDistRunner
 from src.utils.steps_processing_utils import process_steps
 
 SERIALIZATION_DIR = 'serialization'
@@ -53,7 +53,7 @@ if __name__ == '__main__':
     task_runner = CalculateDistRunner()
 
     process_steps(
-        step_ids, task_runner, params, logger,
+        step_ids, task_runner, logger, params,
         build_initial_graph_filename=build_initial_graph_filename,
         build_output_dir_name=build_output_dir_name,
     )

@@ -2,7 +2,8 @@ from typing import Any, Dict, Tuple
 
 from src.utils.models.cli_models import TaskFlagArgs, TaskNamedArgs
 from src.utils.models.script_parameters import ClusteringParameters
-from src.utils.runners.abstract_task_runner import AbstractTaskRunner, get_common_named_arguments
+from src.utils.runners.gradle_task_runners.abstract_task_runner \
+    import AbstractTaskRunner, get_common_named_arguments
 
 
 class ClusteringRunner(AbstractTaskRunner):
