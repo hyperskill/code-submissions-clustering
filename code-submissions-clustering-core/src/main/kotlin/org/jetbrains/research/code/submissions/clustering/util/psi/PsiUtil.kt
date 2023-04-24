@@ -23,4 +23,4 @@ fun PsiElement.getElementChildren(toIgnoreWhiteSpaces: Boolean): List<PsiElement
 }
 
 // TODO: add other symbols?
-fun String.trimCode() = this.trim(' ', '\n')
+fun String.trimCode() = this.trim(' ', '\n', '\r')

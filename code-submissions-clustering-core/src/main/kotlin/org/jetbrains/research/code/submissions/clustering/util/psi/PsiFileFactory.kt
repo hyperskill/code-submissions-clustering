@@ -9,7 +9,6 @@ import com.intellij.psi.PsiManager
 import org.jetbrains.research.code.submissions.clustering.load.context.builder.IdentifierFactoryImpl
 import org.jetbrains.research.code.submissions.clustering.model.Language
 import org.jetbrains.research.code.submissions.clustering.util.addFileToProject
-import org.jetbrains.research.code.submissions.clustering.util.deleteFromProject
 import org.jetbrains.research.code.submissions.clustering.util.getTmpProjectDir
 import java.io.File
 
@@ -42,14 +41,14 @@ class PsiFileFactory(
     private fun PsiFile.setText(text: String) {
         val document = viewProvider.document
             ?: error("No document for file found")
-        PsiDocumentManager.getInstance(project).doPostponedOperationsAndUnblockDocument(document)
+        val psiDocumentManager = PsiDocumentManager.getInstance(project)
+
+        psiDocumentManager.doPostponedOperationsAndUnblockDocument(document)
         WriteAction.run<Throwable> {
             document.setText(text)
         }
-        PsiDocumentManager.getInstance(project).commitDocument(document)
+        psiDocumentManager.commitDocument(document)
     }
 
     fun releasePsiFile(psiFile: PsiFile) = availablePsiFiles.add(psiFile)
-
-    fun deleteTmpFiles() = files.forEach { it.deleteFromProject() }
 }
