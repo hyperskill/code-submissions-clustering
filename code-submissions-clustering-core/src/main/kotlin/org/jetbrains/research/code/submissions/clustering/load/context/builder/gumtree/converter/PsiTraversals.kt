@@ -4,7 +4,7 @@ package org.jetbrains.research.code.submissions.clustering.load.context.builder.
 
 import com.intellij.psi.PsiElement
 import org.jetbrains.research.code.submissions.clustering.load.context.builder.gumtree.converter.PsiToGumTreeConverter.isWhiteSpace
-import org.jetbrains.research.code.submissions.clustering.util.getElementChildren
+import org.jetbrains.research.code.submissions.clustering.util.psi.getElementChildren
 import java.util.*
 
 fun PsiElement.preOrder(toIgnoreWhiteSpaces: Boolean = true): Iterable<PsiElement> = object : Iterable<PsiElement> {

@@ -2,13 +2,7 @@
 
 package org.jetbrains.research.code.submissions.clustering.util
 
-import org.jetbrains.research.code.submissions.clustering.ProtoCluster
-import org.jetbrains.research.code.submissions.clustering.ProtoClusterEdge
-import org.jetbrains.research.code.submissions.clustering.ProtoClusteredGraph
-import org.jetbrains.research.code.submissions.clustering.ProtoSubmissionInfo
-import org.jetbrains.research.code.submissions.clustering.ProtoSubmissionsEdge
-import org.jetbrains.research.code.submissions.clustering.ProtoSubmissionsGraph
-import org.jetbrains.research.code.submissions.clustering.ProtoSubmissionsNode
+import org.jetbrains.research.code.submissions.clustering.*
 import org.jetbrains.research.code.submissions.clustering.load.clustering.*
 import org.jetbrains.research.code.submissions.clustering.load.context.builder.Identifier
 import org.jetbrains.research.code.submissions.clustering.model.SubmissionInfo

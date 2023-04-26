@@ -4,7 +4,7 @@ import com.github.gumtreediff.tree.Tree
 import com.github.gumtreediff.tree.TreeContext
 import com.github.gumtreediff.tree.TypeSet
 import com.intellij.psi.PsiElement
-import org.jetbrains.research.code.submissions.clustering.util.getElementChildren
+import org.jetbrains.research.code.submissions.clustering.util.psi.getElementChildren
 import java.util.*
 
 object PsiToGumTreeConverter {
