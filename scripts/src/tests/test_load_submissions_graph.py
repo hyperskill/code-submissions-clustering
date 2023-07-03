@@ -42,7 +42,7 @@ def test_correct_arguments_optional():
         str(RESOURCES_FOLDER / 'solutions' / '1000.csv'),
         str(TMP_FOLDER),
         'PYTHON',
-        f'--binaryInput={RESOURCES_FOLDER}/output',
+        f'--binaryInput=' + (RESOURCES_FOLDER / 'output'),
         '--serialize',
         '--saveCSV',
         '--visualize',

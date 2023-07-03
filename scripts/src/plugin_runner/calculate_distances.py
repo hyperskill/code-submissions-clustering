@@ -9,6 +9,8 @@ Optional arguments:
 * --serialize: additionally creates [output_path]/[step_id]/graph.bin containing new serialized
 submissions graph
 """
+from os.path import join
+
 from src.plugin_runner.utils import ScriptArgsParser
 from src.utils.file_utils import create_dir, list_dirs
 from src.utils.logger_utils import set_logger
@@ -28,7 +30,7 @@ def build_initial_graph_filename(step_id: int, params: CalculateDistancesParamet
     :param params: script arguments
     :return: .bin file name
     """
-    return f'{params.input_path}/{step_id}/{SERIALIZATION_DIR}/graph.bin'
+    return join(params.input_path, str(step_id), SERIALIZATION_DIR, 'graph.bin')
 
 
 def build_output_dir_name(step_id: int, params: CalculateDistancesParameters) -> str:
@@ -39,7 +41,7 @@ def build_output_dir_name(step_id: int, params: CalculateDistancesParameters) ->
     :param params: script arguments
     :return: built directory name
     """
-    return f'{params.output_path}/{step_id}'
+    return join(params.output_path, str(step_id))
 
 
 if __name__ == '__main__':

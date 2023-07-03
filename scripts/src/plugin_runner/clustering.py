@@ -28,6 +28,7 @@ containing single .csv file with resulting clustering for initial code submissio
 """
 
 import os.path
+from os.path import join
 
 from src.plugin_runner.utils import ScriptArgsParser
 from src.utils.file_utils import create_dir, list_files
@@ -48,7 +49,7 @@ def build_solutions_file_name(step_id: int, params: ClusteringParameters) -> str
     :param params: script arguments
     :return: built .csv file name
     """
-    return f'{params.csv_dir}/{step_id}.csv'
+    return join(params.csv_dir, str(step_id))
 
 
 def build_output_dir_name(step_id: int, params: ClusteringParameters) -> str:
@@ -59,7 +60,7 @@ def build_output_dir_name(step_id: int, params: ClusteringParameters) -> str:
     :param params: script arguments
     :return: built directory name
     """
-    return f'{params.output_path}/{step_id}/{params.distance_limit}'
+    return join(params.output_path, str(step_id), str(params.distance_limit))
 
 
 def build_binary_input_file_name(step_id: int, params: ClusteringParameters) -> str:
@@ -70,7 +71,7 @@ def build_binary_input_file_name(step_id: int, params: ClusteringParameters) -> 
     :param params: script arguments
     :return: built directory name
     """
-    return f'{params.binary_input}/{step_id}/{SERIALIZATION_DIR}'
+    return join(params.binary_input, str(step_id), SERIALIZATION_DIR)
 
 
 if __name__ == '__main__':
@@ -84,7 +85,7 @@ if __name__ == '__main__':
 
     step_ids = [int(os.path.splitext(f)[0]) for f in list_files(params.csv_dir)]
     for step_id in step_ids:
-        create_dir(f'{params.output_path}/{step_id}')
+        create_dir(join(params.output_path, str(step_id)))
 
     task_runner = ClusteringRunner()
 

@@ -15,6 +15,7 @@ result of submissions unification
 
 import sys
 import time
+from os.path import join
 from typing import List
 
 from src.plugin_runner.utils import ScriptArgsParser
@@ -40,7 +41,7 @@ def build_solutions_file_name(step_id: int, params: LoadSubmissionsGraphParamete
     :param params: script arguments
     :return: built .csv file name
     """
-    return f'{params.output_path}/{SOLUTIONS_DIR_NAME}/{step_id}.csv'
+    return join(params.output_path, SOLUTIONS_DIR_NAME, f'{step_id}.csv')
 
 
 def build_output_dir_name(step_id: int, params: LoadSubmissionsGraphParameters) -> str:
@@ -51,7 +52,7 @@ def build_output_dir_name(step_id: int, params: LoadSubmissionsGraphParameters) 
     :param params: script arguments
     :return: built directory name
     """
-    return f'{params.output_path}/{OUTPUT_DIR_NAME}/{step_id}'
+    return join(params.output_path, OUTPUT_DIR_NAME, str(step_id))
 
 
 def create_directories(output_path: str):
@@ -60,9 +61,9 @@ def create_directories(output_path: str):
 
     :param output_path: root output directory
     """
-    solutions_path = f'{output_path}/{SOLUTIONS_DIR_NAME}'
+    solutions_path = join(output_path, SOLUTIONS_DIR_NAME)
     create_dir(solutions_path)
-    output_dir = f'{output_path}/{OUTPUT_DIR_NAME}'
+    output_dir = join(output_path, OUTPUT_DIR_NAME)
     create_dir(output_dir)
 
 

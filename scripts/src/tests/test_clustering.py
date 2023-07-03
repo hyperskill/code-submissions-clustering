@@ -48,7 +48,7 @@ def test_correct_arguments_optional():
         '20',
         str(TMP_FOLDER),
         'PYTHON',
-        f'--binaryInput={RESOURCES_FOLDER}/output',
+        f'--binaryInput=' + (RESOURCES_FOLDER / 'output'),
         '--serialize',
         '--saveCSV',
         '--visualize',
