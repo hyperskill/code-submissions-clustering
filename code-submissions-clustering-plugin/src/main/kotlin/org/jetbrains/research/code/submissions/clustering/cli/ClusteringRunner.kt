@@ -25,11 +25,9 @@ object ClusteringRunner : AbstractGraphBuilder() {
                 inputFilename = Paths.get(inputFile).toString()
                 distLimit = distanceLimit
             }
+            val context = buildGraphContext()
             val submissionsGraph = binInput?.toSubmissionsGraph()
-                ?: DataFrame.readCSV(inputFilename).let {
-                    val context = this.buildGraphContext()
-                    it.loadGraph(context)
-                }
+                ?: DataFrame.readCSV(inputFilename).loadGraph(context)
             val clusterer = SubmissionsGraphHAC(distLimit.toDouble())
             submissionsGraph.cluster(clusterer)
             submissionsGraph.writeOutputData()
