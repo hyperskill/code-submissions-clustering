@@ -32,14 +32,14 @@ To load submissions graph(s) from .csv file, run load_submissions_graph.py with 
 
 ### Optional arguments
 
-| Argument                | Description                                                                                              |
-|-------------------------|----------------------------------------------------------------------------------------------------------|
-| **--binaryInput [DIR]** | Directory storing previously serialized graph.                                                           |
-| **--serialize**         | Serialize resulting graph to .bin file using [protobuf](https://developers.google.com/protocol-buffers). |
-| **--saveCSV**           | Save unified submissions and corresponding list of submission ids to .csv file.                          |
-| **--visualize**         | Visualize the solution graph into png format (can work slow).                                            |
-| **--saveClusters**      | Save clusters to .txt file.                                                                              |
-| **--clusteringResult**  | Save the result of clustering to .csv.gz file.                                                           |
+| Argument                | Description                                                                                                                     |
+|-------------------------|---------------------------------------------------------------------------------------------------------------------------------|
+| **--binaryInput [DIR]** | Directory storing previously serialized graph.                                                                                  |
+| **--serialize**         | Serialize resulting graph to .bin file using [protobuf](https://developers.google.com/protocol-buffers).                        |
+| **--saveCSV**           | Save unified submissions and corresponding list of submission ids to .csv file.                                                 |
+| **--visualize**         | Visualize the solution graph into png format (can work slow). Requires [Graphviz installation](https://graphviz.org/download/). |
+| **--saveClusters**      | Save clusters to .txt file.                                                                                                     |
+| **--clusteringResult**  | Save the result of clustering to .csv.gz file.                                                                                  |
 
 ### Usage example
 
@@ -73,14 +73,14 @@ To cluster code submissions, run clustering.py with following arguments (note th
 
 ### Optional arguments
 
-| Argument                | Description                                                                                              |
-|-------------------------|----------------------------------------------------------------------------------------------------------|
-| **--binaryInput [DIR]** | Directory storing previously serialized graph.                                                           |
-| **--serialize**         | Serialize resulting graph to .bin file using [protobuf](https://developers.google.com/protocol-buffers). |
-| **--saveCSV**           | Save unified submissions and corresponding list of submission ids to .csv file.                          |
-| **--visualize**         | Visualize the solution graph into png format (can work slow).                                            |
-| **--saveClusters**      | Save clusters to .txt file.                                                                              |
-| **--clusteringResult**  | Save the result of clustering to .csv.gz file.                                                           |
+| Argument                | Description                                                                                                                     |
+|-------------------------|---------------------------------------------------------------------------------------------------------------------------------|
+| **--binaryInput [DIR]** | Directory storing previously serialized graph.                                                                                  |
+| **--serialize**         | Serialize resulting graph to .bin file using [protobuf](https://developers.google.com/protocol-buffers).                        |
+| **--saveCSV**           | Save unified submissions and corresponding list of submission ids to .csv file.                                                 |
+| **--visualize**         | Visualize the solution graph into png format (can work slow). Requires [Graphviz installation](https://graphviz.org/download/). |
+| **--saveClusters**      | Save clusters to .txt file.                                                                                                     |
+| **--clusteringResult**  | Save the result of clustering to .csv.gz file.                                                                                  |
 
 Keep it in mind that in case you do not provide `--binaryInput` argument the submissions graphs will be loaded again 
 for each distance limit in the range. That is much more time-consuming than reading the graphs from binary files, thus,

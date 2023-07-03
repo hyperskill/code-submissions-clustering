@@ -26,14 +26,14 @@ To cluster submissions from csv use `cluster` gradle task.
 
 ### Optional arguments
 
-| Argument                | Description                                                                                              |
-|-------------------------|----------------------------------------------------------------------------------------------------------|
-| **--binaryInput=[DIR]** | Directory storing previously serialized graph (containing `graph.bin` and `clusters.bin`)                |
-| **--serialize**         | Save submissions graph and its clustered structure to binary files (`/serialization` folder)             |
-| **--saveCSV**           | Save unified solutions to .csv file (`graph.csv`)                                                        |
-| **--visualize**         | Save submissions graph and its clustered structure visualization to .png files (`/visualization` folder) |
-| **--saveClusters**      | Save submissions graph clusters to .txt file (`/txt/clusters.txt`)                                       |
-| **--clusteringResult**  | Save the result of clustering to .csv.gz file (`clustering.csv.gz`)                                      |
+| Argument                | Description                                                                                                                                                                |
+|-------------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| **--binaryInput=[DIR]** | Directory storing previously serialized graph (containing `graph.bin` and `clusters.bin`)                                                                                  |
+| **--serialize**         | Save submissions graph and its clustered structure to binary files (`/serialization` folder)                                                                               |
+| **--saveCSV**           | Save unified solutions to .csv file (`graph.csv`)                                                                                                                          |
+| **--visualize**         | Save submissions graph and its clustered structure visualization to .png files (`/visualization` folder). Requires [Graphviz installation](https://graphviz.org/download/) |
+| **--saveClusters**      | Save submissions graph clusters to .txt file (`/txt/clusters.txt`)                                                                                                         |
+| **--clusteringResult**  | Save the result of clustering to .csv.gz file (`clustering.csv.gz`)                                                                                                        |
 
 ## Usage examples
 
