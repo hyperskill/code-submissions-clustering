@@ -8,8 +8,10 @@ import org.jetbrains.research.code.submissions.clustering.load.context.Submissio
 import org.jetbrains.research.code.submissions.clustering.load.visualization.visualizeDot
 import org.jetbrains.research.code.submissions.clustering.model.*
 import java.io.ByteArrayOutputStream
-import java.io.File
 import java.util.zip.GZIPOutputStream
+import kotlin.io.path.Path
+import kotlin.io.path.div
+import kotlin.io.path.pathString
 
 @Suppress("VariableNaming")
 fun <T> DataFrame<*>.loadGraph(context: SubmissionsGraphContext<T>): SubmissionsGraph {
@@ -38,8 +40,8 @@ fun <T> DataFrame<*>.loadGraph(context: SubmissionsGraphContext<T>): Submissions
 }
 
 fun SubmissionsGraph.writeClusteringResult(outputPath: String) {
-    val path = "$outputPath/clustering.csv.gz"
-    val file = File(path)
+    val path = Path(outputPath) / "clustering.csv.gz"
+    val file = path.toFile()
     file.createNewFile()
 
     val bos = ByteArrayOutputStream()
@@ -57,44 +59,44 @@ fun SubmissionsGraph.toDataFrame(): DataFrame<*> {
 }
 
 fun SubmissionsGraph.writeToTxt(outputPath: String) {
-    val txtFolder = "$outputPath/txt"
+    val txtFolder = Path(outputPath) / "txt"
     createFolder(txtFolder)
-    val path = "$txtFolder/graph.txt"
-    val file = File(path)
+    val path = txtFolder / "graph.txt"
+    val file = path.toFile()
     file.writeText(buildStringRepresentation())
 }
 
 fun SubmissionsGraph.writeToBinary(outputPath: String) {
-    val serializationFolder = "$outputPath/serialization"
+    val serializationFolder = Path(outputPath) / "serialization"
     createFolder(serializationFolder)
-    val graphFilePath = "$serializationFolder/graph.bin"
-    val graphFile = File(graphFilePath)
+    val graphFilePath = serializationFolder / "graph.bin"
+    val graphFile = graphFilePath.toFile()
     toProto().writeTo(graphFile.outputStream())
-    val clustersFilePath = "$serializationFolder/clusters.bin"
-    val clustersFile = File(clustersFilePath)
+    val clustersFilePath = serializationFolder / "clusters.bin"
+    val clustersFile = clustersFilePath.toFile()
     getClusteredGraph().toProto().writeTo(clustersFile.outputStream())
 }
 
 fun SubmissionsGraph.writeToCsv(outputPath: String) {
-    val path = "$outputPath/graph.csv"
-    toDataFrame().writeCSV(path)
+    val path = Path(outputPath) / "graph.csv"
+    toDataFrame().writeCSV(path.pathString)
 }
 
 fun SubmissionsGraph.writeToPng(outputPath: String) {
-    val visualizationFolder = "$outputPath/visualization"
+    val visualizationFolder = Path(outputPath) / "visualization"
     createFolder(visualizationFolder)
-    val clustersFilePath = "$visualizationFolder/clusters.png"
-    val clustersFile = File(clustersFilePath)
-    val structureFilePath = "$visualizationFolder/structure.png"
-    val structureFile = File(structureFilePath)
+    val clustersFilePath = visualizationFolder / "clusters.png"
+    val clustersFile = clustersFilePath.toFile()
+    val structureFilePath = visualizationFolder / "structure.png"
+    val structureFile = structureFilePath.toFile()
     visualizeDot(clustersFile, structureFile)
 }
 
 fun SubmissionsGraph.writeClustersToTxt(outputPath: String) {
-    val txtFolder = "$outputPath/txt"
+    val txtFolder = Path(outputPath) / "txt"
     createFolder(txtFolder)
-    val path = "$txtFolder/clusters.txt"
-    val file = File(path)
+    val path = txtFolder / "clusters.txt"
+    val file = path.toFile()
     file.createNewFile()
     file.writeText(getClusteredGraph().toString())
 }

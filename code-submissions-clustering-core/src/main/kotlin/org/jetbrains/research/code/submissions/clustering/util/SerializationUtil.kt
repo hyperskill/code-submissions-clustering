@@ -13,12 +13,14 @@ import org.jgrapht.Graph
 import org.jgrapht.graph.SimpleWeightedGraph
 import java.io.File
 import java.nio.file.Path
+import kotlin.io.path.div
+import kotlin.io.path.pathString
 
 fun Path.toSubmissionsGraph(): SubmissionsGraph {
-    val submissionsGraphPath = "$this/graph.bin"
-    val clusteredGraphPath = "$this/clusters.bin"
-    val submissionsGraphFile = File(submissionsGraphPath)
-    val clusteredGraphFile = File(clusteredGraphPath)
+    val submissionsGraphPath = this / "graph.bin"
+    val clusteredGraphPath = this / "clusters.bin"
+    val submissionsGraphFile = File(submissionsGraphPath.pathString)
+    val clusteredGraphFile = File(clusteredGraphPath.pathString)
     val submissionsGraph = submissionsGraphFile.toSubmissionsGraph()
     val clusteredGraph = clusteredGraphFile.toClusteredGraph()
     submissionsGraph.cluster(CopyGraphClusterer(clusteredGraph))
