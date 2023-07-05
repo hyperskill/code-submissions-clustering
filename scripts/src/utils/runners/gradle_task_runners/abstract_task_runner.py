@@ -1,3 +1,4 @@
+import platform
 from abc import abstractmethod
 from pathlib import Path
 from typing import Any, Dict, Tuple
@@ -48,9 +49,13 @@ class AbstractTaskRunner(AbstractRunner):
             flag_args: Dict[TaskFlagArgs, bool],
     ) -> str:
         """Build command to execute."""
-        cmd = f'./gradlew {self.task_prefix}{self.task_name}'
+        if platform.system() == 'Windows':
+            cmd = 'cmd /c gradlew.bat'
+        else:
+            cmd = './gradlew'
+        cmd = cmd + f' {self.task_prefix}{self.task_name}'
         for arg_name, arg_value in named_args.items():
-            cmd = cmd + f' -P{arg_name.value}={str(arg_value)} '
+            cmd = cmd + f' -P{arg_name.value}={str(arg_value)}'
         for arg_name, arg_value in flag_args.items():
             if arg_value:
                 cmd = cmd + f' -P{arg_name.value}'

@@ -11,6 +11,7 @@ import org.jetbrains.research.code.submissions.clustering.util.*
 import java.nio.file.Path
 import java.nio.file.Paths
 import java.util.logging.Logger
+import kotlin.io.path.Path
 import kotlin.system.exitProcess
 
 abstract class AbstractGraphBuilder : ApplicationStarter {
@@ -55,7 +56,7 @@ abstract class AbstractGraphBuilder : ApplicationStarter {
         .buildContext()
 
     protected fun SubmissionsGraph.writeOutputData() {
-        createFolder(outputPath)
+        createFolder(Path(outputPath))
         getWriters().filter { it.toWrite }.forEach { tryToWrite(it.writer) }
     }
 

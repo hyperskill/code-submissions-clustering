@@ -3,6 +3,10 @@ package org.jetbrains.research.code.submissions.clustering.util
 import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.vfs.LocalFileSystem
 import java.io.File
+import java.nio.file.Path
+import kotlin.io.path.Path
+import kotlin.io.path.div
+import kotlin.io.path.pathString
 
 fun File.deleteFromProject() {
     ApplicationManager.getApplication().runWriteAction {
@@ -12,8 +16,8 @@ fun File.deleteFromProject() {
     }
 }
 
-fun createFolder(path: String) {
-    val file = File(path)
+fun createFolder(path: Path) {
+    val file = path.toFile()
     if (file.exists() && file.isFile) {
         file.delete()
     }
@@ -22,15 +26,15 @@ fun createFolder(path: String) {
     }
 }
 
-fun getTmpDirPath() = System.getProperty("java.io.tmpdir").removeSuffix("/")
+fun getTmpDirPath(): String = System.getProperty("java.io.tmpdir")
 
 fun getTmpProjectDir(toCreateFolder: Boolean = true): String {
     val folderName = "codeSubmissionsClusteringTmp"
-    val path = "${getTmpDirPath()}/$folderName"
+    val path = Path(getTmpDirPath()) / folderName
     if (toCreateFolder) {
         createFolder(path)
     }
-    return path
+    return path.pathString
 }
 
 fun addFileToProject(
@@ -38,8 +42,8 @@ fun addFileToProject(
     fileName: String,
     fileContent: String = ""
 ): File {
-    val filePath = "$projectPath/$fileName"
-    val file = File(filePath)
+    val filePath = Path(projectPath) / fileName
+    val file = filePath.toFile()
     if (file.exists()) {
         file.delete()
     }
