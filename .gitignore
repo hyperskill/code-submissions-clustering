@@ -25,6 +25,7 @@ gradle-app.setting
 .idea/compiler.xml
 .idea/jarRepositories.xml
 .idea/modules.xml
+.idea/kotlinc.xml
 .idea/*.iml
 .idea/modules
 *.iml
