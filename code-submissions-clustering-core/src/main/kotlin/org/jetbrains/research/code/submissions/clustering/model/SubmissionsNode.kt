@@ -1,6 +1,6 @@
 package org.jetbrains.research.code.submissions.clustering.model
 
-import org.jetbrains.research.code.submissions.clustering.load.context.builder.Identifier
+import org.jetbrains.research.code.submissions.clustering.util.Identifier
 
 /**
  * @property code submissions code

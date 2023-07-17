@@ -4,7 +4,7 @@ import com.intellij.openapi.application.ApplicationStarter
 import com.xenomachina.argparser.ArgParser
 import org.jetbrains.research.code.submissions.clustering.cli.models.AbstractGraphBuilderArgs
 import org.jetbrains.research.code.submissions.clustering.cli.models.Writer
-import org.jetbrains.research.code.submissions.clustering.load.context.builder.gumtree.GumTreeGraphContextBuilder
+import org.jetbrains.research.code.submissions.clustering.impl.context.gumtree.GumTreeGraphContextBuilder
 import org.jetbrains.research.code.submissions.clustering.model.Language
 import org.jetbrains.research.code.submissions.clustering.model.SubmissionsGraph
 import org.jetbrains.research.code.submissions.clustering.util.*

@@ -6,6 +6,7 @@ version = rootProject.version
 
 dependencies {
     implementation(project(":code-submissions-clustering-core"))
+    implementation(project(":code-submissions-clustering-ij"))
     // Need for CLI
     implementation(libs.kotlin.argparser)
     implementation(libs.dataframe)

@@ -4,7 +4,6 @@ package org.jetbrains.research.code.submissions.clustering.util
 
 import org.jetbrains.research.code.submissions.clustering.*
 import org.jetbrains.research.code.submissions.clustering.load.clustering.*
-import org.jetbrains.research.code.submissions.clustering.load.context.builder.Identifier
 import org.jetbrains.research.code.submissions.clustering.model.SubmissionInfo
 import org.jetbrains.research.code.submissions.clustering.model.SubmissionsGraph
 import org.jetbrains.research.code.submissions.clustering.model.SubmissionsGraphEdge
