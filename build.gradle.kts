@@ -38,7 +38,12 @@ allprojects {
 
     dependencies {
         implementation(kotlin("stdlib-jdk8"))
+
         implementation(rootProject.libs.protobuf.java)
+        implementation(rootProject.libs.grpc.stub)
+        implementation(rootProject.libs.grpc.protobuf)
+        implementation(rootProject.libs.grpc.netty)
+        implementation(rootProject.libs.grpc.stub.kotlin)
 
         implementation(rootProject.libs.plugin.utilities.core)
         implementation(rootProject.libs.plugin.utilities.test)
