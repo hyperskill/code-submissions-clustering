@@ -8,15 +8,17 @@ import org.gradle.api.Project
 import org.gradle.internal.os.OperatingSystem
 import org.gradle.kotlin.dsl.apply
 
+fun makeOSSpecificDependency(dependency: String): String = when {
+    OperatingSystem.current().isMacOsX -> "$dependency:osx-x86_64"
+    OperatingSystem.current().isWindows -> "$dependency:windows-x86_64"
+    else -> dependency
+}
+
 fun Project.configureProtobuf() {
     apply<ProtobufPlugin>()
     protobuf {
         protoc {
-            artifact = if (OperatingSystem.current().isMacOsX) {
-                "com.google.protobuf:protoc:3.0.0:osx-x86_64"
-            } else {
-                "com.google.protobuf:protoc:3.0.0"
-            }
+            artifact = makeOSSpecificDependency("com.google.protobuf:protoc:3.19.4")
         }
     }
 }

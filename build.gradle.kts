@@ -38,7 +38,7 @@ allprojects {
 
     dependencies {
         implementation(kotlin("stdlib-jdk8"))
-        implementation(rootProject.libs.protobuf.runtime)
+        implementation(rootProject.libs.protobuf.java)
 
         implementation(rootProject.libs.plugin.utilities.core)
         implementation(rootProject.libs.plugin.utilities.test)
