@@ -7,7 +7,7 @@ import org.jetbrains.research.code.submissions.clustering.model.Submission
 import java.io.Closeable
 import java.util.concurrent.TimeUnit
 
-class CodeServerClientImpl(private val channel: ManagedChannel): Closeable {
+class CodeServerClientImpl(private val channel: ManagedChannel) : Closeable {
     private val stub = CodeServerGrpcKt.CodeServerCoroutineStub(channel)
 
     override fun close() {

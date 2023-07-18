@@ -10,7 +10,6 @@ object CodeServerStarter : ApplicationStarter {
     private val logger: Logger = Logger.getLogger(javaClass.name)
     private const val BASE_PORT: Int = 8000
     private var portId: Int = BASE_PORT
-
     override val commandName: String = "ij-code-server"
 
     override fun main(args: List<String>) {

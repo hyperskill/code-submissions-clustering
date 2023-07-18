@@ -23,7 +23,7 @@ import java.util.logging.Logger
  */
 abstract class AbstractUnifier(
     private val project: Project, private val anonymization: Transformation? = null
-): Unifier {
+) : Unifier {
     private val logger = Logger.getLogger(javaClass.name)
     abstract val language: Language
     abstract val transformations: List<Transformation>

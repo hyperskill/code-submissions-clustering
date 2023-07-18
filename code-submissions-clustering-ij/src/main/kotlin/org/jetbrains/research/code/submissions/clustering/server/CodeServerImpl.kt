@@ -10,7 +10,6 @@ import java.util.logging.Logger
 
 class CodeServerImpl(private val port: Int, language: Language) {
     private val logger: Logger = Logger.getLogger(javaClass.name)
-
     private val graphContext = GumTreeGraphContextBuilder()
         .setLanguage(language)
         .buildContext()
