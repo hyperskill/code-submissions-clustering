@@ -1,10 +1,10 @@
 package org.jetbrains.research.code.submissions.clustering.cli
 
-import com.intellij.openapi.application.ApplicationStarter
 import com.xenomachina.argparser.ArgParser
 import org.jetbrains.research.code.submissions.clustering.cli.models.AbstractGraphBuilderArgs
 import org.jetbrains.research.code.submissions.clustering.cli.models.Writer
-import org.jetbrains.research.code.submissions.clustering.impl.context.gumtree.GumTreeGraphContextBuilder
+import org.jetbrains.research.code.submissions.clustering.client.IjGraphContextBuilder
+import org.jetbrains.research.code.submissions.clustering.load.context.SubmissionsGraphContext
 import org.jetbrains.research.code.submissions.clustering.model.Language
 import org.jetbrains.research.code.submissions.clustering.model.SubmissionsGraph
 import org.jetbrains.research.code.submissions.clustering.util.*
@@ -14,14 +14,14 @@ import java.util.logging.Logger
 import kotlin.io.path.Path
 import kotlin.system.exitProcess
 
-abstract class AbstractGraphBuilder : ApplicationStarter {
-    protected val logger: Logger = Logger.getLogger(javaClass.name)
+open class AbstractGraphBuilder {
+    val logger: Logger = Logger.getLogger(javaClass.name)
     private var toBinary: Boolean = false
     private var toCSV: Boolean = false
     private var toPNG: Boolean = false
     private var clustersToTxt = false
     private var clusteringRes = false
-    protected var binInput: Path? = null
+    var binInput: Path? = null
     private lateinit var lang: Language
     private lateinit var outputPath: String
 
@@ -34,7 +34,7 @@ abstract class AbstractGraphBuilder : ApplicationStarter {
         Writer(SubmissionsGraph::writeClusteringResult, clusteringRes),
     )
 
-    protected fun <T : AbstractGraphBuilderArgs> parseArgs(
+    fun <T : AbstractGraphBuilderArgs> parseArgs(
         args: MutableList<String>,
         argsClassConstructor: (ArgParser) -> T
     ): T {
@@ -51,17 +51,16 @@ abstract class AbstractGraphBuilder : ApplicationStarter {
         }
     }
 
-    protected fun buildGraphContext() = GumTreeGraphContextBuilder()
-        .setLanguage(lang)
-        .buildContext()
+    fun buildGraphContext(): SubmissionsGraphContext<*> =
+        IjGraphContextBuilder(ADDRESS_NAME, ADDRESS_PORT).buildContext()
 
-    protected fun SubmissionsGraph.writeOutputData() {
+    fun SubmissionsGraph.writeOutputData() {
         createFolder(Path(outputPath))
         getWriters().filter { it.toWrite }.forEach { tryToWrite(it.writer) }
     }
 
     @Suppress("TooGenericExceptionCaught")
-    protected fun startRunner(args: MutableList<String>, run: (MutableList<String>) -> Unit) {
+    fun startRunner(args: MutableList<String>, run: (MutableList<String>) -> Unit) {
         try {
             run(args)
         } catch (ex: Throwable) {
@@ -79,5 +78,10 @@ abstract class AbstractGraphBuilder : ApplicationStarter {
         } catch (ex: Throwable) {
             logger.severe { "Writing failed: $ex" }
         }
+    }
+
+    companion object {
+        const val ADDRESS_NAME = "localhost"
+        const val ADDRESS_PORT = 8080
     }
 }
