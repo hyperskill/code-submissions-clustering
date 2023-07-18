@@ -14,8 +14,6 @@
 
     <extensions defaultExtensionNs="com.intellij">
         <!-- Add your extensions here -->
-        <appStarter implementation="org.jetbrains.research.code.submissions.clustering.cli.LoadRunner"/>
-        <appStarter implementation="org.jetbrains.research.code.submissions.clustering.cli.DistanceCalculationRunner"/>
-        <appStarter implementation="org.jetbrains.research.code.submissions.clustering.cli.ClusteringRunner"/>
+        <appStarter implementation="org.jetbrains.research.code.submissions.clustering.server.CodeServerStarter"/>
     </extensions>
 </idea-plugin>
