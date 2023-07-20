@@ -1,39 +1,52 @@
 package org.jetbrains.research.code.submissions.clustering.cli.models
 
-import com.xenomachina.argparser.ArgParser
-import com.xenomachina.argparser.default
+import com.github.ajalt.clikt.parameters.groups.OptionGroup
+import com.github.ajalt.clikt.parameters.options.flag
+import com.github.ajalt.clikt.parameters.options.option
+import com.github.ajalt.clikt.parameters.options.required
+import com.github.ajalt.clikt.parameters.types.enum
+import com.github.ajalt.clikt.parameters.types.path
+import org.jetbrains.research.code.submissions.clustering.model.Language
+import java.nio.file.Path
 
-open class AbstractGraphBuilderArgs(parser: ArgParser) {
-    val language by parser.storing(
-        "-l", "--language",
-        help = "Programming language of code submissions"
-    )
-    val outputDir by parser.storing(
+class AbstractGraphBuilderOptions : OptionGroup(
+    name = "Common Options"
+) {
+    val outputDir by option(
         "-o", "--outputDir",
-        help = "Directory to store all output files",
-    )
-    val binaryInput by parser.storing(
+        help = "Directory to store all output files (required)",
+    ).required()
+    val language by option(
+        "-l", "--language",
+        help = "Programming language of code submissions (required)",
+    ).enum<Language>().required()
+    val binaryInput: Path? by option(
         "-b", "--binaryInput",
-        help = "Directory storing previously serialized graph"
-    ).default<String?>(null)
-    val serializeGraph by parser.flagging(
+        help = "Directory storing previously serialized graph",
+    ).path(mustExist = true)
+}
+
+class AbstractGraphBuilderFlags : OptionGroup(
+    name = "Flags"
+) {
+    val serializeGraph: Boolean by option(
         "--serialize",
-        help = "Save submissions graph and its clustered structure to binary files"
-    )
-    val saveCSV by parser.flagging(
+        help = "Save submissions graph and its clustered structure to binary files",
+    ).flag()
+    val saveCSV: Boolean by option(
         "--saveCSV",
-        help = "Save unified solutions to .csv file"
-    )
-    val visualize by parser.flagging(
+        help = "Save unified solutions to .csv file",
+    ).flag()
+    val visualize: Boolean by option(
         "--visualize",
-        help = "Save submissions graph and its clustered structure visualization to .png files"
-    )
-    val saveClusters by parser.flagging(
+        help = "Save submissions graph and its clustered structure visualization to .png files",
+    ).flag()
+    val saveClusters: Boolean by option(
         "--saveClusters",
-        help = "Save submissions graph clusters to .txt file"
-    )
-    val clusteringResult by parser.flagging(
+        help = "Save submissions graph clusters to .txt file",
+    ).flag()
+    val clusteringResult: Boolean by option(
         "--clusteringResult",
-        help = "Save the result of clustering to .csv.gz file"
-    )
+        help = "Save the result of clustering to .csv.gz file",
+    ).flag()
 }
