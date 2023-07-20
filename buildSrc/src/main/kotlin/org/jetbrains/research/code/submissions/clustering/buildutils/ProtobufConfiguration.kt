@@ -19,7 +19,7 @@ fun Project.configureProtobuf() {
         }
         plugins {
             id("grpc") {
-                artifact = makeOSSpecificDependency("io.grpc:protoc-gen-grpc-java:1.31.1")
+                artifact = makeOSSpecificDependency("io.grpc:protoc-gen-grpc-java:1.33.0")
             }
             id("grpckt") {
                 artifact = "io.grpc:protoc-gen-grpc-kotlin:1.3.0:jdk8@jar"
