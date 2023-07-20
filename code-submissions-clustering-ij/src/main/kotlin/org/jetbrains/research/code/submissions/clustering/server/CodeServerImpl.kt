@@ -17,10 +17,8 @@ import java.util.logging.Logger
 class CodeServerImpl(private val port: Int, language: Language) {
     private val logger: Logger = Logger.getLogger(javaClass.name)
     private val graphContext = GumTreeGraphContextBuilder().setLanguage(language).buildContext()
-
     private val requestChannel = Channel<CodeServerRequest>()
     private val responseChannel = Channel<CodeServerResponse>()
-
     val server: Server = ServerBuilder
         .forPort(port)
         .addService(CodeServerServiceImpl(requestChannel, responseChannel))
