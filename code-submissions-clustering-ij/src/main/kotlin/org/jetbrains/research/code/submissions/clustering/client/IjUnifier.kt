@@ -9,7 +9,5 @@ class IjUnifier(private val clientImpl: CodeServerClientImpl) : Unifier {
         clientImpl.unify(this@unify)
     }
 
-    override fun clear() {
-        TODO("Not yet implemented")
-    }
+    override fun clear() = Unit
 }
