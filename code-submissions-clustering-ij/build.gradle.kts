@@ -50,7 +50,6 @@ abstract class BaseCLITask : RunIdeTask() {
 
 tasks {
     test {
-//        useJUnitPlatform()
         jvmArgs = listOf(
             "-Dgt.pp.path=${Paths.get(project.parent!!.projectDir.toString(), "libs", "pythonparser")}"
         )
