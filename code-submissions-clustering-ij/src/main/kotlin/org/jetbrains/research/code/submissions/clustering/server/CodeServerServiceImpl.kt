@@ -15,10 +15,16 @@ class CodeServerServiceImpl(language: Language) : CodeServerGrpcKt.CodeServerCor
     private val logger: Logger = Logger.getLogger(javaClass.name)
     private val graphContext = GumTreeGraphContextBuilder().setLanguage(language).buildContext()
 
+    @Suppress("TooGenericExceptionCaught", "RethrowCaughtException")
     override suspend fun unify(request: SubmissionCode): SubmissionCode {
         logger.info("Receive request: \n${request.code}")
-        val code = graphContext.unifier.run {
-            createMockSubmission(request.code).unify().code
+        val code = try {
+            graphContext.unifier.run {
+                createMockSubmission(request.code).unify().code
+            }
+        } catch (e: Throwable) {
+            logger.severe(e.toString())
+            throw e
         }
         logger.info("Unification finished")
         return SubmissionCode.newBuilder().setCode(code).build()
