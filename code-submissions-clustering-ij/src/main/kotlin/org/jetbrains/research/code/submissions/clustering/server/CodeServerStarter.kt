@@ -21,7 +21,6 @@ class CodeServerStarter : ApplicationStarter {
             logger.info("Starting IntelliJ Code Server on port=$portId")
             val server = CodeServerImpl(portId, lang)
             server.start()
-            server.blockUntilShutdown()
         } catch (ex: Throwable) {
             logger.severe { ex.stackTraceToString() }
             exitProcess(1)
