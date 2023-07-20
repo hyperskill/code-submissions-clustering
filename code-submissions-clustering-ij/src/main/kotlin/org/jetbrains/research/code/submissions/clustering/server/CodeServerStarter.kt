@@ -9,9 +9,8 @@ import java.util.logging.Logger
 import kotlin.system.exitProcess
 
 @Suppress("TooGenericExceptionCaught")
-object CodeServerStarter : ApplicationStarter {
+class CodeServerStarter : ApplicationStarter {
     private val logger: Logger = Logger.getLogger(javaClass.name)
-    private const val BASE_PORT: Int = 8000
     private var portId: Int = BASE_PORT
     override val commandName: String = "ij-code-server"
     private lateinit var lang: Language
@@ -48,5 +47,9 @@ object CodeServerStarter : ApplicationStarter {
             "-l", "--language",
             help = "Programming language of code submissions"
         )
+    }
+
+    companion object {
+        private const val BASE_PORT: Int = 8000
     }
 }
