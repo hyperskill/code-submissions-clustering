@@ -4,5 +4,5 @@ import org.jetbrains.research.code.submissions.clustering.model.Submission
 
 interface Unifier {
     fun Submission.unify(): Submission
-    fun clear()
+    fun clear() = Unit
 }
