@@ -13,16 +13,18 @@ The first ranking version will be based on simple heuristics.
 
 ## Getting clustering results
 
-To cluster submissions from csv use `cluster` gradle task.
+First, run IJ code server (see [code-submissions-clustering-ij](code-submissions-clustering-ij/README.md)).
+
+After the server has started, configure and run `Run cluster command` run configuration to cluster submissions.
 
 ### Required arguments
 
 | Argument          | Description                                          |
 |-------------------|------------------------------------------------------|
 | **inputFile**     | Input .csv file with code submissions                |
-| **language**      | Programming language of code submissions             |
 | **distanceLimit** | Max distance between two vertices inside one cluster |
 | **outputDir**     | Directory to store all output files                  |
+| **language**      | Programming language of code submissions             |
 
 ### Optional arguments
 
@@ -40,18 +42,18 @@ To cluster submissions from csv use `cluster` gradle task.
 To cluster code submissions from .csv file and save clustering result to .csv.gz file use `clusteringResult` flag:
 
 ```
-./gradlew :code-submissions-clustering-plugin:cluster -PinputFile=/path/to/submissions.csv -Planguage=PYTHON -PdistanceLimit=50 -PoutputDir=/path/to/output/directory -PclusteringResult
+./gradlew run --args="cluster </path/to/submissions.csv> <distance limit> --outputDir=</path/to/output/dir> --language=PYTHON --clusteringResult"
 ```
 
 To serialize resulting graph and its current clustered structure for future use add `serialize` flag:
 ```
-./gradlew :code-submissions-clustering-plugin:cluster -PinputFile=/path/to/submissions.csv -Planguage=PYTHON -PdistanceLimit=50 -PoutputDir=/path/to/output/directory -Pserialize
+./gradlew run --args="cluster </path/to/submissions.csv> <distance limit> --outputDir=</path/to/output/dir> --language=PYTHON --serialize"
 ```
 
 You can then use preprocessed data from previous serialization for new clustering using `binaryInput`:
 
 ```
-./gradlew :code-submissions-clustering-plugin:cluster -PinputFile=/path/to/submissions.csv -Planguage=PYTHON -PdistanceLimit=50 -PoutputDir=/path/to/output/directory -PbinaryInput=/path/to/serialization
+./gradlew run --args="cluster </path/to/submissions.csv> <distance limit> --outputDir=</path/to/output/dir> --language=PYTHON --binaryInput=</path/to/serialization>
 ```
 
 ## Clustering result overview
