@@ -11,7 +11,7 @@
       <option name="taskNames">
         <list>
           <option value="run" />
-          <option value="--args=&quot;cluster &lt;/path/to/submissions.csv&gt; &lt;distance limit&gt; --outputDir=&lt;/path/to/output/dir&gt; --language=PYTHON --saveClusters --clusteringResult&quot;" />
+          <option value="--args=&quot;cluster &lt;/path/to/submissions.csv&gt; 60 --outputDir=&lt;/path/to/output/dir&gt; --language=PYTHON --saveClusters --clusteringResult&quot;" />
         </list>
       </option>
       <option name="vmOptions" />
