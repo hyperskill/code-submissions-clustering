@@ -1,0 +1,23 @@
+syntax = "proto3";
+package org.jetbrains.research.code.submissions.clustering;
+
+option java_multiple_files = true;
+option java_outer_classname = "CodeServerServiceProtos";
+
+service CodeServer {
+  rpc Unify(SubmissionCode) returns (SubmissionCode) {}
+  rpc CalculateWeight(SubmissionsEdge) returns (SubmissionsWeight) {}
+}
+
+message SubmissionCode {
+  string code = 1;
+}
+
+message SubmissionsEdge {
+  SubmissionCode from = 1;
+  SubmissionCode to = 2;
+}
+
+message SubmissionsWeight {
+  int32 weight = 1;
+}

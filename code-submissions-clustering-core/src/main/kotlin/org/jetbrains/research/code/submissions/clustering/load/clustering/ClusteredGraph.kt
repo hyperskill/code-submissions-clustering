@@ -1,7 +1,7 @@
 package org.jetbrains.research.code.submissions.clustering.load.clustering
 
-import org.jetbrains.research.code.submissions.clustering.load.context.builder.Identifier
-import org.jetbrains.research.code.submissions.clustering.load.context.builder.IdentifierFactoryImpl
+import org.jetbrains.research.code.submissions.clustering.util.Identifier
+import org.jetbrains.research.code.submissions.clustering.util.IdentifierFactoryImpl
 import org.jetbrains.research.code.submissions.clustering.model.SubmissionsNode
 import org.jgrapht.Graph
 import org.jgrapht.alg.interfaces.ClusteringAlgorithm.Clustering

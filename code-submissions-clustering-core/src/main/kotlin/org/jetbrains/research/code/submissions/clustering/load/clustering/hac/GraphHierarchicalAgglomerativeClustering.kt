@@ -1,7 +1,7 @@
 package org.jetbrains.research.code.submissions.clustering.load.clustering.hac
 
 import org.jetbrains.research.code.submissions.clustering.load.clustering.*
-import org.jetbrains.research.code.submissions.clustering.load.context.builder.IdentifierFactoryImpl
+import org.jetbrains.research.code.submissions.clustering.util.IdentifierFactoryImpl
 import org.jetbrains.research.code.submissions.clustering.util.parallel.ParallelContext
 import org.jetbrains.research.code.submissions.clustering.util.parallel.ParallelUtils.combineWith
 import org.jgrapht.Graph

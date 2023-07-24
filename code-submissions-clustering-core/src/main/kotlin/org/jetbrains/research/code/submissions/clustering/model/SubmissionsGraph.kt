@@ -5,7 +5,7 @@ import org.jetbrains.research.code.submissions.clustering.load.clustering.Cluste
 import org.jetbrains.research.code.submissions.clustering.load.clustering.GraphClusterer
 import org.jetbrains.research.code.submissions.clustering.load.clustering.buildClusteredGraph
 import org.jetbrains.research.code.submissions.clustering.load.context.SubmissionsGraphContext
-import org.jetbrains.research.code.submissions.clustering.load.context.builder.IdentifierFactoryImpl
+import org.jetbrains.research.code.submissions.clustering.util.IdentifierFactoryImpl
 import org.jetbrains.research.code.submissions.clustering.util.toProto
 import org.jgrapht.Graph
 import org.jgrapht.graph.DefaultWeightedEdge

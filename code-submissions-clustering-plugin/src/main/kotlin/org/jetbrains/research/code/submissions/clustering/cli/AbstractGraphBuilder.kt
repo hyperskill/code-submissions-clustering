@@ -1,69 +1,44 @@
 package org.jetbrains.research.code.submissions.clustering.cli
 
-import com.intellij.openapi.application.ApplicationStarter
-import com.xenomachina.argparser.ArgParser
-import org.jetbrains.research.code.submissions.clustering.cli.models.AbstractGraphBuilderArgs
+import com.github.ajalt.clikt.core.CliktCommand
+import com.github.ajalt.clikt.parameters.groups.provideDelegate
+import org.jetbrains.research.code.submissions.clustering.cli.models.AbstractGraphBuilderFlags
+import org.jetbrains.research.code.submissions.clustering.cli.models.AbstractGraphBuilderOptions
 import org.jetbrains.research.code.submissions.clustering.cli.models.Writer
-import org.jetbrains.research.code.submissions.clustering.load.context.builder.gumtree.GumTreeGraphContextBuilder
-import org.jetbrains.research.code.submissions.clustering.model.Language
+import org.jetbrains.research.code.submissions.clustering.client.IjGraphContextBuilder
+import org.jetbrains.research.code.submissions.clustering.load.context.SubmissionsGraphContext
 import org.jetbrains.research.code.submissions.clustering.model.SubmissionsGraph
 import org.jetbrains.research.code.submissions.clustering.util.*
-import java.nio.file.Path
-import java.nio.file.Paths
 import java.util.logging.Logger
 import kotlin.io.path.Path
 import kotlin.system.exitProcess
 
-abstract class AbstractGraphBuilder : ApplicationStarter {
-    protected val logger: Logger = Logger.getLogger(javaClass.name)
-    private var toBinary: Boolean = false
-    private var toCSV: Boolean = false
-    private var toPNG: Boolean = false
-    private var clustersToTxt = false
-    private var clusteringRes = false
-    protected var binInput: Path? = null
-    private lateinit var lang: Language
-    private lateinit var outputPath: String
+abstract class AbstractGraphBuilder(name: String, help: String) : CliktCommand(name = name, help = help) {
+    private val logger: Logger = Logger.getLogger(javaClass.name)
+    protected val commonOptions by AbstractGraphBuilderOptions()
+    private val flags by AbstractGraphBuilderFlags()
 
     private fun getWriters() = listOf(
         Writer(SubmissionsGraph::writeToTxt, true),
-        Writer(SubmissionsGraph::writeToBinary, toBinary),
-        Writer(SubmissionsGraph::writeToCsv, toCSV),
-        Writer(SubmissionsGraph::writeToPng, toPNG),
-        Writer(SubmissionsGraph::writeClustersToTxt, clustersToTxt),
-        Writer(SubmissionsGraph::writeClusteringResult, clusteringRes),
+        Writer(SubmissionsGraph::writeToBinary, flags.serializeGraph),
+        Writer(SubmissionsGraph::writeToCsv, flags.saveCSV),
+        Writer(SubmissionsGraph::writeToPng, flags.visualize),
+        Writer(SubmissionsGraph::writeClustersToTxt, flags.saveClusters),
+        Writer(SubmissionsGraph::writeClusteringResult, flags.clusteringResult),
     )
 
-    protected fun <T : AbstractGraphBuilderArgs> parseArgs(
-        args: MutableList<String>,
-        argsClassConstructor: (ArgParser) -> T
-    ): T {
-        val parser = ArgParser(args.drop(1).toTypedArray())
-        return parser.parseInto(argsClassConstructor).apply {
-            lang = Language.valueOf(Paths.get(language).toString())
-            outputPath = Paths.get(outputDir).toString()
-            binInput = binaryInput?.let { Paths.get(it) }
-            toBinary = serializeGraph
-            toCSV = saveCSV
-            toPNG = visualize
-            clustersToTxt = saveClusters
-            clusteringRes = clusteringResult
-        }
-    }
+    fun buildGraphContext(): SubmissionsGraphContext<*> =
+        IjGraphContextBuilder(ADDRESS_NAME, ADDRESS_PORT).buildContext()
 
-    protected fun buildGraphContext() = GumTreeGraphContextBuilder()
-        .setLanguage(lang)
-        .buildContext()
-
-    protected fun SubmissionsGraph.writeOutputData() {
-        createFolder(Path(outputPath))
+    fun SubmissionsGraph.writeOutputData() {
+        createFolder(Path(commonOptions.outputDir))
         getWriters().filter { it.toWrite }.forEach { tryToWrite(it.writer) }
     }
 
     @Suppress("TooGenericExceptionCaught")
-    protected fun startRunner(args: MutableList<String>, run: (MutableList<String>) -> Unit) {
+    fun startRunner(run: () -> Unit) {
         try {
-            run(args)
+            run()
         } catch (ex: Throwable) {
             logger.severe { ex.stackTraceToString() }
             exitProcess(1)
@@ -75,9 +50,14 @@ abstract class AbstractGraphBuilder : ApplicationStarter {
     @Suppress("TooGenericExceptionCaught")
     private fun SubmissionsGraph.tryToWrite(write: SubmissionsGraph.(String) -> Unit) {
         try {
-            write(outputPath)
+            write(commonOptions.outputDir)
         } catch (ex: Throwable) {
             logger.severe { "Writing failed: $ex" }
         }
+    }
+
+    companion object {
+        const val ADDRESS_NAME = "localhost"
+        const val ADDRESS_PORT = 8000
     }
 }

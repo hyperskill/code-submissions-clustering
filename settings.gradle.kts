@@ -20,5 +20,6 @@ sourceControl {
 
 include(
     "code-submissions-clustering-core",
-    "code-submissions-clustering-plugin"
+    "code-submissions-clustering-plugin",
+    "code-submissions-clustering-ij"
 )
