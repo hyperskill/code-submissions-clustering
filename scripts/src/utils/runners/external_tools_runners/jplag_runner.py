@@ -152,7 +152,8 @@ class JPlagRunner(AbstractRunner):
             self,
             named_args: Dict[str, Any],
             flag_args: Dict[str, bool],
-    ) -> str:
+            positional_args=None,
+    ) -> List[str]:
         cmd = 'java -jar'
         for arg_name, arg_value in named_args.items():
             if not arg_name.startswith('-'):
@@ -162,7 +163,7 @@ class JPlagRunner(AbstractRunner):
         for arg_name, arg_value in flag_args.items():
             if arg_value:
                 cmd = cmd + f' {arg_name}'
-        return cmd
+        return cmd.split()
 
     def run(
             self,
