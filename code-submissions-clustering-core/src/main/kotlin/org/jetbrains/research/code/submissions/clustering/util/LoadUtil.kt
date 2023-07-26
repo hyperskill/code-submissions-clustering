@@ -26,7 +26,7 @@ fun <T> DataFrame<*>.loadGraph(context: SubmissionsGraphContext<T>): Submissions
                     Submission(
                         info = SubmissionInfo(getValue(id), getValue(quality)),
                         stepId = getValue(step_id),
-                        code = getValue(code)
+                        code = getValue(code).replace("\r\n", "\n")
                     )
                 )
             }
