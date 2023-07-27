@@ -62,7 +62,7 @@ abstract class AbstractUnifier(
     @Suppress("TOO_MANY_LINES_IN_LAMBDA")
     override fun Submission.unify(): Submission {
         val statsBuilder = TransformationsStatisticsBuilder()
-        val code = codeToUnifiedCode.getOrDefault(this.code, this.code.let { code ->
+        val code = this.code.let { code ->
             val psi = psiFileFactory.getPsiFile(code)
             ApplicationManager.getApplication().invokeAndWait {
                 ApplicationManager.getApplication().runWriteAction {
@@ -76,15 +76,15 @@ abstract class AbstractUnifier(
                         psi.applyTransformations(transformations, statsBuilder, previousTree)
                         logger.finer { "Previous text[$iterationNumber]:\n${previousTree.text}\n" }
                         logger.finer { "Current text[$iterationNumber]:\n${psi.text}\n\n" }
-                    } while (!previousTree.textMatches(psi.text) && iterationNumber <= MAX_ITERATIONS && codeToUnifiedCode[psi.text] == null)
+                    } while (!previousTree.textMatches(psi.text) && iterationNumber <= MAX_ITERATIONS)
                     logger.fine { "Tree Ended[[$iterationNumber]]: ${psi.text}\n\n\n" }
                     logger.info { "Total iterations number: $iterationNumber" }
                 }
             }
-            codeToUnifiedCode.getOrPut(psi.text) { psi.reformatInWriteAction().text }.also {
+            psi.reformatInWriteAction().text.also {
                 psiFileFactory.releasePsiFile(psi)
             }
-        })
+        }
         logger.info {
             statsBuilder.buildStatistics(listOfNotNull(anonymization) + transformations)
         }

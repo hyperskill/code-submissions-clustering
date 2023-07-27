@@ -36,26 +36,35 @@ class GraphTransformer<T>(
     private val submissionsGraphContext: SubmissionsGraphContext<T>,
     private val graph: SubmissionsGraphAlias
 ) {
-    private val vertexByCode = HashMap<String, SubmissionsNode>()
+    private val vertexByUnifiedCode = HashMap<String, SubmissionsNode>()
+    private val vertexByInitialCode = HashMap<String, SubmissionsNode>()
     private val idFactory = IdentifierFactoryImpl()
 
     init {
         graph.vertexSet().forEach {
-            vertexByCode[it.code] = it
+            vertexByInitialCode[it.code] = it
         }
     }
 
     fun add(submission: Submission) {
         submissionsGraphContext.unifier.run {
-            val unifiedSubmission = submission.unify()
-            vertexByCode.compute(unifiedSubmission.code) { _, vertex ->
-                vertex?.let {
+            vertexByInitialCode.compute(submission.code) { _, vertexByInitCode ->
+                vertexByInitCode?.let {
                     // Update existing vertex
-                    vertex.submissionsList.add(unifiedSubmission.info)
-                    vertex
-                } ?:  // Add new vertex with single id
-                SubmissionsNode(unifiedSubmission, idFactory.uniqueIdentifier()).also {
-                    graph.addVertex(it)
+                    vertexByInitCode.submissionsList.add(submission.info)
+                    vertexByInitCode
+                } ?: run {
+                    val unifiedSubmission = submission.unify()
+                    vertexByUnifiedCode.compute(unifiedSubmission.code) { _, vertexByUnifCode ->
+                        vertexByUnifCode?.let {
+                            // Update existing vertex
+                            vertexByUnifCode.submissionsList.add(unifiedSubmission.info)
+                            vertexByUnifCode
+                        } ?:  // Add new vertex with single id
+                        SubmissionsNode(unifiedSubmission, idFactory.uniqueIdentifier()).also {
+                            graph.addVertex(it)
+                        }
+                    }!!
                 }
             }
         }
@@ -77,7 +86,10 @@ class GraphTransformer<T>(
         }
     }
 
-    fun build(): SubmissionsGraph = SubmissionsGraph(graph)
+    fun build(): SubmissionsGraph = SubmissionsGraph(graph).also {
+        vertexByInitialCode.clear()
+        vertexByUnifiedCode.clear()
+    }
 }
 
 fun <T> transformGraph(
