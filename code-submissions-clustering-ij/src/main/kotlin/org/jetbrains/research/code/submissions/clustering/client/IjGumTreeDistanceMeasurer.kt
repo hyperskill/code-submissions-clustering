@@ -11,4 +11,8 @@ class IjGumTreeDistanceMeasurer(private val clientImpl: CodeServerClientImpl) : 
     override fun computeFullDistance(edge: SubmissionsGraphEdge, graph: SubmissionsGraphAlias): Int = runBlocking {
         clientImpl.calculateDist(edge, graph)
     }
+
+    override fun clear(): Unit = runBlocking {
+        clientImpl.clearDistMeasurer()
+    }
 }

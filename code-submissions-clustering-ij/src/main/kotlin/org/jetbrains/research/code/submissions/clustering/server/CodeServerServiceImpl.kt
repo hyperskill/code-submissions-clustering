@@ -22,8 +22,15 @@ class CodeServerServiceImpl(
         return (responseChannel.receive() as CalcDistResponse).submissionsWeight
     }
 
-    override suspend fun clear(request: Empty): Empty {
-        requestChannel.send(ClearRequest)
+    override suspend fun clearUnifier(request: Empty): Empty {
+        logger.info("Clear unifier request sent to server")
+        requestChannel.send(ClearUnifierRequest)
+        return Empty.newBuilder().build()
+    }
+
+    override suspend fun clearDistMeasurer(request: Empty): Empty {
+        logger.info("Clear code distance measurer request sent to server")
+        requestChannel.send(ClearDistMeasurerRequest)
         return Empty.newBuilder().build()
     }
 }

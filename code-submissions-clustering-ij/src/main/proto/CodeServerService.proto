@@ -7,7 +7,8 @@ option java_outer_classname = "CodeServerServiceProtos";
 service CodeServer {
   rpc Unify(SubmissionCode) returns (SubmissionCode) {}
   rpc CalculateWeight(SubmissionsEdge) returns (SubmissionsWeight) {}
-  rpc Clear(Empty) returns (Empty) {}
+  rpc ClearUnifier(Empty) returns (Empty) {}
+  rpc ClearDistMeasurer(Empty) returns (Empty) {}
 }
 
 message SubmissionCode {

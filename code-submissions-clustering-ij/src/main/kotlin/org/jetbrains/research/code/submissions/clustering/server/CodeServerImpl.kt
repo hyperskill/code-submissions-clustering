@@ -34,7 +34,8 @@ class CodeServerImpl(private val port: Int, language: Language) {
                         responseChannel.send(UnifyResponse(unifyImpl(request.submissionCode)))
                     is CalcDistRequest ->
                         responseChannel.send(CalcDistResponse(calculateWeightImpl(request.submissionsEdge)))
-                    is ClearRequest -> graphContext.unifier.clear()
+                    is ClearUnifierRequest -> graphContext.unifier.clear()
+                    is ClearDistMeasurerRequest -> graphContext.codeDistanceMeasurer.clear()
                 }
             }
         }

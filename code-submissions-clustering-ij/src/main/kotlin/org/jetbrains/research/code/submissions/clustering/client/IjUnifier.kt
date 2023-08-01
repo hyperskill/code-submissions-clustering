@@ -10,6 +10,6 @@ class IjUnifier(private val clientImpl: CodeServerClientImpl) : Unifier {
     }
 
     override fun clear(): Unit = runBlocking {
-        clientImpl.clear()
+        clientImpl.clearUnifier()
     }
 }

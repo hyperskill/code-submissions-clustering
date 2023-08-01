@@ -35,7 +35,9 @@ class CodeServerClientImpl(private val channel: ManagedChannel) : Closeable {
         return stub.calculateWeight(request).weight
     }
 
-    suspend fun clear() = stub.clear(Empty.newBuilder().build())
+    suspend fun clearUnifier() = stub.clearUnifier(Empty.newBuilder().build())
+
+    suspend fun clearDistMeasurer() = stub.clearDistMeasurer(Empty.newBuilder().build())
 
     private fun submissionsCode(code: String) =
         SubmissionCode

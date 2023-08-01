@@ -32,8 +32,9 @@ fun <T> DataFrame<*>.loadGraph(context: SubmissionsGraphContext<T>): Submissions
             }
             // We don't share it with distances, so we can remove extra information
             context.unifier.clear()
-
             calculateDistances()
+            // Caches might be controlled by external processes, so we should clear them explicitly
+            context.codeDistanceMeasurer.clear()
         }
     }
     return graph
