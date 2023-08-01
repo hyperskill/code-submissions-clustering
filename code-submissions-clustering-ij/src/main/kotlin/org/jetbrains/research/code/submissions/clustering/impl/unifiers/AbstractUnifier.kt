@@ -1,6 +1,5 @@
 package org.jetbrains.research.code.submissions.clustering.impl.unifiers
 
-import com.intellij.ide.impl.ProjectUtil
 import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.components.service
 import com.intellij.openapi.project.Project
@@ -13,7 +12,6 @@ import org.jetbrains.research.code.submissions.clustering.impl.util.psi.reformat
 import org.jetbrains.research.code.submissions.clustering.load.unifiers.Unifier
 import org.jetbrains.research.code.submissions.clustering.model.Language
 import org.jetbrains.research.code.submissions.clustering.model.Submission
-import org.jetbrains.research.code.submissions.clustering.util.getTmpProjectDir
 import org.jetbrains.research.ml.ast.transformations.Transformation
 import java.util.logging.Logger
 
@@ -27,7 +25,6 @@ abstract class AbstractUnifier(
     private val logger = Logger.getLogger(javaClass.name)
     abstract val language: Language
     abstract val transformations: List<Transformation>
-    private val codeToUnifiedCode = HashMap<String, String>()
     protected abstract val psiFileFactory: PsiFileFactory
 
     @Suppress("TooGenericExceptionCaught")
@@ -91,14 +88,7 @@ abstract class AbstractUnifier(
         return this.copy(code = code)
     }
 
-    fun clearCache() = codeToUnifiedCode.clear()
-
-    override fun clear() = clearCache()
-
     companion object {
         const val MAX_ITERATIONS = 50
     }
 }
-
-fun createTempProject(): Project = ProjectUtil.openOrImport(getTmpProjectDir(), null, true)
-    ?: error("Internal error: the temp project was not created")
