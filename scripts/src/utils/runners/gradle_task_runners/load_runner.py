@@ -1,4 +1,4 @@
-from typing import Any, Dict, Tuple
+from typing import Any, Dict, Tuple, List
 
 from src.utils.models.cli_models import TaskFlagArgs, TaskNamedArgs
 from src.utils.models.script_parameters import LoadSubmissionsGraphParameters
@@ -16,7 +16,7 @@ class LoadRunner(AbstractTaskRunner):
             step_id: int,
             script_params: LoadSubmissionsGraphParameters,
             **kwargs,
-    ) -> Tuple[Dict[TaskNamedArgs, Any], Dict[TaskFlagArgs, bool]]:
+    ) -> Tuple[Dict[TaskNamedArgs, Any], Dict[TaskFlagArgs, bool], List[TaskNamedArgs]]:
         """Build arguments for 'load' CLI."""
         named_args = get_common_named_arguments(
             step_id,
@@ -24,4 +24,4 @@ class LoadRunner(AbstractTaskRunner):
             'build_solutions_file_name',
             **kwargs,
         )
-        return named_args, TaskFlagArgs.get_all_flags(script_params)
+        return named_args, TaskFlagArgs.get_all_flags(script_params), [TaskNamedArgs.INPUT_FILE]

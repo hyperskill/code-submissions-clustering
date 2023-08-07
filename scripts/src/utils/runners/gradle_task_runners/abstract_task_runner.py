@@ -1,7 +1,7 @@
 import platform
 from abc import abstractmethod
 from pathlib import Path
-from typing import Any, Dict, Tuple
+from typing import Any, Dict, Tuple, List
 
 from src.utils.models.cli_models import TaskFlagArgs, TaskNamedArgs
 from src.utils.models.script_parameters import BaseRunnerParameters
@@ -32,14 +32,13 @@ class AbstractTaskRunner(AbstractRunner):
     """Abstract gradle task runner."""
 
     task_name: str
-    task_prefix = ':code-submissions-clustering-plugin:'
 
     # The root folder of the initial project
     WORKING_DIR = Path(__file__).parent.parent.parent.parent.parent.parent
 
     @abstractmethod
     def build_arguments(self, *args, **kwargs) \
-            -> Tuple[Dict[TaskNamedArgs, Any], Dict[TaskFlagArgs, bool]]:
+            -> Tuple[Dict[TaskNamedArgs, Any], Dict[TaskFlagArgs, bool], List[TaskNamedArgs]]:
         """Build arguments for task CLI."""
         pass
 
@@ -47,16 +46,23 @@ class AbstractTaskRunner(AbstractRunner):
             self,
             named_args: Dict[TaskNamedArgs, Any],
             flag_args: Dict[TaskFlagArgs, bool],
-    ) -> str:
+            positional_args: List[TaskNamedArgs] = None,
+    ) -> List[str]:
         """Build command to execute."""
         if platform.system() == 'Windows':
-            cmd = 'cmd /c gradlew.bat'
+            cmd = 'cmd /c gradlew.bat'.split()
         else:
-            cmd = './gradlew'
-        cmd = cmd + f' {self.task_prefix}{self.task_name}'
+            cmd = ['./gradlew']
+        cmd += ['run']
+        cmd_args = f'--args={self.task_name}'
+        for arg_name in positional_args:
+            cmd_args = cmd_args + f' {named_args[arg_name]}'
         for arg_name, arg_value in named_args.items():
-            cmd = cmd + f' -P{arg_name.value}={str(arg_value)}'
+            if arg_name in positional_args:
+                continue
+            cmd_args = cmd_args + f' --{arg_name.value}={str(arg_value)}'
         for arg_name, arg_value in flag_args.items():
             if arg_value:
-                cmd = cmd + f' -P{arg_name.value}'
+                cmd_args = cmd_args + f' --{arg_name.value}'
+        cmd = cmd + [cmd_args]
         return cmd
