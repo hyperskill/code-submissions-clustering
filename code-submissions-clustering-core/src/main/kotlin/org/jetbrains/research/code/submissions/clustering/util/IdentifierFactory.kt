@@ -1,5 +1,7 @@
 package org.jetbrains.research.code.submissions.clustering.util
 
+import java.util.concurrent.atomic.AtomicInteger
+
 typealias Identifier = Int
 
 /**
@@ -14,6 +16,7 @@ interface IdentifierFactory {
     fun uniqueIdentifier(): Identifier
 }
 
-class IdentifierFactoryImpl(private var counter: Int = 1) : IdentifierFactory {
-    override fun uniqueIdentifier(): Identifier = counter++
+class IdentifierFactoryImpl(private var counter: AtomicInteger = AtomicInteger(1)) : IdentifierFactory {
+    constructor(intCounter: Int) : this(AtomicInteger(intCounter))
+    override fun uniqueIdentifier(): Identifier = counter.getAndIncrement()
 }

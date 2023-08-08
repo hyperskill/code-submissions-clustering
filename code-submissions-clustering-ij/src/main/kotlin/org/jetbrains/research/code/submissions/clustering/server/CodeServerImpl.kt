@@ -32,8 +32,10 @@ class CodeServerImpl(private val port: Int, language: Language) {
                 when (val request = requestChannel.receive()) {
                     is UnifyRequest ->
                         responseChannel.send(UnifyResponse(unifyImpl(request.submissionCode)))
+
                     is CalcDistRequest ->
                         responseChannel.send(CalcDistResponse(calculateWeightImpl(request.submissionsEdge)))
+
                     is ClearUnifierRequest -> graphContext.unifier.clear()
                     is ClearDistMeasurerRequest -> graphContext.codeDistanceMeasurer.clear()
                 }
@@ -41,7 +43,7 @@ class CodeServerImpl(private val port: Int, language: Language) {
         }
     }
 
-    private fun unifyImpl(request: SubmissionCode): SubmissionCode {
+    private suspend fun unifyImpl(request: SubmissionCode): SubmissionCode {
         logger.info("Receive request: \n${request.code}")
         val code = graphContext.unifier.run {
             createMockSubmission(request.code).unify().code
@@ -50,7 +52,7 @@ class CodeServerImpl(private val port: Int, language: Language) {
         return SubmissionCode.newBuilder().setCode(code).build()
     }
 
-    private fun calculateWeightImpl(request: SubmissionsEdge): SubmissionsWeight {
+    private suspend fun calculateWeightImpl(request: SubmissionsEdge): SubmissionsWeight {
         logger.info(
             """Receive request: 
                     |Source submission:

@@ -4,21 +4,14 @@ import org.jetbrains.research.code.submissions.clustering.model.SubmissionsGraph
 import org.jetbrains.research.code.submissions.clustering.model.SubmissionsGraphEdge
 
 abstract class CodeDistanceMeasurerBase<T> {
-    private val cache: MutableMap<SubmissionsGraphEdge, T> = mutableMapOf()
+    abstract suspend fun T.calculateWeight(): Int
 
-    abstract fun T.calculateWeight(): Int
+    abstract suspend fun computeFullDistance(edge: SubmissionsGraphEdge, graph: SubmissionsGraphAlias): T
 
-    abstract fun computeFullDistance(edge: SubmissionsGraphEdge, graph: SubmissionsGraphAlias): T
-
-    private fun computeFullDistanceWithCache(edge: SubmissionsGraphEdge, graph: SubmissionsGraphAlias) =
-        cache.getOrPut(edge) {
-            computeFullDistance(edge, graph)
-        }
-
-    fun computeDistanceWeight(
+    suspend fun computeDistanceWeight(
         edge: SubmissionsGraphEdge,
         graph: SubmissionsGraphAlias,
-    ) = computeFullDistanceWithCache(edge, graph).calculateWeight()
+    ) = computeFullDistance(edge, graph).calculateWeight()
 
-    open fun clear() = cache.clear()
+    open suspend fun clear() = Unit
 }

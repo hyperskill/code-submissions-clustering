@@ -41,9 +41,11 @@ abstract class AbstractGraphBuilder(name: String, help: String) : CliktCommand(n
     }
 
     @Suppress("TooGenericExceptionCaught")
-    fun startRunner(run: () -> Unit) {
+    fun startRunner(run: suspend () -> Unit) {
         try {
-            run()
+            runBlocking {
+                run()
+            }
         } catch (ex: Throwable) {
             logger.severe { ex.stackTraceToString() }
             exitProcess(1)

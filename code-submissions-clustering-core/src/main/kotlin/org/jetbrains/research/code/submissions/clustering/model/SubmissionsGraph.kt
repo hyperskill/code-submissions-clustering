@@ -1,11 +1,16 @@
 package org.jetbrains.research.code.submissions.clustering.model
 
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
 import org.jetbrains.research.code.submissions.clustering.load.clustering.Cluster
 import org.jetbrains.research.code.submissions.clustering.load.clustering.ClusteredGraph
 import org.jetbrains.research.code.submissions.clustering.load.clustering.GraphClusterer
 import org.jetbrains.research.code.submissions.clustering.load.clustering.buildClusteredGraph
 import org.jetbrains.research.code.submissions.clustering.load.context.SubmissionsGraphContext
 import org.jetbrains.research.code.submissions.clustering.util.IdentifierFactoryImpl
+import org.jetbrains.research.code.submissions.clustering.util.parallel.ConcurrentCache
 import org.jetbrains.research.code.submissions.clustering.util.toProto
 import org.jgrapht.Graph
 import org.jgrapht.graph.DefaultWeightedEdge
@@ -36,9 +41,10 @@ class GraphTransformer<T>(
     private val submissionsGraphContext: SubmissionsGraphContext<T>,
     private val graph: SubmissionsGraphAlias
 ) {
-    private val vertexByUnifiedCode = HashMap<String, SubmissionsNode>()
-    private val vertexByInitialCode = HashMap<String, SubmissionsNode>()
+    private val vertexByUnifiedCode = ConcurrentCache<String, SubmissionsNode>()
+    private val vertexByInitialCode = ConcurrentCache<String, SubmissionsNode>()
     private val idFactory = IdentifierFactoryImpl()
+    private val mutex = Mutex()
 
     init {
         graph.vertexSet().forEach {
@@ -46,41 +52,45 @@ class GraphTransformer<T>(
         }
     }
 
-    fun add(submission: Submission) {
+    suspend fun add(submission: Submission) {
         submissionsGraphContext.unifier.run {
-            vertexByInitialCode.compute(submission.code) { _, vertexByInitCode ->
-                vertexByInitCode?.let {
-                    // Update existing vertex
-                    vertexByInitCode.submissionsList.add(submission.info)
-                    vertexByInitCode
-                } ?: run {
-                    val unifiedSubmission = submission.unify()
-                    vertexByUnifiedCode.compute(unifiedSubmission.code) { _, vertexByUnifCode ->
-                        vertexByUnifCode?.let {
-                            // Update existing vertex
-                            vertexByUnifCode.submissionsList.add(unifiedSubmission.info)
-                            vertexByUnifCode
-                        } ?:  // Add new vertex with single id
-                        SubmissionsNode(unifiedSubmission, idFactory.uniqueIdentifier()).also {
+            vertexByInitialCode.compute(submission) {
+                val unifiedSubmission = it.unify()
+                vertexByUnifiedCode.compute(unifiedSubmission) {
+                    SubmissionsNode(unifiedSubmission, idFactory.uniqueIdentifier()).also {
+                        mutex.withLock {
                             graph.addVertex(it)
                         }
-                    }!!
+                    }
                 }
             }
         }
     }
 
-    fun calculateDistances() {
+    private suspend fun ConcurrentCache<String, SubmissionsNode>.compute(
+        submission: Submission,
+        newNodeAction: suspend (Submission) -> SubmissionsNode
+    ) = this.computeOrUpdate(submission.code) {
+        it?.also {
+            it.submissionsList.add(submission.info)
+        } ?: newNodeAction(submission)
+    }
+
+    suspend fun calculateDistances() = coroutineScope {
         val vertices = graph.vertexSet()
         vertices.forEach { first ->
             vertices.forEach { second ->
                 if (first.id < second.id && !graph.containsEdge(first, second)) {
                     val edge: SubmissionsGraphEdge = graph.addEdge(first, second)
-                    val dist = submissionsGraphContext.codeDistanceMeasurer.computeDistanceWeight(
-                        edge,
-                        graph,
-                    )
-                    graph.setEdgeWeight(edge, dist.toDouble())
+                    launch {
+                        val dist = submissionsGraphContext.codeDistanceMeasurer.computeDistanceWeight(
+                            edge,
+                            graph,
+                        )
+                        mutex.withLock {
+                            graph.setEdgeWeight(edge, dist.toDouble())
+                        }
+                    }
                 }
             }
         }
@@ -92,11 +102,11 @@ class GraphTransformer<T>(
     }
 }
 
-fun <T> transformGraph(
+suspend fun <T> transformGraph(
     context: SubmissionsGraphContext<T>,
     graph: SubmissionsGraphAlias = SimpleWeightedGraph(SubmissionsGraphEdge::class.java),
-    transformation: GraphTransformer<T>.() -> Unit
+    transformation: suspend GraphTransformer<T>.() -> Unit
 ): SubmissionsGraph {
     val builder = GraphTransformer(context, graph)
-    return builder.apply(transformation).build()
+    return builder.apply { transformation() }.build()
 }

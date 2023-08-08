@@ -27,7 +27,7 @@ abstract class GumTreeDistanceMeasurerBase : CodeDistanceMeasurerBase<List<Actio
     private fun Action.calculateWeight() = this.node.calculateWeight()
 
     @Suppress("NestedBlockDepth", "NO_BRACES_IN_CONDITIONALS_AND_LOOPS")
-    override fun List<Action>.calculateWeight(): Int {
+    override suspend fun List<Action>.calculateWeight(): Int {
         // Sometimes we have actions about adding and deleting almost the same subtrees,
         // in these cases we calculate only different parts of the subtrees
         val insertedNodeToState = mutableMapOf<String, State>()
@@ -67,7 +67,7 @@ abstract class GumTreeDistanceMeasurerBase : CodeDistanceMeasurerBase<List<Actio
 
     fun calculateDistance(source: TreeContext, target: TreeContext) = Matcher(source, target).getEditActions()
 
-    final override fun computeFullDistance(
+    final override suspend fun computeFullDistance(
         edge: SubmissionsGraphEdge,
         graph: SubmissionsGraphAlias,
     ): List<Action> {
