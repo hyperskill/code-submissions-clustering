@@ -1,0 +1,16 @@
+{
+  "servers": [
+    {
+      "port": 8001,
+      "language": "PYTHON"
+    },
+    {
+      "port": 8002,
+      "language": "PYTHON"
+    },
+    {
+      "port": 8003,
+      "language": "PYTHON"
+    }
+  ]
+}
