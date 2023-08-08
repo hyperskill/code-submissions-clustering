@@ -20,7 +20,12 @@ data class SubmissionsNode(
         code: String,
         stepId: Int,
         submissionsList: MutableSet<SubmissionInfo>
-    ) : this(id, code, stepId, ConcurrentSkipListSet(submissionsList))
+    ) : this(
+        id,
+        code,
+        stepId,
+        ConcurrentSkipListSet(submissionsList)
+    )
 
     constructor(submission: Submission, id: Identifier) : this(
         id,
