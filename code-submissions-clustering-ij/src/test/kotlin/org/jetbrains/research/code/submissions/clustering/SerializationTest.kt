@@ -20,7 +20,7 @@ class SerializationTest : ParametrizedBaseWithUnifierTest(getTmpProjectDir()) {
     fun testSerializeGraph() {
         WriteCommandAction.runWriteCommandAction(mockProject) {
             clearFactory()
-            val graph = dataFrame!!.loadGraph(mockContext)
+            val graph = dataFrame!!.loadGraph()
             val bytes = graph.toProto().toByteArray()
             val deserializedGraph = ProtoSubmissionsGraph.parseFrom(bytes).toGraph()
             assertEquals(
@@ -34,7 +34,7 @@ class SerializationTest : ParametrizedBaseWithUnifierTest(getTmpProjectDir()) {
     fun testSerializeClusteredGraph() {
         WriteCommandAction.runWriteCommandAction(mockProject) {
             clearFactory()
-            val graph = dataFrame!!.loadGraph(mockContext)
+            val graph = dataFrame!!.loadGraph()
             val clusterer = SubmissionsGraphHAC(DIST_LIMIT)
             graph.cluster(clusterer)
             val clusteredGraph = graph.getClusteredGraph()

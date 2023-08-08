@@ -23,7 +23,7 @@ class LoadGraphTest : ParametrizedBaseWithUnifierTest(getTmpProjectDir()) {
     fun testLoadGraphFromDataFrame() {
         WriteCommandAction.runWriteCommandAction(mockProject) {
             clearFactory()
-            expectedProtoGraph!!.assertEquals(dataFrame!!.loadGraph(mockContext).toProto())
+            expectedProtoGraph!!.assertEquals(dataFrame!!.loadGraph().toProto())
         }
     }
 
