@@ -34,7 +34,7 @@ abstract class BaseCLITask : RunIdeTask() {
             "--add-exports",
             "java.base/jdk.internal.vm=ALL-UNNAMED",
             "-Xmx5048m",
-            "-Xms5048m",
+            "-Xms256m",
         )
         standardInput = System.`in`
         standardOutput = System.`out`
