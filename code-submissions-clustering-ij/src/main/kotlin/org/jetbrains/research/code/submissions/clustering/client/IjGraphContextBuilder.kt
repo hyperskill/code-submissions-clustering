@@ -1,20 +1,15 @@
 package org.jetbrains.research.code.submissions.clustering.client
 
-import io.grpc.ManagedChannelBuilder
 import org.jetbrains.research.code.submissions.clustering.load.context.GraphContextBuilder
 import org.jetbrains.research.code.submissions.clustering.load.context.SubmissionsGraphContext
+import org.jetbrains.research.code.submissions.clustering.server.CodeServerOrchestratorConfig
 
-class IjGraphContextBuilder(private val addressName: String, private val addressPort: Int) : GraphContextBuilder<Int> {
+class IjGraphContextBuilder(private val config: CodeServerOrchestratorConfig) : GraphContextBuilder<Int> {
     override fun buildContext(): SubmissionsGraphContext<Int> {
-        val clientImpl = CodeServerClientImpl(
-            ManagedChannelBuilder
-                .forAddress(addressName, addressPort)
-                .usePlaintext()
-                .build()
-        )
+        val orchestrator = CodeServerOrchestrator(config)
         return SubmissionsGraphContext(
-            IjUnifier(clientImpl),
-            IjGumTreeDistanceMeasurer(clientImpl)
+            IjUnifier(orchestrator),
+            IjGumTreeDistanceMeasurer(orchestrator)
         )
     }
 }

@@ -2,6 +2,9 @@ package org.jetbrains.research.code.submissions.clustering.cli
 
 import com.github.ajalt.clikt.core.CliktCommand
 import com.github.ajalt.clikt.parameters.groups.provideDelegate
+import kotlinx.coroutines.runBlocking
+import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.decodeFromStream
 import org.jetbrains.research.code.submissions.clustering.cli.models.AbstractGraphBuilderFlags
 import org.jetbrains.research.code.submissions.clustering.cli.models.AbstractGraphBuilderOptions
 import org.jetbrains.research.code.submissions.clustering.cli.models.Writer
@@ -28,7 +31,9 @@ abstract class AbstractGraphBuilder(name: String, help: String) : CliktCommand(n
     )
 
     fun buildGraphContext(): SubmissionsGraphContext<*> =
-        IjGraphContextBuilder(ADDRESS_NAME, ADDRESS_PORT).buildContext()
+        IjGraphContextBuilder(
+            Json.decodeFromStream(commonOptions.configFile.inputStream())
+        ).buildContext()
 
     fun SubmissionsGraph.writeOutputData() {
         createFolder(Path(commonOptions.outputDir))
@@ -54,10 +59,5 @@ abstract class AbstractGraphBuilder(name: String, help: String) : CliktCommand(n
         } catch (ex: Throwable) {
             logger.severe { "Writing failed: $ex" }
         }
-    }
-
-    companion object {
-        const val ADDRESS_NAME = "localhost"
-        const val ADDRESS_PORT = 8000
     }
 }

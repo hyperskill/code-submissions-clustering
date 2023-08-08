@@ -1,15 +1,14 @@
 package org.jetbrains.research.code.submissions.clustering.client
 
-import kotlinx.coroutines.runBlocking
 import org.jetbrains.research.code.submissions.clustering.load.unifiers.Unifier
 import org.jetbrains.research.code.submissions.clustering.model.Submission
 
-class IjUnifier(private val clientImpl: CodeServerClientImpl) : Unifier {
-    override fun Submission.unify(): Submission = runBlocking {
-        clientImpl.unify(this@unify)
+class IjUnifier(private val orchestrator: CodeServerOrchestrator) : Unifier {
+    override suspend fun Submission.unify(): Submission {
+        return orchestrator.unify(this@unify)
     }
 
-    override fun clear(): Unit = runBlocking {
-        clientImpl.clearUnifier()
+    override suspend fun clear() {
+        orchestrator.clearUnifier()
     }
 }
