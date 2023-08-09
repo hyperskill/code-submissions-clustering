@@ -9,7 +9,6 @@ import org.jetbrains.research.code.submissions.clustering.model.SubmissionsGraph
 import org.jetbrains.research.code.submissions.clustering.model.SubmissionsGraphEdge
 import org.jetbrains.research.code.submissions.clustering.server.CodeServerOrchestratorConfig
 
-@DelicateCoroutinesApi
 class CodeServerOrchestrator(config: CodeServerOrchestratorConfig) {
     private val clients = config.servers.map {
         CodeServerClientImpl(

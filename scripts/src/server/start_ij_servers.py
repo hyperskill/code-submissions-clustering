@@ -20,14 +20,14 @@ TIMEOUT_SEC = 1
 
 def start_server(port, language):
     cmd = [
-        "docker",
-        "run",
-        "-d",
-        "-p",
-        f"{port}:{BASE_PORT}",
-        "--rm",
+        'docker',
+        'run',
+        '-d',
+        '-p',
+        f'{port}:{BASE_PORT}',
+        '--rm',
         IMAGE_NAME,
-        f"-Planguage={language}",
+        f'-Planguage={language}'
     ]
     run_in_subprocess(cmd, cwd=PROJECT_ROOT)
 

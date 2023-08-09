@@ -3,6 +3,7 @@ package org.jetbrains.research.code.submissions.clustering.cli
 import com.github.ajalt.clikt.core.CliktCommand
 import com.github.ajalt.clikt.parameters.groups.provideDelegate
 import kotlinx.coroutines.runBlocking
+import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.decodeFromStream
 import org.jetbrains.research.code.submissions.clustering.cli.models.AbstractGraphBuilderFlags
@@ -30,6 +31,7 @@ abstract class AbstractGraphBuilder(name: String, help: String) : CliktCommand(n
         Writer(SubmissionsGraph::writeClusteringResult, flags.clusteringResult),
     )
 
+    @OptIn(ExperimentalSerializationApi::class)
     fun buildGraphContext(): SubmissionsGraphContext<*> =
         IjGraphContextBuilder(
             Json.decodeFromStream(commonOptions.configFile.inputStream())
