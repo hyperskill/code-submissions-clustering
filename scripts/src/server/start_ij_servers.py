@@ -27,7 +27,7 @@ def start_server(port, language):
         f'{port}:{BASE_PORT}',
         '--rm',
         IMAGE_NAME,
-        f'-Planguage={language}'
+        f'-Planguage={language}',
     ]
     run_in_subprocess(cmd, cwd=PROJECT_ROOT)
 
