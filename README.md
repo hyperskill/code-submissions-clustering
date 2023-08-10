@@ -11,11 +11,39 @@ We will use [transformations](https://github.com/JetBrains-Research/ast-transfor
 to unify student submissions. Next, we will find the difference between them and highlit the clusters.
 The first ranking version will be based on simple heuristics.
 
+## Setting up IJ code server
+
+IJ code server ([code-submissions-clustering-ij](code-submissions-clustering-ij/README.md)) is responsible for unification and distance calculation that require working with Program Structure Interface (PSI).
+
+To set up IJ code server configuration, specify servers' ports and programming language in [`code-submissions-clustering-ij/src/main/resources/config.json`](code-submissions-clustering-ij/src/main/resources/config.json):
+
+```json
+{
+  "servers": [
+    {
+      "port": 8000,
+      "language": "PYTHON"
+    }
+  ]
+}
+```
+
+Then make sure that you have [Docker](https://docs.docker.com/get-docker/) installed and build docker image: `Build IJ server docker image` OR run the following command from the project root:
+```
+docker build -t ij-server:latest -f code-submissions-clustering-ij/Dockerfile .
+```
+
+Finally, start servers using Python script: from the root of `scripts` run
+```
+pip3 install -r requirements.txt
+python3 -m src.server.start_ij_servers
+```
+
+The script will indicate when all configured IJ servers are ready to listen.
+
 ## Getting clustering results
 
-First, run IJ code server (see [code-submissions-clustering-ij](code-submissions-clustering-ij/README.md)).
-
-After the server has started, configure and run `Run cluster command` run configuration to cluster submissions.
+After the servers have started, configure and run `Run cluster command` run configuration to cluster submissions.
 
 ### Required arguments
 
