@@ -1,7 +1,6 @@
 package org.jetbrains.research.code.submissions.clustering.client
 
 import io.grpc.ManagedChannelBuilder
-import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.runBlocking
 import org.jetbrains.research.code.submissions.clustering.model.Submission
