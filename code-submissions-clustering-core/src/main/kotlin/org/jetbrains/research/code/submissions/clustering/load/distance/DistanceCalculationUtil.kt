@@ -8,7 +8,7 @@ import org.jetbrains.research.code.submissions.clustering.model.SubmissionsGraph
 import org.jetbrains.research.code.submissions.clustering.model.transformGraph
 import org.jgrapht.graph.SimpleWeightedGraph
 
-fun <T> SubmissionsGraph.calculateDistances(context: SubmissionsGraphContext<T>): SubmissionsGraph {
+suspend fun <T> SubmissionsGraph.calculateDistances(context: SubmissionsGraphContext<T>): SubmissionsGraph {
     val graph = this.graph.enumerateNodes()
     return transformGraph(context, graph) {
         calculateDistances()

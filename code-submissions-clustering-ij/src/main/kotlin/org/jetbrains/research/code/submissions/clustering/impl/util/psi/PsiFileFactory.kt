@@ -6,8 +6,8 @@ import com.intellij.openapi.vfs.LocalFileSystem
 import com.intellij.psi.PsiDocumentManager
 import com.intellij.psi.PsiFile
 import com.intellij.psi.PsiManager
-import org.jetbrains.research.code.submissions.clustering.util.IdentifierFactoryImpl
 import org.jetbrains.research.code.submissions.clustering.model.Language
+import org.jetbrains.research.code.submissions.clustering.util.IdentifierFactoryImpl
 import org.jetbrains.research.code.submissions.clustering.util.addFileToProject
 import org.jetbrains.research.code.submissions.clustering.util.getTmpProjectDir
 import java.io.File

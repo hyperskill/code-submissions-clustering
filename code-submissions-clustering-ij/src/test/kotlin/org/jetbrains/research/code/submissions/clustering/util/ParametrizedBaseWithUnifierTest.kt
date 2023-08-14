@@ -3,6 +3,8 @@ package org.jetbrains.research.code.submissions.clustering.util
 import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiManager
 import com.intellij.testFramework.fixtures.CodeInsightTestFixture
+import kotlinx.coroutines.runBlocking
+import org.jetbrains.kotlinx.dataframe.DataFrame
 import org.jetbrains.research.code.submissions.clustering.ProtoSubmissionsEdge
 import org.jetbrains.research.code.submissions.clustering.ProtoSubmissionsGraph
 import org.jetbrains.research.code.submissions.clustering.ProtoSubmissionsNode
@@ -10,7 +12,9 @@ import org.jetbrains.research.code.submissions.clustering.impl.distance.gumtree.
 import org.jetbrains.research.code.submissions.clustering.impl.unifiers.PyUnifier
 import org.jetbrains.research.code.submissions.clustering.impl.util.psi.PsiFileFactory
 import org.jetbrains.research.code.submissions.clustering.load.context.SubmissionsGraphContext
+import org.jetbrains.research.code.submissions.clustering.load.distance.calculateDistances
 import org.jetbrains.research.code.submissions.clustering.model.Language
+import org.jetbrains.research.code.submissions.clustering.model.SubmissionsGraph
 import org.jetbrains.research.code.submissions.clustering.model.SubmissionsNode
 import org.jetbrains.research.pluginUtilities.util.ParametrizedBaseWithPythonSdkTest
 import org.jgrapht.alg.interfaces.ClusteringAlgorithm.Clustering
@@ -44,6 +48,14 @@ open class ParametrizedBaseWithUnifierTest(testDataRoot: String) : ParametrizedB
 
     protected fun Clustering<SubmissionsNode>.assertEquals(other: Clustering<SubmissionsNode>) {
         assertEquals(this.clusters.sortedBy { it.first() }, other.clusters.sortedBy { it.first() })
+    }
+
+    protected fun DataFrame<*>.loadGraph() = runBlocking {
+        loadGraph(mockContext)
+    }
+
+    protected fun SubmissionsGraph.calculateDistances() = runBlocking {
+        calculateDistances(mockContext)
     }
 
     companion object {

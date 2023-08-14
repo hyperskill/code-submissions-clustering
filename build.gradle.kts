@@ -12,6 +12,7 @@ plugins {
     alias(libs.plugins.buildconfig) apply false
     alias(libs.plugins.intellij)
     alias(libs.plugins.dokka)
+    alias(libs.plugins.kotlin.serialization)
 }
 
 allprojects {
@@ -21,6 +22,7 @@ allprojects {
             plugin("kotlin")
             plugin("org.jetbrains.intellij")
             plugin("org.jetbrains.dokka")
+            plugin("org.jetbrains.kotlin.plugin.serialization")
         }
     }
 
@@ -44,6 +46,8 @@ allprojects {
         implementation(rootProject.libs.grpc.protobuf)
         implementation(rootProject.libs.grpc.netty)
         implementation(rootProject.libs.grpc.stub.kotlin)
+        implementation(rootProject.libs.kotlinx.coroutines.core)
+        implementation(rootProject.libs.kotlinx.serialization.json)
 
         implementation(rootProject.libs.plugin.utilities.core)
         implementation(rootProject.libs.plugin.utilities.test)

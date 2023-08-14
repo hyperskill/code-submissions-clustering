@@ -1,5 +1,7 @@
 package org.jetbrains.research.code.submissions.clustering.util
 
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.launch
 import org.jetbrains.kotlinx.dataframe.DataFrame
 import org.jetbrains.kotlinx.dataframe.api.*
 import org.jetbrains.kotlinx.dataframe.io.toCsv
@@ -14,21 +16,25 @@ import kotlin.io.path.div
 import kotlin.io.path.pathString
 
 @Suppress("VariableNaming")
-fun <T> DataFrame<*>.loadGraph(context: SubmissionsGraphContext<T>): SubmissionsGraph {
+suspend fun <T> DataFrame<*>.loadGraph(context: SubmissionsGraphContext<T>): SubmissionsGraph {
     val id by column<Int>()
     val step_id by column<Int>()
     val code by column<String>()
     val quality by column<Int>()
     val graph = let { dataFrame ->
         transformGraph(context) {
-            dataFrame.forEach {
-                add(
-                    Submission(
-                        info = SubmissionInfo(getValue(id), getValue(quality)),
-                        stepId = getValue(step_id),
-                        code = getValue(code).normalize()
-                    )
-                )
+            coroutineScope {
+                dataFrame.forEach {
+                    launch {
+                        add(
+                            Submission(
+                                info = SubmissionInfo(getValue(id), getValue(quality)),
+                                stepId = getValue(step_id),
+                                code = getValue(code).normalize()
+                            )
+                        )
+                    }
+                }
             }
             // We don't share it with distances, so we can remove extra information
             context.unifier.clear()

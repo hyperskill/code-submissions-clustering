@@ -51,9 +51,3 @@ fun addFileToProject(
     file.writeText(fileContent)
     return file
 }
-
-fun deleteTmpProjectFiles(projectPath: String) {
-    File(projectPath).walkBottomUp().forEach {
-        it.deleteFromProject()
-    }
-}

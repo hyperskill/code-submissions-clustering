@@ -1,6 +1,6 @@
 [versions]
 
-kotlin = "1.6.20"
+kotlin = "1.8.22"
 
 detekt = "1.20.0"
 diktat = "1.1.0"
@@ -8,7 +8,9 @@ buildconfig = "3.0.3"
 dokka = "1.7.0"
 intellij = "1.10.0"
 xenomachina = "2.0.7"
-kotlinx = "0.8.0"
+kotlinx = "0.11.1"
+kotlinx-coroutines = "1.7.3"
+kotlinx-serialization-json = "1.4.1"
 junit-jupiter = "5.8.2"
 junit-platform = "1.8.2"
 jgrapht = "1.5.1"
@@ -28,6 +30,8 @@ detekt-gradle-plugin = { module = "io.gitlab.arturbosch.detekt:detekt-gradle-plu
 diktat-gradle-plugin = { module = "org.cqfn.diktat:diktat-gradle-plugin", version.ref = "diktat" }
 kotlin-gradle-plugin = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", version.ref = "kotlin" }
 kotlin-argparser = { module = "com.xenomachina:kotlin-argparser", version.ref = "xenomachina" }
+kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlinx-serialization-json" }
+kotlinx-coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "kotlinx-coroutines" }
 dataframe = { module = "org.jetbrains.kotlinx:dataframe", version.ref = "kotlinx" }
 junit-jupiter-api = { module = "org.junit.jupiter:junit-jupiter-api", version.ref = "junit-jupiter" }
 junit-jupiter-engine = { module = "org.junit.jupiter:junit-jupiter-engine", version.ref = "junit-jupiter" }
@@ -55,4 +59,5 @@ plugin-utilities-python = { module = "org.jetbrains.research:plugin-utilities-py
 buildconfig = { id = "com.github.gmazzo.buildconfig", version.ref = "buildconfig" }
 dokka = { id = "org.jetbrains.dokka", version.ref = "dokka" }
 kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
+kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
 intellij = { id = "org.jetbrains.intellij", version.ref = "intellij" }

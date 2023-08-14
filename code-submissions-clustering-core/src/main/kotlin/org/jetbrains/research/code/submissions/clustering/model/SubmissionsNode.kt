@@ -1,6 +1,7 @@
 package org.jetbrains.research.code.submissions.clustering.model
 
 import org.jetbrains.research.code.submissions.clustering.util.Identifier
+import java.util.concurrent.ConcurrentSkipListSet
 
 /**
  * @property code submissions code
@@ -12,13 +13,25 @@ data class SubmissionsNode(
     val id: Identifier,
     val code: String,
     val stepId: Int,
-    val submissionsList: MutableSet<SubmissionInfo>
+    val submissionsList: ConcurrentSkipListSet<SubmissionInfo>
 ) : Comparable<SubmissionsNode> {
+    constructor(
+        id: Identifier,
+        code: String,
+        stepId: Int,
+        submissionsList: MutableSet<SubmissionInfo>
+    ) : this(
+        id,
+        code,
+        stepId,
+        ConcurrentSkipListSet(submissionsList)
+    )
+
     constructor(submission: Submission, id: Identifier) : this(
         id,
         submission.code,
         submission.stepId,
-        mutableSetOf(submission.info)
+        ConcurrentSkipListSet(listOf(submission.info))
     )
 
     override fun compareTo(other: SubmissionsNode): Int = id - other.id

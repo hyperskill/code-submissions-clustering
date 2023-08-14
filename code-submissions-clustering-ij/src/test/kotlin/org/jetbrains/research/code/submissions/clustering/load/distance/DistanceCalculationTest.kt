@@ -22,7 +22,7 @@ class DistanceCalculationTest : ParametrizedBaseWithUnifierTest(getTmpProjectDir
     fun testCalculateDistances() {
         WriteCommandAction.runWriteCommandAction(mockProject) {
             clearFactory()
-            expectedProtoGraph!!.assertEquals(protoGraph!!.toGraph().calculateDistances(mockContext).toProto())
+            expectedProtoGraph!!.assertEquals(protoGraph!!.toGraph().calculateDistances().toProto())
         }
     }
 
