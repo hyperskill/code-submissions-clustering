@@ -14,3 +14,7 @@ data class UnifyRequest(val submissionCode: SubmissionCode) : CodeServerRequest
  * @property submissionsEdge pair of submissions codes
  */
 data class CalcDistRequest(val submissionsEdge: SubmissionsEdge) : CodeServerRequest
+
+object ClearUnifierRequest : CodeServerRequest
+
+object ClearDistMeasurerRequest : CodeServerRequest

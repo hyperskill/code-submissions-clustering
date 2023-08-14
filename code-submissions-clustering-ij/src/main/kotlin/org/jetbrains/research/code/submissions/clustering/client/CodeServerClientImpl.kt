@@ -2,6 +2,7 @@ package org.jetbrains.research.code.submissions.clustering.client
 
 import io.grpc.ManagedChannel
 import org.jetbrains.research.code.submissions.clustering.CodeServerGrpcKt
+import org.jetbrains.research.code.submissions.clustering.Empty
 import org.jetbrains.research.code.submissions.clustering.SubmissionCode
 import org.jetbrains.research.code.submissions.clustering.SubmissionsEdge
 import org.jetbrains.research.code.submissions.clustering.model.Submission
@@ -33,6 +34,10 @@ class CodeServerClientImpl(private val channel: ManagedChannel) : Closeable {
         )
         return stub.calculateWeight(request).weight
     }
+
+    suspend fun clearUnifier() = stub.clearUnifier(Empty.newBuilder().build())
+
+    suspend fun clearDistMeasurer() = stub.clearDistMeasurer(Empty.newBuilder().build())
 
     private fun submissionsCode(code: String) =
         SubmissionCode

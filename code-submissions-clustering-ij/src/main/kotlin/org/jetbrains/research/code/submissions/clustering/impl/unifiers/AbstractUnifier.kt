@@ -1,6 +1,5 @@
 package org.jetbrains.research.code.submissions.clustering.impl.unifiers
 
-import com.intellij.ide.impl.ProjectUtil
 import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.components.service
 import com.intellij.openapi.project.Project
@@ -13,7 +12,6 @@ import org.jetbrains.research.code.submissions.clustering.impl.util.psi.reformat
 import org.jetbrains.research.code.submissions.clustering.load.unifiers.Unifier
 import org.jetbrains.research.code.submissions.clustering.model.Language
 import org.jetbrains.research.code.submissions.clustering.model.Submission
-import org.jetbrains.research.code.submissions.clustering.util.getTmpProjectDir
 import org.jetbrains.research.ml.ast.transformations.Transformation
 import java.util.logging.Logger
 
@@ -27,7 +25,6 @@ abstract class AbstractUnifier(
     private val logger = Logger.getLogger(javaClass.name)
     abstract val language: Language
     abstract val transformations: List<Transformation>
-    private val codeToUnifiedCode = HashMap<String, String>()
     protected abstract val psiFileFactory: PsiFileFactory
 
     @Suppress("TooGenericExceptionCaught")
@@ -62,7 +59,7 @@ abstract class AbstractUnifier(
     @Suppress("TOO_MANY_LINES_IN_LAMBDA")
     override fun Submission.unify(): Submission {
         val statsBuilder = TransformationsStatisticsBuilder()
-        val code = codeToUnifiedCode.getOrDefault(this.code, this.code.let { code ->
+        val code = this.code.let { code ->
             val psi = psiFileFactory.getPsiFile(code)
             ApplicationManager.getApplication().invokeAndWait {
                 ApplicationManager.getApplication().runWriteAction {
@@ -76,29 +73,22 @@ abstract class AbstractUnifier(
                         psi.applyTransformations(transformations, statsBuilder, previousTree)
                         logger.finer { "Previous text[$iterationNumber]:\n${previousTree.text}\n" }
                         logger.finer { "Current text[$iterationNumber]:\n${psi.text}\n\n" }
-                    } while (!previousTree.textMatches(psi.text) && iterationNumber <= MAX_ITERATIONS && codeToUnifiedCode[psi.text] == null)
+                    } while (!previousTree.textMatches(psi.text) && iterationNumber <= MAX_ITERATIONS)
                     logger.fine { "Tree Ended[[$iterationNumber]]: ${psi.text}\n\n\n" }
                     logger.info { "Total iterations number: $iterationNumber" }
                 }
             }
-            codeToUnifiedCode.getOrPut(psi.text) { psi.reformatInWriteAction().text }.also {
+            psi.reformatInWriteAction().text.also {
                 psiFileFactory.releasePsiFile(psi)
             }
-        })
+        }
         logger.info {
             statsBuilder.buildStatistics(listOfNotNull(anonymization) + transformations)
         }
         return this.copy(code = code)
     }
 
-    fun clearCache() = codeToUnifiedCode.clear()
-
-    override fun clear() = clearCache()
-
     companion object {
         const val MAX_ITERATIONS = 50
     }
 }
-
-fun createTempProject(): Project = ProjectUtil.openOrImport(getTmpProjectDir(), null, true)
-    ?: error("Internal error: the temp project was not created")

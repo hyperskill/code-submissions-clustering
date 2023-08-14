@@ -19,4 +19,6 @@ abstract class CodeDistanceMeasurerBase<T> {
         edge: SubmissionsGraphEdge,
         graph: SubmissionsGraphAlias,
     ) = computeFullDistanceWithCache(edge, graph).calculateWeight()
+
+    open fun clear() = cache.clear()
 }

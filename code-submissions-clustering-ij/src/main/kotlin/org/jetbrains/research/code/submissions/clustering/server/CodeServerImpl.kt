@@ -29,11 +29,14 @@ class CodeServerImpl(private val port: Int, language: Language) {
         logger.info("Server started, listening on $port")
         runBlocking {
             while (true) {
-                val response = when (val request = requestChannel.receive()) {
-                    is UnifyRequest -> UnifyResponse(unifyImpl(request.submissionCode))
-                    is CalcDistRequest -> CalcDistResponse(calculateWeightImpl(request.submissionsEdge))
+                when (val request = requestChannel.receive()) {
+                    is UnifyRequest ->
+                        responseChannel.send(UnifyResponse(unifyImpl(request.submissionCode)))
+                    is CalcDistRequest ->
+                        responseChannel.send(CalcDistResponse(calculateWeightImpl(request.submissionsEdge)))
+                    is ClearUnifierRequest -> graphContext.unifier.clear()
+                    is ClearDistMeasurerRequest -> graphContext.codeDistanceMeasurer.clear()
                 }
-                responseChannel.send(response)
             }
         }
     }
