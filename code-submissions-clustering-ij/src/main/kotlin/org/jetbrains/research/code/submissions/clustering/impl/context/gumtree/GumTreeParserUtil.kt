@@ -1,5 +1,6 @@
 package org.jetbrains.research.code.submissions.clustering.impl.context.gumtree
 
+import mu.KotlinLogging
 import net.lingala.zip4j.ZipFile
 import org.jetbrains.research.code.submissions.clustering.util.Command
 import org.jetbrains.research.code.submissions.clustering.util.getTmpDirPath
@@ -10,14 +11,13 @@ import java.net.URL
 import java.nio.file.Files
 import java.nio.file.Paths
 import java.nio.file.StandardCopyOption
-import java.util.logging.Logger
 
 /**
  * [GumTreeParserUtil] is created for parser setup before using GumTree with python code.
  * Also [checkSetup] should be called before running tests.
  */
 object GumTreeParserUtil {
-    private val LOG = Logger.getLogger(javaClass.name)
+    private val LOG = KotlinLogging.logger {}
     private const val PYTHONPARSER_PROPERTY = "gt.pp.path"
     private const val PARSER_REPO_ZIP_URL =
         "https://github.com/JetBrains-Research/pythonparser/archive/master.zip"

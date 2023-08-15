@@ -4,6 +4,7 @@ import io.grpc.Server
 import io.grpc.ServerBuilder
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.runBlocking
+import mu.KotlinLogging
 import org.jetbrains.research.code.submissions.clustering.SubmissionCode
 import org.jetbrains.research.code.submissions.clustering.SubmissionsEdge
 import org.jetbrains.research.code.submissions.clustering.SubmissionsWeight
@@ -12,10 +13,9 @@ import org.jetbrains.research.code.submissions.clustering.impl.distance.gumtree.
 import org.jetbrains.research.code.submissions.clustering.model.Language
 import org.jetbrains.research.code.submissions.clustering.model.Submission
 import org.jetbrains.research.code.submissions.clustering.model.SubmissionInfo
-import java.util.logging.Logger
 
 class CodeServerImpl(private val port: Int, language: Language) {
-    private val logger: Logger = Logger.getLogger(javaClass.name)
+    private val logger = KotlinLogging.logger {}
     private val graphContext = GumTreeGraphContextBuilder().setLanguage(language).buildContext()
     private val requestChannel = Channel<CodeServerRequest>()
     private val responseChannel = Channel<CodeServerResponse>()

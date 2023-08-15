@@ -6,6 +6,7 @@ import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiDocumentManager
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
+import mu.KotlinLogging
 import org.jetbrains.research.code.submissions.clustering.impl.util.logging.TransformationsStatisticsBuilder
 import org.jetbrains.research.code.submissions.clustering.impl.util.psi.PsiFileFactory
 import org.jetbrains.research.code.submissions.clustering.impl.util.psi.reformatInWriteAction
@@ -13,7 +14,6 @@ import org.jetbrains.research.code.submissions.clustering.load.unifiers.Unifier
 import org.jetbrains.research.code.submissions.clustering.model.Language
 import org.jetbrains.research.code.submissions.clustering.model.Submission
 import org.jetbrains.research.ml.ast.transformations.Transformation
-import java.util.logging.Logger
 
 /**
  * Abstract unifier producing unifying transformations over code submissions.
@@ -22,7 +22,9 @@ import java.util.logging.Logger
 abstract class AbstractUnifier(
     private val project: Project, private val anonymization: Transformation? = null
 ) : Unifier {
-    private val logger = Logger.getLogger(javaClass.name)
+    // Set up logger to write to file
+    private val logger = KotlinLogging.logger {}
+    private val statisticsLogger = KotlinLogging.logger("TransformationsStatsLogger")
     abstract val language: Language
     abstract val transformations: List<Transformation>
     protected abstract val psiFileFactory: PsiFileFactory
@@ -33,21 +35,21 @@ abstract class AbstractUnifier(
         statsBuilder: TransformationsStatisticsBuilder,
         previousTree: PsiElement? = null,
     ) {
-        logger.fine { "Tree Started: ${this.text}" }
+        logger.debug { "Tree Started: ${this.text}" }
 
         val psiDocumentManager = this.project.service<PsiDocumentManager>()
         val document = psiDocumentManager.getDocument(this)
         try {
             transformations.forEach {
-                logger.finer { "Transformation Started: ${it.key}" }
+                logger.debug { "Transformation Started: ${it.key}" }
                 statsBuilder.forwardApplyMeasured(it, this)
-                logger.finer { "Transformation Ended: ${it.key}" }
+                logger.debug { "Transformation Ended: ${it.key}" }
                 document?.let {
                     psiDocumentManager.commitDocument(document)
                 }
             }
         } catch (e: Throwable) {
-            logger.severe {
+            logger.error {
                 """Transformation error {$e}: 
                         |Previous Code=${previousTree?.text}
                         |Current Code=${this.text}
@@ -71,18 +73,18 @@ abstract class AbstractUnifier(
                         ++iterationNumber
                         val previousTree = psi.copy()
                         psi.applyTransformations(transformations, statsBuilder, previousTree)
-                        logger.finer { "Previous text[$iterationNumber]:\n${previousTree.text}\n" }
-                        logger.finer { "Current text[$iterationNumber]:\n${psi.text}\n\n" }
+                        logger.debug { "Previous text[$iterationNumber]:\n${previousTree.text}\n" }
+                        logger.debug { "Current text[$iterationNumber]:\n${psi.text}\n\n" }
                     } while (!previousTree.textMatches(psi.text) && iterationNumber <= MAX_ITERATIONS)
-                    logger.fine { "Tree Ended[[$iterationNumber]]: ${psi.text}\n\n\n" }
-                    logger.info { "Total iterations number: $iterationNumber" }
+                    logger.debug { "Tree Ended[[$iterationNumber]]: ${psi.text}\n\n\n" }
+                    statisticsLogger.info { "Total iterations number: $iterationNumber" }
                 }
             }
             psi.reformatInWriteAction().text.also {
                 psiFileFactory.releasePsiFile(psi)
             }
         }
-        logger.info {
+        statisticsLogger.info {
             statsBuilder.buildStatistics(listOfNotNull(anonymization) + transformations)
         }
         return this.copy(code = code)

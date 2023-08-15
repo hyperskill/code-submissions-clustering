@@ -1,5 +1,6 @@
 package org.jetbrains.research.code.submissions.clustering.load.clustering.hac
 
+import mu.KotlinLogging
 import org.jetbrains.research.code.submissions.clustering.load.clustering.*
 import org.jetbrains.research.code.submissions.clustering.util.IdentifierFactoryImpl
 import org.jetbrains.research.code.submissions.clustering.util.parallel.ParallelContext
@@ -7,7 +8,6 @@ import org.jetbrains.research.code.submissions.clustering.util.parallel.Parallel
 import org.jgrapht.Graph
 import java.util.*
 import java.util.function.Consumer
-import java.util.logging.Logger
 import kotlin.collections.set
 
 /**
@@ -23,7 +23,7 @@ class GraphHierarchicalAgglomerativeClustering<V, E>(
     private val distanceLimit: Double,
     private val minClustersCount: Int = 1,
 ) : GraphClusterer<V, E> {
-    private val logger = Logger.getLogger(javaClass.name)
+    private val logger = KotlinLogging.logger {}
     private val heap: SortedSet<ClusterTriple> = TreeSet()
     private val triples: MutableMap<Long, ClusterTriple> = HashMap()
     private val clusters: MutableSet<Cluster<V>> = HashSet()
@@ -72,16 +72,16 @@ class GraphHierarchicalAgglomerativeClustering<V, E>(
 
     @Suppress("TooGenericExceptionCaught")
     override fun buildClustering(graph: Graph<V, E>): ClusteredGraph<V> {
-        logger.finer { "Clusterer initialization started" }
+        logger.debug { "Clusterer initialization started" }
         init(graph)
-        logger.finer { "Clusterer initialization finished" }
-        logger.finer { "Clustering started" }
+        logger.debug { "Clusterer initialization finished" }
+        logger.debug { "Clustering started" }
         while (heap.isNotEmpty() && clusters.size > minClustersCount) {
             val minTriple: ClusterTriple = heap.first()
             invalidateTriple(minTriple)
             val first = minTriple.first
             val second = minTriple.second
-            logger.fine {
+            logger.debug {
                 """Merging clusters:
                 |$minTriple
             """.trimMargin()
@@ -89,14 +89,14 @@ class GraphHierarchicalAgglomerativeClustering<V, E>(
             try {
                 mergeCommunities(first, second)
             } catch (ex: Throwable) {
-                logger.severe {
+                logger.error {
                     """Clusters merging error {$ex}:
                         |$minTriple
                     """.trimMargin()
                 }
             }
         }
-        logger.finer { "Clustering finished" }
+        logger.debug { "Clustering finished" }
         if (clusters.size == 1) {
             return buildClusteredGraph { add(clusters.first()) }
         }

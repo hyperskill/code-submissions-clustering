@@ -1,14 +1,14 @@
 package org.jetbrains.research.code.submissions.clustering.server
 
 import kotlinx.coroutines.channels.Channel
+import mu.KotlinLogging
 import org.jetbrains.research.code.submissions.clustering.*
-import java.util.logging.Logger
 
 class CodeServerServiceImpl(
     private val requestChannel: Channel<CodeServerRequest>,
     private val responseChannel: Channel<CodeServerResponse>
 ) : CodeServerGrpcKt.CodeServerCoroutineImplBase() {
-    private val logger: Logger = Logger.getLogger(javaClass.name)
+    private val logger = KotlinLogging.logger {}
 
     override suspend fun unify(request: SubmissionCode): SubmissionCode {
         requestChannel.send(UnifyRequest(request))
