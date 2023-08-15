@@ -124,7 +124,7 @@ class JPlagRunner(AbstractRunner):
             threshold: float,
             *args,
             **kwargs,
-    ) -> Tuple[Dict[str, Any], Dict[str, bool]]:
+    ) -> Tuple[Dict[str, Any], Dict[str, bool], List[str]]:
         submissions_path = join(output_dir, SUBMISSIONS_FOLDER_NAME, str(step_id))
         result_dir = join(
             output_dir,
@@ -146,7 +146,7 @@ class JPlagRunner(AbstractRunner):
         flag_args = {
             '--cluster-pp-none': True,
         }
-        return named_args, flag_args
+        return named_args, flag_args, []
 
     def configure_cmd(
             self,
