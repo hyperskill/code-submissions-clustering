@@ -46,7 +46,7 @@ class CodeServerImpl(private val port: Int, language: Language) {
     private suspend fun unifyImpl(request: SubmissionCode): SubmissionCode {
         logger.info("Receive request: \n${request.code}")
         val code = graphContext.unifier.run {
-            createMockSubmission(request.code).unify().code
+            createMockSubmission(request.code, request.id, request.stepId).unify().code
         }
         logger.info("Unification finished")
         return SubmissionCode.newBuilder().setCode(code).build()
@@ -70,5 +70,6 @@ class CodeServerImpl(private val port: Int, language: Language) {
         return SubmissionsWeight.newBuilder().setWeight(weight).build()
     }
 
-    private fun createMockSubmission(code: String) = Submission(SubmissionInfo(0, 0), 0, code)
+    private fun createMockSubmission(code: String, id: Int = 0, stepId: Int = 0) =
+        Submission(SubmissionInfo(id, 0), stepId, code)
 }

@@ -40,6 +40,13 @@ abstract class BaseCLITask : RunIdeTask() {
         standardOutput = System.`out`
     }
 
+    fun setLogsDir(logsDir: String) {
+        jvmArgs = mutableListOf<String>().apply {
+            add("-Dlogs_dir=$logsDir")
+            jvmArgs?.let { addAll(it) }
+        }
+    }
+
     fun setArgs(block: MutableList<String>.() -> Unit = {}) {
         args = mutableListOf<String>().apply {
             add(taskName.get())
@@ -61,6 +68,8 @@ tasks {
         dependsOn(build)
         val port: String? by project
         val language: String? by project
+        val logsDir: String? by project
+        setLogsDir(logsDir ?: project.parent!!.projectDir.toString())
         setArgs {
             port?.let { add("--port=$it") }
             language?.let { add("--language=$it") }

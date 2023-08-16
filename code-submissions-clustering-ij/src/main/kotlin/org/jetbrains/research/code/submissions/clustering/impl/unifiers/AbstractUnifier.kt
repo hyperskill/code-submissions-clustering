@@ -61,6 +61,7 @@ abstract class AbstractUnifier(
     @Suppress("TOO_MANY_LINES_IN_LAMBDA")
     override suspend fun Submission.unify(): Submission {
         val statsBuilder = TransformationsStatisticsBuilder()
+        statisticsLogger.info { "Unification: STEP_ID=$stepId ID=${info.id}" }
         val code = this.code.let { code ->
             val psi = psiFileFactory.getPsiFile(code)
             ApplicationManager.getApplication().invokeAndWait {

@@ -8,6 +8,7 @@ import org.jetbrains.research.code.submissions.clustering.SubmissionsEdge
 import org.jetbrains.research.code.submissions.clustering.model.Submission
 import org.jetbrains.research.code.submissions.clustering.model.SubmissionsGraphAlias
 import org.jetbrains.research.code.submissions.clustering.model.SubmissionsGraphEdge
+import org.jetbrains.research.code.submissions.clustering.model.SubmissionsNode
 import java.io.Closeable
 import java.util.concurrent.TimeUnit
 
@@ -19,7 +20,7 @@ class CodeServerClientImpl(private val channel: ManagedChannel) : Closeable {
     }
 
     suspend fun unify(submission: Submission): Submission {
-        val request = submissionsCode(submission.code)
+        val request = submissionsCode(submission)
         val unifiedSubmissionCode = stub.unify(request)
         return submission.copy(code = unifiedSubmissionCode.code)
     }
@@ -29,8 +30,8 @@ class CodeServerClientImpl(private val channel: ManagedChannel) : Closeable {
         graph: SubmissionsGraphAlias,
     ): Int {
         val request = submissionsEdge(
-            submissionsCode(graph.getEdgeSource(edge).code),
-            submissionsCode(graph.getEdgeTarget(edge).code)
+            submissionsCode(graph.getEdgeSource(edge)),
+            submissionsCode(graph.getEdgeTarget(edge))
         )
         return stub.calculateWeight(request).weight
     }
@@ -39,10 +40,18 @@ class CodeServerClientImpl(private val channel: ManagedChannel) : Closeable {
 
     suspend fun clearDistMeasurer() = stub.clearDistMeasurer(Empty.newBuilder().build())
 
-    private fun submissionsCode(code: String) =
+    private fun submissionsCode(submission: Submission) =
+        submissionsCode(submission.code, submission.stepId, submission.info.id)
+
+    private fun submissionsCode(submissionsNode: SubmissionsNode) =
+        submissionsCode(submissionsNode.code, submissionsNode.stepId, submissionsNode.id)
+
+    private fun submissionsCode(code: String, stepId: Int, id: Int) =
         SubmissionCode
             .newBuilder()
             .setCode(code)
+            .setStepId(stepId)
+            .setId(id)
             .build()
 
     private fun submissionsEdge(from: SubmissionCode, to: SubmissionCode) =

@@ -12,7 +12,9 @@ service CodeServer {
 }
 
 message SubmissionCode {
-  string code = 1;
+  int32 stepId = 1;
+  int32 id = 2;
+  string code = 3;
 }
 
 message SubmissionsEdge {
