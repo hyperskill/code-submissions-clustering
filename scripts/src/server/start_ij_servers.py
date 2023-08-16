@@ -16,9 +16,10 @@ PATH_TO_CONFIG = \
 IMAGE_NAME = 'ij-server:latest'
 BASE_PORT = 50051
 TIMEOUT_SEC = 1
+DOCKER_LOGS_DIR = '/home/logs'
 
 
-def start_server(port, language):
+def start_server(port, language, logs_dir):
     cmd = [
         'docker',
         'run',
@@ -26,9 +27,14 @@ def start_server(port, language):
         '-p',
         f'{port}:{BASE_PORT}',
         '--rm',
+    ]
+    if logs_dir is not None:
+        cmd.extend(['-v', f'{logs_dir}:{DOCKER_LOGS_DIR}'])
+    cmd.extend([
         IMAGE_NAME,
         f'-Planguage={language}',
-    ]
+        f'-PlogsDir={DOCKER_LOGS_DIR}'
+    ])
     run_in_subprocess(cmd, cwd=PROJECT_ROOT)
 
 
@@ -41,9 +47,18 @@ def grpc_server_on(port) -> bool:
         return False
 
 
+def get_local_logs_dir(logs_dir, port):
+    if logs_dir is None:
+        return None
+    res = Path(logs_dir) / str(port)
+    res.mkdir(parents=True, exist_ok=True)
+    return str(res.absolute())
+
+
 if __name__ == '__main__':
     parser = ArgumentParser()
     parser.add_argument('--config', help='Path to config file', default=PATH_TO_CONFIG)
+    parser.add_argument('--logs_dir', help='Path to folder with output logs')
     args = parser.parse_args()
 
     logger = set_logger()
@@ -54,7 +69,7 @@ if __name__ == '__main__':
 
         for s in config['servers']:
             logger.info(f"Starting docker container for IJ code server on port {s['port']}...")
-            start_server(s['port'], s['language'])
+            start_server(s['port'], s['language'], get_local_logs_dir(args.logs_dir, s['port']))
 
         unavailable_ports = [s['port'] for s in config['servers']]
         it = 0
