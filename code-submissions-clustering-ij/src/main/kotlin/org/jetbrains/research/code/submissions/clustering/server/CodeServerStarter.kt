@@ -10,7 +10,7 @@ import kotlin.system.exitProcess
 
 @Suppress("TooGenericExceptionCaught")
 class CodeServerStarter : ApplicationStarter {
-    private val logger = KotlinLogging.logger {}
+    private val logger = KotlinLogging.logger { Unit }
     private var portId: Int = BASE_PORT
     override val commandName: String = "ij-code-server"
     private lateinit var lang: Language

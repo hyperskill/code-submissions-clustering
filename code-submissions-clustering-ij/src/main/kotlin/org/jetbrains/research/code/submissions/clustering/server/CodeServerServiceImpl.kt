@@ -8,7 +8,7 @@ class CodeServerServiceImpl(
     private val requestChannel: Channel<CodeServerRequest>,
     private val responseChannel: Channel<CodeServerResponse>
 ) : CodeServerGrpcKt.CodeServerCoroutineImplBase() {
-    private val logger = KotlinLogging.logger {}
+    private val logger = KotlinLogging.logger { Unit }
 
     override suspend fun unify(request: SubmissionCode): SubmissionCode {
         requestChannel.send(UnifyRequest(request))

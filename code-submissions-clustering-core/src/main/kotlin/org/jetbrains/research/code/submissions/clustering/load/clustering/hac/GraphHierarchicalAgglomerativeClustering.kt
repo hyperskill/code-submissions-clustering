@@ -23,7 +23,7 @@ class GraphHierarchicalAgglomerativeClustering<V, E>(
     private val distanceLimit: Double,
     private val minClustersCount: Int = 1,
 ) : GraphClusterer<V, E> {
-    private val logger = KotlinLogging.logger {}
+    private val logger = KotlinLogging.logger { Unit }
     private val heap: SortedSet<ClusterTriple> = TreeSet()
     private val triples: MutableMap<Long, ClusterTriple> = HashMap()
     private val clusters: MutableSet<Cluster<V>> = HashSet()

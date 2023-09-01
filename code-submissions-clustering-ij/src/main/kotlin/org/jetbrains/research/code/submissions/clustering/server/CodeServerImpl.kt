@@ -15,7 +15,7 @@ import org.jetbrains.research.code.submissions.clustering.model.Submission
 import org.jetbrains.research.code.submissions.clustering.model.SubmissionInfo
 
 class CodeServerImpl(private val port: Int, language: Language) {
-    private val logger = KotlinLogging.logger {}
+    private val logger = KotlinLogging.logger { Unit }
     private val graphContext = GumTreeGraphContextBuilder().setLanguage(language).buildContext()
     private val requestChannel = Channel<CodeServerRequest>()
     private val responseChannel = Channel<CodeServerResponse>()

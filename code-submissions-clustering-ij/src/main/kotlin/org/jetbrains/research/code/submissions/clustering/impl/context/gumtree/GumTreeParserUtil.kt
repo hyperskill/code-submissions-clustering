@@ -17,7 +17,7 @@ import java.nio.file.StandardCopyOption
  * Also [checkSetup] should be called before running tests.
  */
 object GumTreeParserUtil {
-    private val LOG = KotlinLogging.logger {}
+    private val LOG = KotlinLogging.logger { Unit }
     private const val PYTHONPARSER_PROPERTY = "gt.pp.path"
     private const val PARSER_REPO_ZIP_URL =
         "https://github.com/JetBrains-Research/pythonparser/archive/master.zip"

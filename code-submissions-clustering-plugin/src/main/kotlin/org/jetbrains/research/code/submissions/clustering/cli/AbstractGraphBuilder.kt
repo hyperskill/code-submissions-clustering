@@ -18,7 +18,7 @@ import kotlin.io.path.Path
 import kotlin.system.exitProcess
 
 abstract class AbstractGraphBuilder(name: String, help: String) : CliktCommand(name = name, help = help) {
-    private val logger = KotlinLogging.logger {}
+    private val logger = KotlinLogging.logger { Unit }
     protected val commonOptions by AbstractGraphBuilderOptions()
     private val flags by AbstractGraphBuilderFlags()
 

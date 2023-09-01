@@ -22,8 +22,7 @@ import org.jetbrains.research.ml.ast.transformations.Transformation
 abstract class AbstractUnifier(
     private val project: Project, private val anonymization: Transformation? = null
 ) : Unifier {
-    // Set up logger to write to file
-    private val logger = KotlinLogging.logger {}
+    private val logger = KotlinLogging.logger { Unit }
     private val statisticsLogger = KotlinLogging.logger("TransformationsStatsLogger")
     abstract val language: Language
     abstract val transformations: List<Transformation>
