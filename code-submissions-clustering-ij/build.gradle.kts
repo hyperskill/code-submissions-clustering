@@ -6,11 +6,7 @@ version = rootProject.version
 
 dependencies {
     implementation(project(":code-submissions-clustering-core"))
-    implementation("org.jetbrains.research.ml.ast.transformations:ast-transformations-core") {
-        version {
-            branch = "master"
-        }
-    }
+    implementation(libs.ast.transformations.core)
     implementation(libs.kotlin.argparser)
     implementation(libs.zip4j)
     implementation(libs.gumtreediff.core)

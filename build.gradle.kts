@@ -36,6 +36,7 @@ allprojects {
     repositories {
         mavenCentral()
         maven("https://packages.jetbrains.team/maven/p/big-code/bigcode")
+        maven("https://packages.jetbrains.team/maven/p/bumblebee/bumblebee")
     }
 
     dependencies {
