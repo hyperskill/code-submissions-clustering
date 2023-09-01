@@ -6,6 +6,9 @@ import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiDocumentManager
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
+import kotlinx.coroutines.TimeoutCancellationException
+import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.withTimeout
 import org.jetbrains.research.code.submissions.clustering.impl.util.logging.TransformationsStatisticsBuilder
 import org.jetbrains.research.code.submissions.clustering.impl.util.psi.PsiFileFactory
 import org.jetbrains.research.code.submissions.clustering.impl.util.psi.reformatInWriteAction
@@ -20,7 +23,7 @@ import java.util.logging.Logger
  * @property project project to use
  */
 abstract class AbstractUnifier(
-    private val project: Project, private val anonymization: Transformation? = null
+    private val project: Project, private val singleRunTransformations: List<Transformation> = listOf()
 ) : Unifier {
     private val logger = Logger.getLogger(javaClass.name)
     abstract val language: Language
@@ -38,12 +41,15 @@ abstract class AbstractUnifier(
         val psiDocumentManager = this.project.service<PsiDocumentManager>()
         val document = psiDocumentManager.getDocument(this)
         try {
-            transformations.forEach {
+            transformations.filter { it !in skipTransformations }.forEach {
                 logger.finer { "Transformation Started: ${it.key}" }
-                statsBuilder.forwardApplyMeasured(it, this)
-                logger.finer { "Transformation Ended: ${it.key}" }
-                document?.let {
-                    psiDocumentManager.commitDocument(document)
+                if (!applyMeasuredWithTimeout(it, this, statsBuilder)) {
+                    logger.severe { "Transformation Skipped due to Timeout: ${it.key}" }
+                } else {
+                    logger.finer { "Transformation Ended: ${it.key}" }
+                    document?.let {
+                        psiDocumentManager.commitDocument(document)
+                    }
                 }
             }
         } catch (e: Throwable) {
@@ -59,13 +65,11 @@ abstract class AbstractUnifier(
     @Suppress("TOO_MANY_LINES_IN_LAMBDA")
     override suspend fun Submission.unify(): Submission {
         val statsBuilder = TransformationsStatisticsBuilder()
+        skipTransformations = mutableSetOf()
         val code = this.code.let { code ->
             val psi = psiFileFactory.getPsiFile(code)
             ApplicationManager.getApplication().invokeAndWait {
                 ApplicationManager.getApplication().runWriteAction {
-                    anonymization?.let { anon ->
-                        statsBuilder.forwardApplyMeasured(anon, psi)
-                    }
                     var iterationNumber = 0
                     do {
                         ++iterationNumber
@@ -74,6 +78,9 @@ abstract class AbstractUnifier(
                         logger.finer { "Previous text[$iterationNumber]:\n${previousTree.text}\n" }
                         logger.finer { "Current text[$iterationNumber]:\n${psi.text}\n\n" }
                     } while (!previousTree.textMatches(psi.text) && iterationNumber <= MAX_ITERATIONS)
+                    singleRunTransformations.forEach {
+                        applyMeasuredWithTimeout(it, psi, statsBuilder)
+                    }
                     logger.fine { "Tree Ended[[$iterationNumber]]: ${psi.text}\n\n\n" }
                     logger.info { "Total iterations number: $iterationNumber" }
                 }
@@ -83,12 +90,33 @@ abstract class AbstractUnifier(
             }
         }
         logger.info {
-            statsBuilder.buildStatistics(listOfNotNull(anonymization) + transformations)
+            statsBuilder.buildStatistics(singleRunTransformations + transformations)
         }
         return this.copy(code = code)
     }
 
+    private fun applyMeasuredWithTimeout(
+        transformation: Transformation,
+        psiTree: PsiFile,
+        statsBuilder: TransformationsStatisticsBuilder,
+    ): Boolean {
+        try {
+            runBlocking {
+                withTimeout(TIMEOUT_MS) {
+                    statsBuilder.forwardApplyMeasured(transformation, psiTree)
+                }
+            }
+        } catch (e: TimeoutCancellationException) {
+            skipTransformations.add(transformation)
+            return false
+        }
+        return true
+    }
+
     companion object {
         const val MAX_ITERATIONS = 50
+        const val TIMEOUT_MS: Long = 10000
+
+        var skipTransformations = mutableSetOf<Transformation>()
     }
 }

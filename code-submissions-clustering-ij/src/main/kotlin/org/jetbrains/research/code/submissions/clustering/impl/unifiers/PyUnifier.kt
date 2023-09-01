@@ -23,7 +23,7 @@ import org.jetbrains.research.ml.ast.transformations.outerNotElimination.OuterNo
 class PyUnifier(
     override val psiFileFactory: PsiFileFactory,
     project: Project,
-) : AbstractUnifier(project, AnonymizationTransformation) {
+) : AbstractUnifier(project, listOf(AnonymizationTransformation)) {
     override val language = Language.PYTHON
     override val transformations = listOf(
         AugmentedAssignmentTransformation,
