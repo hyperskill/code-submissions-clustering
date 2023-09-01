@@ -33,7 +33,7 @@ def start_server(port, language, logs_dir):
     cmd.extend([
         IMAGE_NAME,
         f'-Planguage={language}',
-        f'-PlogsDir={DOCKER_LOGS_DIR}'
+        f'-PlogsDir={DOCKER_LOGS_DIR}',
     ])
     run_in_subprocess(cmd, cwd=PROJECT_ROOT)
 
