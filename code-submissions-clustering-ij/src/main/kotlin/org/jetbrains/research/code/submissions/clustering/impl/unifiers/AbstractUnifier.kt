@@ -2,13 +2,13 @@ package org.jetbrains.research.code.submissions.clustering.impl.unifiers
 
 import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.components.service
+import com.intellij.openapi.editor.Document
 import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiDocumentManager
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
+import io.ktor.utils.io.*
 import kotlinx.coroutines.TimeoutCancellationException
-import kotlinx.coroutines.runBlocking
-import kotlinx.coroutines.withTimeout
 import org.jetbrains.research.code.submissions.clustering.impl.util.logging.TransformationsStatisticsBuilder
 import org.jetbrains.research.code.submissions.clustering.impl.util.psi.PsiFileFactory
 import org.jetbrains.research.code.submissions.clustering.impl.util.psi.reformatInWriteAction
@@ -42,15 +42,7 @@ abstract class AbstractUnifier(
         val document = psiDocumentManager.getDocument(this)
         try {
             transformations.filter { it !in skipTransformations }.forEach {
-                logger.finer { "Transformation Started: ${it.key}" }
-                if (!applyMeasuredWithTimeout(it, this, statsBuilder)) {
-                    logger.severe { "Transformation Skipped due to Timeout: ${it.key}" }
-                } else {
-                    logger.finer { "Transformation Ended: ${it.key}" }
-                    document?.let {
-                        psiDocumentManager.commitDocument(document)
-                    }
-                }
+                applyTransformation(it, this, document, psiDocumentManager, statsBuilder)
             }
         } catch (e: Throwable) {
             logger.severe {
@@ -79,7 +71,7 @@ abstract class AbstractUnifier(
                         logger.finer { "Current text[$iterationNumber]:\n${psi.text}\n\n" }
                     } while (!previousTree.textMatches(psi.text) && iterationNumber <= MAX_ITERATIONS)
                     singleRunTransformations.forEach {
-                        applyMeasuredWithTimeout(it, psi, statsBuilder)
+                        isFinishedWithTimeout(it, psi, statsBuilder)
                     }
                     logger.fine { "Tree Ended[[$iterationNumber]]: ${psi.text}\n\n\n" }
                     logger.info { "Total iterations number: $iterationNumber" }
@@ -95,19 +87,35 @@ abstract class AbstractUnifier(
         return this.copy(code = code)
     }
 
-    private fun applyMeasuredWithTimeout(
+    private fun applyTransformation(
+        transformation: Transformation,
+        psiTree: PsiFile,
+        document: Document?,
+        psiDocumentManager: PsiDocumentManager,
+        statsBuilder: TransformationsStatisticsBuilder,
+    ) {
+        logger.fine { "Transformation Started: ${transformation.key}" }
+        if (!isFinishedWithTimeout(transformation, psiTree, statsBuilder)) {
+            logger.severe { "Transformation Skipped: ${transformation.key}" }
+        } else {
+            logger.fine { "Transformation Ended: ${transformation.key}" }
+            document?.let {
+                psiDocumentManager.commitDocument(document)
+            }
+        }
+    }
+
+    private fun isFinishedWithTimeout(
         transformation: Transformation,
         psiTree: PsiFile,
         statsBuilder: TransformationsStatisticsBuilder,
     ): Boolean {
         try {
-            runBlocking {
-                withTimeout(TIMEOUT_MS) {
-                    statsBuilder.forwardApplyMeasured(transformation, psiTree)
-                }
-            }
+            statsBuilder.forwardApplyMeasuredWithTimeout(transformation, psiTree, TIMEOUT_MS)
         } catch (e: TimeoutCancellationException) {
+            // Skip transformation with timeout in further iterations
             skipTransformations.add(transformation)
+            logger.severe { "Timeout reached for ${transformation.key}: $e" }
             return false
         }
         return true
@@ -116,7 +124,6 @@ abstract class AbstractUnifier(
     companion object {
         const val MAX_ITERATIONS = 50
         const val TIMEOUT_MS: Long = 10000
-
         var skipTransformations = mutableSetOf<Transformation>()
     }
 }
