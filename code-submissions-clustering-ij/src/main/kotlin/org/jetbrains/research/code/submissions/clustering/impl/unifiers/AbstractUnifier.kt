@@ -23,11 +23,12 @@ import java.util.logging.Logger
  * @property project project to use
  */
 abstract class AbstractUnifier(
-    private val project: Project, private val singleRunTransformations: List<Transformation> = listOf()
+    private val project: Project
 ) : Unifier {
     private val logger = Logger.getLogger(javaClass.name)
     abstract val language: Language
-    abstract val transformations: List<Transformation>
+    abstract val singleRunTransformations: List<Transformation>
+    abstract val repeatingTransformations: List<Transformation>
     protected abstract val psiFileFactory: PsiFileFactory
 
     @Suppress("TooGenericExceptionCaught")
@@ -66,7 +67,7 @@ abstract class AbstractUnifier(
                     do {
                         ++iterationNumber
                         val previousTree = psi.copy()
-                        psi.applyTransformations(transformations, statsBuilder, previousTree)
+                        psi.applyTransformations(repeatingTransformations, statsBuilder, previousTree)
                         logger.finer { "Previous text[$iterationNumber]:\n${previousTree.text}\n" }
                         logger.finer { "Current text[$iterationNumber]:\n${psi.text}\n\n" }
                     } while (!previousTree.textMatches(psi.text) && iterationNumber <= MAX_ITERATIONS)
@@ -82,7 +83,7 @@ abstract class AbstractUnifier(
             }
         }
         logger.info {
-            statsBuilder.buildStatistics(singleRunTransformations + transformations)
+            statsBuilder.buildStatistics(singleRunTransformations + repeatingTransformations)
         }
         return this.copy(code = code)
     }

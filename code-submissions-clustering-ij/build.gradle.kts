@@ -61,9 +61,15 @@ tasks {
         dependsOn(build)
         val port: String? by project
         val language: String? by project
+        val transformationsConfig: String? by project
+
+        val pathToTransformationsConfig = transformationsConfig
+            ?: "${project.projectDir}/src/main/resources/transformations-config.json"
+
         setArgs {
             port?.let { add("--port=$it") }
             language?.let { add("--language=$it") }
+            add("--transformationsConfig=$pathToTransformationsConfig")
         }
     }
 }

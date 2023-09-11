@@ -8,6 +8,7 @@ import com.intellij.psi.PsiManager
 import org.jetbrains.research.code.submissions.clustering.impl.distance.gumtree.GumTreeDistanceMeasurerByPsi
 import org.jetbrains.research.code.submissions.clustering.impl.unifiers.AbstractUnifier
 import org.jetbrains.research.code.submissions.clustering.impl.unifiers.PyUnifier
+import org.jetbrains.research.code.submissions.clustering.impl.unifiers.TransformationsConfig
 import org.jetbrains.research.code.submissions.clustering.impl.util.getProjectBuilder
 import org.jetbrains.research.code.submissions.clustering.impl.util.psi.PsiFileFactory
 import org.jetbrains.research.code.submissions.clustering.load.context.GraphContextBuilder
@@ -22,14 +23,20 @@ class GumTreeGraphContextBuilder : GraphContextBuilder<List<Action>> {
         Language.PYTHON to { getPythonTreeGenerator() },
     )
     private lateinit var language: Language
+    private lateinit var transformationsConfig: TransformationsConfig
 
     fun setLanguage(language: Language): GumTreeGraphContextBuilder {
         this.language = language
         return this
     }
 
+    fun configureTransformations(transformationsConfig: TransformationsConfig): GumTreeGraphContextBuilder {
+        this.transformationsConfig = transformationsConfig
+        return this
+    }
+
     private fun getUnifier(psiFileFactory: PsiFileFactory, project: Project): AbstractUnifier = when (language) {
-        Language.PYTHON -> PyUnifier(psiFileFactory, project)
+        Language.PYTHON -> PyUnifier(psiFileFactory, project, transformationsConfig)
     }
 
     private fun getPythonTreeGenerator(): PythonTreeGenerator {
