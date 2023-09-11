@@ -4,6 +4,7 @@ import io.grpc.Server
 import io.grpc.ServerBuilder
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.runBlocking
+import mu.KotlinLogging
 import org.jetbrains.research.code.submissions.clustering.SubmissionCode
 import org.jetbrains.research.code.submissions.clustering.SubmissionsEdge
 import org.jetbrains.research.code.submissions.clustering.SubmissionsWeight
@@ -12,10 +13,9 @@ import org.jetbrains.research.code.submissions.clustering.impl.distance.gumtree.
 import org.jetbrains.research.code.submissions.clustering.model.Language
 import org.jetbrains.research.code.submissions.clustering.model.Submission
 import org.jetbrains.research.code.submissions.clustering.model.SubmissionInfo
-import java.util.logging.Logger
 
 class CodeServerImpl(private val port: Int, language: Language) {
-    private val logger: Logger = Logger.getLogger(javaClass.name)
+    private val logger = KotlinLogging.logger { Unit }
     private val graphContext = GumTreeGraphContextBuilder().setLanguage(language).buildContext()
     private val requestChannel = Channel<CodeServerRequest>()
     private val responseChannel = Channel<CodeServerResponse>()
@@ -46,7 +46,7 @@ class CodeServerImpl(private val port: Int, language: Language) {
     private suspend fun unifyImpl(request: SubmissionCode): SubmissionCode {
         logger.info("Receive request: \n${request.code}")
         val code = graphContext.unifier.run {
-            createMockSubmission(request.code).unify().code
+            createMockSubmission(request.code, request.id, request.stepId).unify().code
         }
         logger.info("Unification finished")
         return SubmissionCode.newBuilder().setCode(code).build()
@@ -70,5 +70,6 @@ class CodeServerImpl(private val port: Int, language: Language) {
         return SubmissionsWeight.newBuilder().setWeight(weight).build()
     }
 
-    private fun createMockSubmission(code: String) = Submission(SubmissionInfo(0, 0), 0, code)
+    private fun createMockSubmission(code: String, id: Int = 0, stepId: Int = 0) =
+        Submission(SubmissionInfo(id, 0), stepId, code)
 }

@@ -3,14 +3,14 @@ package org.jetbrains.research.code.submissions.clustering.server
 import com.intellij.openapi.application.ApplicationStarter
 import com.xenomachina.argparser.ArgParser
 import com.xenomachina.argparser.default
+import mu.KotlinLogging
 import org.jetbrains.research.code.submissions.clustering.model.Language
 import java.nio.file.Paths
-import java.util.logging.Logger
 import kotlin.system.exitProcess
 
 @Suppress("TooGenericExceptionCaught")
 class CodeServerStarter : ApplicationStarter {
-    private val logger: Logger = Logger.getLogger(javaClass.name)
+    private val logger = KotlinLogging.logger { Unit }
     private var portId: Int = BASE_PORT
     override val commandName: String = "ij-code-server"
     private lateinit var lang: Language
@@ -22,7 +22,7 @@ class CodeServerStarter : ApplicationStarter {
             val server = CodeServerImpl(portId, lang)
             server.start()
         } catch (ex: Throwable) {
-            logger.severe { ex.stackTraceToString() }
+            logger.error { ex.stackTraceToString() }
             exitProcess(1)
         } finally {
             exitProcess(0)

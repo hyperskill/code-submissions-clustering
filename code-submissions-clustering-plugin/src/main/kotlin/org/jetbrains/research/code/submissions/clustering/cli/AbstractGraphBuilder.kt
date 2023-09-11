@@ -6,6 +6,7 @@ import kotlinx.coroutines.runBlocking
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.decodeFromStream
+import mu.KotlinLogging
 import org.jetbrains.research.code.submissions.clustering.cli.models.AbstractGraphBuilderFlags
 import org.jetbrains.research.code.submissions.clustering.cli.models.AbstractGraphBuilderOptions
 import org.jetbrains.research.code.submissions.clustering.cli.models.Writer
@@ -13,12 +14,11 @@ import org.jetbrains.research.code.submissions.clustering.client.IjGraphContextB
 import org.jetbrains.research.code.submissions.clustering.load.context.SubmissionsGraphContext
 import org.jetbrains.research.code.submissions.clustering.model.SubmissionsGraph
 import org.jetbrains.research.code.submissions.clustering.util.*
-import java.util.logging.Logger
 import kotlin.io.path.Path
 import kotlin.system.exitProcess
 
 abstract class AbstractGraphBuilder(name: String, help: String) : CliktCommand(name = name, help = help) {
-    private val logger: Logger = Logger.getLogger(javaClass.name)
+    private val logger = KotlinLogging.logger { Unit }
     protected val commonOptions by AbstractGraphBuilderOptions()
     private val flags by AbstractGraphBuilderFlags()
 
@@ -49,7 +49,7 @@ abstract class AbstractGraphBuilder(name: String, help: String) : CliktCommand(n
                 run()
             }
         } catch (ex: Throwable) {
-            logger.severe { ex.stackTraceToString() }
+            logger.error { ex.stackTraceToString() }
             exitProcess(1)
         } finally {
             exitProcess(0)
@@ -61,7 +61,7 @@ abstract class AbstractGraphBuilder(name: String, help: String) : CliktCommand(n
         try {
             write(commonOptions.outputDir)
         } catch (ex: Throwable) {
-            logger.severe { "Writing failed: $ex" }
+            logger.error { "Writing failed: $ex" }
         }
     }
 }

@@ -24,6 +24,9 @@ fastutil = "8.5.11"
 guava = "31.1-jre"
 plugin-utilities = "1.0"
 clikt = "3.4.1"
+kotlin-logging = "2.0.11"
+logback = "1.2.6"
+ast-transformations = "1.0.0"
 
 [libraries]
 detekt-gradle-plugin = { module = "io.gitlab.arturbosch.detekt:detekt-gradle-plugin", version.ref = "detekt" }
@@ -50,6 +53,9 @@ zip4j = { module = "net.lingala.zip4j:zip4j", version.ref = "zip4j" }
 fastutil = { module = "it.unimi.dsi:fastutil-core", version.ref = "fastutil" }
 guava = { module = "com.google.guava:guava", version.ref = "guava" }
 clikt = { module = "com.github.ajalt.clikt:clikt", version.ref = "clikt" }
+kotlin-logging = { module = "io.github.microutils:kotlin-logging-jvm", version.ref = "kotlin-logging" }
+logback = { module = "ch.qos.logback:logback-classic", version.ref = "logback" }
+ast-transformations-core = { module = "org.jetbrains.research.ml.ast.transformations:ast-transformations-core", version.ref = "ast-transformations" }
 
 plugin-utilities-core = { module = "org.jetbrains.research:plugin-utilities-core", version.ref = "plugin-utilities" }
 plugin-utilities-test = { module = "org.jetbrains.research:plugin-utilities-test", version.ref = "plugin-utilities" }

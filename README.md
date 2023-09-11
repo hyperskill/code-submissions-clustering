@@ -41,6 +41,12 @@ python3 -m src.server.start_ij_servers
 
 The script will indicate when all configured IJ servers are ready to listen.
 
+Optionally, you can specify a path to the server config and save logs from the server to the specified directory:
+
+```
+python3 -m src.server.start_ij_servers --config=</path/to/config/file> --logs_dir=</path/to/logs/dir>
+```
+
 ## Getting clustering results
 
 After the servers have started, configure and run `Run cluster command` run configuration to cluster submissions.
