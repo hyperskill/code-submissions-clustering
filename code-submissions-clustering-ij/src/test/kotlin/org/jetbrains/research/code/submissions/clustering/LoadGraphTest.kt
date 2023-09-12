@@ -10,7 +10,6 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.Parameterized
 
-@Ignore
 @RunWith(Parameterized::class)
 class LoadGraphTest : ParametrizedBaseWithUnifierTest(getTmpProjectDir()) {
     @JvmField
