@@ -4,6 +4,8 @@ import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.application.ModalityState
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
+import kotlinx.coroutines.future.await
+import kotlinx.coroutines.future.future
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withTimeout
 import kotlinx.coroutines.withTimeoutOrNull
@@ -19,22 +21,25 @@ class TransformationsStatisticsBuilder {
             psiTree.copy()
         }
         val executionTime = withTimeout(timeout) {
-            measureTimeMillis {
-                ApplicationManager.getApplication().invokeAndWait({
-                    ApplicationManager.getApplication().runWriteAction {
-                        transformation.forwardApply(psiTree)
-                    }
-                }, ModalityState.NON_MODAL)
-            }
+            future {
+                measureTimeMillis {
+                    ApplicationManager.getApplication().invokeAndWait({
+                        ApplicationManager.getApplication().runWriteAction {
+                            transformation.forwardApply(psiTree)
+                        }
+                    }, ModalityState.NON_MODAL)
+                }
+            }.await()
         }
 
-        var isApplied = false
+        var isApplied: Boolean? = null
         ApplicationManager.getApplication().invokeAndWait({
             isApplied = ApplicationManager.getApplication().runReadAction<Boolean> {
                 !(previousTree?.textMatches(psiTree) ?: false)
             }
         }, ModalityState.NON_MODAL)
-        if (isApplied) {
+        require(isApplied != null)
+        if (isApplied!!) {
             transformationsNumber[transformation.key] =
                 transformationsNumber.getOrDefault(transformation.key, 0) + 1
         }
