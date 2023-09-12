@@ -130,7 +130,7 @@ abstract class AbstractUnifier(
     }
 
     companion object {
-        const val MAX_ITERATIONS = 2
+        const val MAX_ITERATIONS = 50
         const val TIMEOUT_MS: Long = 1
         var skipTransformations = mutableSetOf<Transformation>()
     }

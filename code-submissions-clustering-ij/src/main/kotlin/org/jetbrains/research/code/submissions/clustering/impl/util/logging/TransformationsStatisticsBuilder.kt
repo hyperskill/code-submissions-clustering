@@ -6,9 +6,7 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
 import kotlinx.coroutines.future.await
 import kotlinx.coroutines.future.future
-import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withTimeout
-import kotlinx.coroutines.withTimeoutOrNull
 import org.jetbrains.research.ml.ast.transformations.Transformation
 import kotlin.system.measureTimeMillis
 
@@ -38,10 +36,9 @@ class TransformationsStatisticsBuilder {
                 !(previousTree?.textMatches(psiTree) ?: false)
             }
         }, ModalityState.NON_MODAL)
-        require(isApplied != null)
+        require(isApplied != null) { "isApplied was not calculated!" }
         if (isApplied!!) {
-            transformationsNumber[transformation.key] =
-                transformationsNumber.getOrDefault(transformation.key, 0) + 1
+            transformationsNumber[transformation.key] = transformationsNumber.getOrDefault(transformation.key, 0) + 1
         }
         transformationsExecTime[transformation.key] =
             transformationsExecTime.getOrDefault(transformation.key, 0) + executionTime

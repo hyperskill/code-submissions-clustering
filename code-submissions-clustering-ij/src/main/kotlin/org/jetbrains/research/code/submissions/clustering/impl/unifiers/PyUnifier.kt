@@ -26,16 +26,16 @@ class PyUnifier(
 ) : AbstractUnifier(project, listOf(AnonymizationTransformation)) {
     override val language = Language.PYTHON
     override val transformations = listOf(
-//        AugmentedAssignmentTransformation,
-//        CommentsRemovalTransformation,
-//        ComparisonUnificationTransformation,
+        AugmentedAssignmentTransformation,
+        CommentsRemovalTransformation,
+        ComparisonUnificationTransformation,
         ConstantFoldingTransformation,
-//        DeadCodeRemovalTransformation,
-//        EmptyLinesRemovalTransformation,
-//        ExpressionUnificationTransformation,
-//        IfRedundantLinesRemovalTransformation,
-//        MultipleOperatorComparisonTransformation,
-//        MultipleTargetAssignmentTransformation,
-//        OuterNotEliminationTransformation,
+        DeadCodeRemovalTransformation,
+        EmptyLinesRemovalTransformation,
+        ExpressionUnificationTransformation,
+        IfRedundantLinesRemovalTransformation,
+        MultipleOperatorComparisonTransformation,
+        MultipleTargetAssignmentTransformation,
+        OuterNotEliminationTransformation,
     )
 }
