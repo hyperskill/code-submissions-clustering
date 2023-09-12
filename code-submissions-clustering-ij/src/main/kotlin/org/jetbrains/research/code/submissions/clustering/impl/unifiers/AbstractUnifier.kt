@@ -113,6 +113,7 @@ abstract class AbstractUnifier(
         }
     }
 
+    @Suppress("TooGenericExceptionCaught")
     private suspend fun isFinishedWithTimeout(
         transformation: Transformation,
         psiTree: PsiFile,
@@ -120,18 +121,27 @@ abstract class AbstractUnifier(
     ): Boolean {
         try {
             statsBuilder.forwardApplyMeasuredWithTimeout(transformation, psiTree, TIMEOUT_MS)
-        } catch (e: TimeoutCancellationException) {
-            // Skip transformation with timeout in further iterations
-            skipTransformations.add(transformation)
-            logger.severe { "Timeout reached for ${transformation.key}: $e" }
-            return false
+        } catch (e: Exception) {
+            when (e) {
+                // TODO catch error from coroutines, since the initial error MyTimeoutCancellationException will be replaced with another one
+                is TimeoutCancellationException, is MyTimeoutCancellationException -> {
+                    // Skip transformation with timeout in further iterations
+                    skipTransformations.add(transformation)
+                    logger.severe { "Timeout reached for ${transformation.key}: $e" }
+                    return false
+                }
+            }
+            println("Await reached for ${transformation.key}")
         }
         return true
     }
 
     companion object {
         const val MAX_ITERATIONS = 50
-        const val TIMEOUT_MS: Long = 1
+        const val TIMEOUT_MS: Long = 100
         var skipTransformations = mutableSetOf<Transformation>()
     }
 }
+
+// TODO: move somewhere
+class MyTimeoutCancellationException(message: String): Exception(message)

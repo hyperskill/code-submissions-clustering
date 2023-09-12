@@ -2,13 +2,20 @@ package org.jetbrains.research.code.submissions.clustering.impl.util.logging
 
 import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.application.ModalityState
+import com.intellij.openapi.progress.util.ProgressIndicatorUtils
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
+import kotlinx.coroutines.TimeoutCancellationException
+import kotlinx.coroutines.asCoroutineDispatcher
+import kotlinx.coroutines.async
 import kotlinx.coroutines.future.await
 import kotlinx.coroutines.future.future
 import kotlinx.coroutines.withTimeout
+import org.jetbrains.research.code.submissions.clustering.impl.unifiers.MyTimeoutCancellationException
 import org.jetbrains.research.ml.ast.transformations.Transformation
+import java.util.concurrent.Executors
 import kotlin.system.measureTimeMillis
+
 
 class TransformationsStatisticsBuilder {
     private val transformationsNumber = mutableMapOf<String, Int>()
@@ -18,17 +25,28 @@ class TransformationsStatisticsBuilder {
         val previousTree = ApplicationManager.getApplication().runReadAction<PsiElement> {
             psiTree.copy()
         }
+
+//        println("current thread: ${Thread.currentThread()}")
+
         val executionTime = withTimeout(timeout) {
+//            val pool = Executors.newFixedThreadPool(1)
+            println("execution start: ${transformation.key}")
             future {
+//                println("async thread: ${Thread.currentThread()}")
                 measureTimeMillis {
-                    ApplicationManager.getApplication().invokeAndWait({
-                        ApplicationManager.getApplication().runWriteAction {
-                            transformation.forwardApply(psiTree)
-                        }
-                    }, ModalityState.NON_MODAL)
+                     ApplicationManager.getApplication().invokeAndWait({
+//                        println("invoke thread: ${Thread.currentThread()}")
+                         ProgressIndicatorUtils.withTimeout(timeout) {
+                             transformation.forwardApply(psiTree)
+                         } ?: throw MyTimeoutCancellationException("${transformation.key} with timeout!")
+                     }, ModalityState.NON_MODAL)
                 }
+//                println("measureTimeMillis finished")
+//                ms
             }.await()
         }
+
+        println("Await reached for ${transformation.key}")
 
         var isApplied: Boolean? = null
         ApplicationManager.getApplication().invokeAndWait({
