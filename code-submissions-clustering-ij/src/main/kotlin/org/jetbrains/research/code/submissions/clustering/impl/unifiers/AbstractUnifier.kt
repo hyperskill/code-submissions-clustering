@@ -1,13 +1,14 @@
 package org.jetbrains.research.code.submissions.clustering.impl.unifiers
 
 import com.intellij.openapi.application.ApplicationManager
+import com.intellij.openapi.application.ModalityState
+import com.intellij.openapi.application.ReadAction
 import com.intellij.openapi.components.service
 import com.intellij.openapi.editor.Document
 import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiDocumentManager
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
-import io.ktor.utils.io.*
 import kotlinx.coroutines.TimeoutCancellationException
 import org.jetbrains.research.code.submissions.clustering.impl.util.logging.TransformationsStatisticsBuilder
 import org.jetbrains.research.code.submissions.clustering.impl.util.psi.PsiFileFactory
@@ -31,15 +32,15 @@ abstract class AbstractUnifier(
     protected abstract val psiFileFactory: PsiFileFactory
 
     @Suppress("TooGenericExceptionCaught")
-    private fun PsiFile.applyTransformations(
+    private suspend fun PsiFile.applyTransformations(
         transformations: List<Transformation>,
         statsBuilder: TransformationsStatisticsBuilder,
         previousTree: PsiElement? = null,
     ) {
         logger.fine { "Tree Started: ${this.text}" }
-
         val psiDocumentManager = this.project.service<PsiDocumentManager>()
-        val document = psiDocumentManager.getDocument(this)
+        val document =
+            ApplicationManager.getApplication().runReadAction<Document> { psiDocumentManager.getDocument(this) }
         try {
             transformations.filter { it !in skipTransformations }.forEach {
                 applyTransformation(it, this, document, psiDocumentManager, statsBuilder)
@@ -56,29 +57,32 @@ abstract class AbstractUnifier(
 
     @Suppress("TOO_MANY_LINES_IN_LAMBDA")
     override suspend fun Submission.unify(): Submission {
+        require(!ApplicationManager.getApplication().isDispatchThread) { "The unify functions must be called outside EDT" }
         val statsBuilder = TransformationsStatisticsBuilder()
         skipTransformations = mutableSetOf()
         val code = this.code.let { code ->
-            val psi = psiFileFactory.getPsiFile(code)
-            ApplicationManager.getApplication().invokeAndWait {
-                ApplicationManager.getApplication().runWriteAction {
-                    var iterationNumber = 0
-                    do {
-                        ++iterationNumber
-                        val previousTree = psi.copy()
-                        psi.applyTransformations(transformations, statsBuilder, previousTree)
-                        logger.finer { "Previous text[$iterationNumber]:\n${previousTree.text}\n" }
-                        logger.finer { "Current text[$iterationNumber]:\n${psi.text}\n\n" }
-                    } while (!previousTree.textMatches(psi.text) && iterationNumber <= MAX_ITERATIONS)
-                    singleRunTransformations.forEach {
-                        isFinishedWithTimeout(it, psi, statsBuilder)
+            var psi: PsiFile? = null
+             ApplicationManager.getApplication().invokeAndWait({
+                 psi = ApplicationManager.getApplication().runReadAction<PsiFile> {
+                        psiFileFactory.getPsiFile(code)
                     }
-                    logger.fine { "Tree Ended[[$iterationNumber]]: ${psi.text}\n\n\n" }
-                    logger.info { "Total iterations number: $iterationNumber" }
-                }
+                }, ModalityState.NON_MODAL)
+            require(psi != null)
+            var iterationNumber = 0
+            do {
+                ++iterationNumber
+                val previousTree = psi!!.copy()
+                psi!!.applyTransformations(transformations, statsBuilder, previousTree)
+                logger.finer { "Previous text[$iterationNumber]:\n${previousTree.text}\n" }
+                logger.finer { "Current text[$iterationNumber]:\n${psi!!.text}\n\n" }
+            } while (!previousTree.textMatches(psi!!.text) && iterationNumber <= MAX_ITERATIONS)
+            singleRunTransformations.forEach {
+                isFinishedWithTimeout(it, psi!!, statsBuilder)
             }
-            psi.reformatInWriteAction().text.also {
-                psiFileFactory.releasePsiFile(psi)
+            logger.fine { "Tree Ended[[$iterationNumber]]: ${psi!!.text}\n\n\n" }
+            logger.info { "Total iterations number: $iterationNumber" }
+            psi!!.reformatInWriteAction().text.also {
+                psiFileFactory.releasePsiFile(psi!!)
             }
         }
         logger.info {
@@ -87,7 +91,7 @@ abstract class AbstractUnifier(
         return this.copy(code = code)
     }
 
-    private fun applyTransformation(
+    private suspend fun applyTransformation(
         transformation: Transformation,
         psiTree: PsiFile,
         document: Document?,
@@ -100,12 +104,16 @@ abstract class AbstractUnifier(
         } else {
             logger.fine { "Transformation Ended: ${transformation.key}" }
             document?.let {
-                psiDocumentManager.commitDocument(document)
+                ApplicationManager.getApplication().invokeLater({
+                    ApplicationManager.getApplication().runWriteAction {
+                        psiDocumentManager.commitDocument(document)
+                    }
+                }, ModalityState.NON_MODAL)
             }
         }
     }
 
-    private fun isFinishedWithTimeout(
+    private suspend fun isFinishedWithTimeout(
         transformation: Transformation,
         psiTree: PsiFile,
         statsBuilder: TransformationsStatisticsBuilder,
@@ -123,7 +131,7 @@ abstract class AbstractUnifier(
 
     companion object {
         const val MAX_ITERATIONS = 50
-        const val TIMEOUT_MS: Long = 10000
+        const val TIMEOUT_MS: Long = 1
         var skipTransformations = mutableSetOf<Transformation>()
     }
 }

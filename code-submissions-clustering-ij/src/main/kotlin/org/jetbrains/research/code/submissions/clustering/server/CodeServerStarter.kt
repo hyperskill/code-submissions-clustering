@@ -15,6 +15,9 @@ class CodeServerStarter : ApplicationStarter {
     override val commandName: String = "ij-code-server"
     private lateinit var lang: Language
 
+    override val requiredModality: Int
+        get() = ApplicationStarter.NOT_IN_EDT
+
     override fun main(args: List<String>) {
         try {
             parseArgs(args.toMutableList())

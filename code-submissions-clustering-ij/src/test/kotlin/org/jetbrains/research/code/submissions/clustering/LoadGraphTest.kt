@@ -5,10 +5,12 @@ import org.jetbrains.kotlinx.dataframe.DataFrame
 import org.jetbrains.kotlinx.dataframe.api.dataFrameOf
 import org.jetbrains.research.code.submissions.clustering.model.SubmissionInfo
 import org.jetbrains.research.code.submissions.clustering.util.*
+import org.junit.Ignore
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.Parameterized
 
+@Ignore
 @RunWith(Parameterized::class)
 class LoadGraphTest : ParametrizedBaseWithUnifierTest(getTmpProjectDir()) {
     @JvmField

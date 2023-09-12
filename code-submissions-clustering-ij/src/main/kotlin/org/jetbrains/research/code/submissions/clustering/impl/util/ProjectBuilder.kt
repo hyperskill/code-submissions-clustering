@@ -1,10 +1,13 @@
 package org.jetbrains.research.code.submissions.clustering.impl.util
 
 import com.intellij.ide.impl.ProjectUtil
+import com.intellij.openapi.application.ApplicationManager
+import com.intellij.openapi.application.ModalityState
 import com.intellij.openapi.project.Project
 import org.jetbrains.research.code.submissions.clustering.model.Language
 import org.jetbrains.research.code.submissions.clustering.util.getTmpProjectDir
 import org.jetbrains.research.ml.ast.util.sdk.setSdkToProject
+import kotlin.system.exitProcess
 
 sealed interface ProjectBuilder {
     fun buildProject(): Project
@@ -16,9 +19,17 @@ class PyProjectBuilder : ProjectBuilder {
         toSetSdk = set
         return this
     }
+
     override fun buildProject(): Project = createTempProject().also {
         if (toSetSdk) {
-            setSdkToProject(it, getTmpProjectDir())
+            ApplicationManager.getApplication().invokeLater({
+                ApplicationManager.getApplication().runWriteAction {
+                    if (!ApplicationManager.getApplication().isDispatchThread) {
+                        exitProcess(1)
+                    }
+                    setSdkToProject(it, getTmpProjectDir())
+                }
+            }, ModalityState.NON_MODAL)
         }
     }
 }

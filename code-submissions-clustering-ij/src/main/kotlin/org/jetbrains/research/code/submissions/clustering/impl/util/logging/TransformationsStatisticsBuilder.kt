@@ -1,8 +1,12 @@
 package org.jetbrains.research.code.submissions.clustering.impl.util.logging
 
+import com.intellij.openapi.application.ApplicationManager
+import com.intellij.openapi.application.ModalityState
+import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withTimeout
+import kotlinx.coroutines.withTimeoutOrNull
 import org.jetbrains.research.ml.ast.transformations.Transformation
 import kotlin.system.measureTimeMillis
 
@@ -10,16 +14,26 @@ class TransformationsStatisticsBuilder {
     private val transformationsNumber = mutableMapOf<String, Int>()
     private val transformationsExecTime = mutableMapOf<String, Long>()
 
-    fun forwardApplyMeasuredWithTimeout(transformation: Transformation, psiTree: PsiFile, timeout: Long) {
-        val previousTree = psiTree.copy()
-        val executionTime = measureTimeMillis {
-            runBlocking {
-                withTimeout(timeout) {
-                    transformation.forwardApply(psiTree)
-                }
+    suspend fun forwardApplyMeasuredWithTimeout(transformation: Transformation, psiTree: PsiFile, timeout: Long) {
+        val previousTree = ApplicationManager.getApplication().runReadAction<PsiElement> {
+            psiTree.copy()
+        }
+        val executionTime = withTimeout(timeout) {
+            measureTimeMillis {
+                ApplicationManager.getApplication().invokeAndWait({
+                    ApplicationManager.getApplication().runWriteAction {
+                        transformation.forwardApply(psiTree)
+                    }
+                }, ModalityState.NON_MODAL)
             }
         }
-        val isApplied = !(previousTree?.textMatches(psiTree) ?: false)
+
+        var isApplied = false
+        ApplicationManager.getApplication().invokeAndWait({
+            isApplied = ApplicationManager.getApplication().runReadAction<Boolean> {
+                !(previousTree?.textMatches(psiTree) ?: false)
+            }
+        }, ModalityState.NON_MODAL)
         if (isApplied) {
             transformationsNumber[transformation.key] =
                 transformationsNumber.getOrDefault(transformation.key, 0) + 1
