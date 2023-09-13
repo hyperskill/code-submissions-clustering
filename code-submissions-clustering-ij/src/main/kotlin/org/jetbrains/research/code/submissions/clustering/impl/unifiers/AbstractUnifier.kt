@@ -3,12 +3,12 @@ package org.jetbrains.research.code.submissions.clustering.impl.unifiers
 import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.components.service
 import com.intellij.openapi.editor.Document
+import com.intellij.openapi.progress.util.ProgressIndicatorUtils
 import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiDocumentManager
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
 import io.ktor.utils.io.*
-import kotlinx.coroutines.TimeoutCancellationException
 import org.jetbrains.research.code.submissions.clustering.impl.util.logging.TransformationsStatisticsBuilder
 import org.jetbrains.research.code.submissions.clustering.impl.util.psi.PsiFileFactory
 import org.jetbrains.research.code.submissions.clustering.impl.util.psi.reformatInWriteAction
@@ -111,12 +111,12 @@ abstract class AbstractUnifier(
         psiTree: PsiFile,
         statsBuilder: TransformationsStatisticsBuilder,
     ): Boolean {
-        try {
-            statsBuilder.forwardApplyMeasuredWithTimeout(transformation, psiTree, TIMEOUT_MS)
-        } catch (e: TimeoutCancellationException) {
+        ProgressIndicatorUtils.withTimeout(TIMEOUT_MS) {
+            statsBuilder.forwardApplyMeasured(transformation, psiTree)
+        } ?: run {
             // Skip transformation with timeout in further iterations
             skipTransformations.add(transformation)
-            logger.severe { "Timeout reached for ${transformation.key}: $e" }
+            logger.severe { "Timeout reached for ${transformation.key}" }
             return false
         }
         return true

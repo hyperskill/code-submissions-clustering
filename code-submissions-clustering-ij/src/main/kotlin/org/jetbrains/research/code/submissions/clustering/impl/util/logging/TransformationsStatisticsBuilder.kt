@@ -1,8 +1,6 @@
 package org.jetbrains.research.code.submissions.clustering.impl.util.logging
 
 import com.intellij.psi.PsiFile
-import kotlinx.coroutines.runBlocking
-import kotlinx.coroutines.withTimeout
 import org.jetbrains.research.ml.ast.transformations.Transformation
 import kotlin.system.measureTimeMillis
 
@@ -10,14 +8,10 @@ class TransformationsStatisticsBuilder {
     private val transformationsNumber = mutableMapOf<String, Int>()
     private val transformationsExecTime = mutableMapOf<String, Long>()
 
-    fun forwardApplyMeasuredWithTimeout(transformation: Transformation, psiTree: PsiFile, timeout: Long) {
+    fun forwardApplyMeasured(transformation: Transformation, psiTree: PsiFile) {
         val previousTree = psiTree.copy()
         val executionTime = measureTimeMillis {
-            runBlocking {
-                withTimeout(timeout) {
-                    transformation.forwardApply(psiTree)
-                }
-            }
+            transformation.forwardApply(psiTree)
         }
         val isApplied = !(previousTree?.textMatches(psiTree) ?: false)
         if (isApplied) {
