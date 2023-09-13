@@ -8,6 +8,7 @@ import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiDocumentManager
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
+import mu.KotlinLogging
 import io.ktor.utils.io.*
 import org.jetbrains.research.code.submissions.clustering.impl.util.logging.TransformationsStatisticsBuilder
 import org.jetbrains.research.code.submissions.clustering.impl.util.psi.PsiFileFactory
@@ -16,7 +17,6 @@ import org.jetbrains.research.code.submissions.clustering.load.unifiers.Unifier
 import org.jetbrains.research.code.submissions.clustering.model.Language
 import org.jetbrains.research.code.submissions.clustering.model.Submission
 import org.jetbrains.research.ml.ast.transformations.Transformation
-import java.util.logging.Logger
 
 /**
  * Abstract unifier producing unifying transformations over code submissions.
@@ -25,7 +25,8 @@ import java.util.logging.Logger
 abstract class AbstractUnifier(
     private val project: Project
 ) : Unifier {
-    private val logger = Logger.getLogger(javaClass.name)
+    private val logger = KotlinLogging.logger { Unit }
+    private val statisticsLogger = KotlinLogging.logger("TransformationsStatsLogger")
     abstract val language: Language
     abstract val singleRunTransformations: List<Transformation>
     abstract val repeatingTransformations: List<Transformation>
@@ -37,7 +38,7 @@ abstract class AbstractUnifier(
         statsBuilder: TransformationsStatisticsBuilder,
         previousTree: PsiElement? = null,
     ) {
-        logger.fine { "Tree Started: ${this.text}" }
+        logger.debug { "Tree Started: ${this.text}" }
 
         val psiDocumentManager = this.project.service<PsiDocumentManager>()
         val document = psiDocumentManager.getDocument(this)
@@ -46,7 +47,7 @@ abstract class AbstractUnifier(
                 applyTransformation(it, this, document, psiDocumentManager, statsBuilder)
             }
         } catch (e: Throwable) {
-            logger.severe {
+            logger.error {
                 """Transformation error {$e}: 
                         |Previous Code=${previousTree?.text}
                         |Current Code=${this.text}
@@ -59,6 +60,8 @@ abstract class AbstractUnifier(
     override suspend fun Submission.unify(): Submission {
         val statsBuilder = TransformationsStatisticsBuilder()
         skipTransformations = mutableSetOf()
+        statisticsLogger.info { "Unification: STEP_ID=$stepId ID=${info.id}" }
+        logger.debug { "Unification: STEP_ID=$stepId ID=${info.id}" }
         val code = this.code.let { code ->
             val psi = psiFileFactory.getPsiFile(code)
             ApplicationManager.getApplication().invokeAndWait {
@@ -68,21 +71,21 @@ abstract class AbstractUnifier(
                         ++iterationNumber
                         val previousTree = psi.copy()
                         psi.applyTransformations(repeatingTransformations, statsBuilder, previousTree)
-                        logger.finer { "Previous text[$iterationNumber]:\n${previousTree.text}\n" }
-                        logger.finer { "Current text[$iterationNumber]:\n${psi.text}\n\n" }
+                        logger.debug { "Previous text[$iterationNumber]:\n${previousTree.text}\n" }
+                        logger.debug { "Current text[$iterationNumber]:\n${psi.text}\n\n" }
                     } while (!previousTree.textMatches(psi.text) && iterationNumber <= MAX_ITERATIONS)
                     singleRunTransformations.forEach {
                         isFinishedWithTimeout(it, psi, statsBuilder)
                     }
-                    logger.fine { "Tree Ended[[$iterationNumber]]: ${psi.text}\n\n\n" }
-                    logger.info { "Total iterations number: $iterationNumber" }
+                    logger.debug { "Tree Ended[[$iterationNumber]]: ${psi.text}\n\n\n" }
+                    statisticsLogger.info { "Total iterations number: $iterationNumber" }
                 }
             }
             psi.reformatInWriteAction().text.also {
                 psiFileFactory.releasePsiFile(psi)
             }
         }
-        logger.info {
+        statisticsLogger.info {
             statsBuilder.buildStatistics(singleRunTransformations + repeatingTransformations)
         }
         return this.copy(code = code)
@@ -95,11 +98,11 @@ abstract class AbstractUnifier(
         psiDocumentManager: PsiDocumentManager,
         statsBuilder: TransformationsStatisticsBuilder,
     ) {
-        logger.fine { "Transformation Started: ${transformation.key}" }
+        logger.debug { "Transformation Started: ${transformation.key}" }
         if (!isFinishedWithTimeout(transformation, psiTree, statsBuilder)) {
-            logger.severe { "Transformation Skipped: ${transformation.key}" }
+            logger.warn { "Transformation Skipped: ${transformation.key}" }
         } else {
-            logger.fine { "Transformation Ended: ${transformation.key}" }
+            logger.debug { "Transformation Ended: ${transformation.key}" }
             document?.let {
                 psiDocumentManager.commitDocument(document)
             }
@@ -116,7 +119,7 @@ abstract class AbstractUnifier(
         } ?: run {
             // Skip transformation with timeout in further iterations
             skipTransformations.add(transformation)
-            logger.severe { "Timeout reached for ${transformation.key}" }
+            logger.warn { "Timeout reached for ${transformation.key}" }
             return false
         }
         return true

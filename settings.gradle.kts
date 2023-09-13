@@ -12,12 +12,6 @@ pluginManagement {
     }
 }
 
-sourceControl {
-    gitRepository(URI.create("https://github.com/JetBrains-Research/ast-transformations.git")) {
-        producesModule("org.jetbrains.research.ml.ast.transformations:ast-transformations-core")
-    }
-}
-
 include(
     "code-submissions-clustering-core",
     "code-submissions-clustering-plugin",

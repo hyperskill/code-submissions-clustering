@@ -36,6 +36,7 @@ allprojects {
     repositories {
         mavenCentral()
         maven("https://packages.jetbrains.team/maven/p/big-code/bigcode")
+        maven("https://packages.jetbrains.team/maven/p/bumblebee/bumblebee")
     }
 
     dependencies {
@@ -48,6 +49,8 @@ allprojects {
         implementation(rootProject.libs.grpc.stub.kotlin)
         implementation(rootProject.libs.kotlinx.coroutines.core)
         implementation(rootProject.libs.kotlinx.serialization.json)
+        implementation(rootProject.libs.kotlin.logging)
+        implementation(rootProject.libs.logback)
 
         implementation(rootProject.libs.plugin.utilities.core)
         implementation(rootProject.libs.plugin.utilities.test)
