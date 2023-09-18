@@ -27,10 +27,12 @@ class PyUnifier(
     transformationsConfig: TransformationsConfig = defaultTransformationsConfig
 ) : AbstractUnifier(project) {
     override val language = Language.PYTHON
-    override val repeatingTransformations = transformationsConfig.repeatingTransformations.map {
-        PyTransformations.valueOf(it).transformation
-    }
-    override val singleRunTransformations: List<Transformation> = transformationsConfig.singleTransformations.map {
+    override val repeatingTransformations = transformationsConfig
+        .repeatingTransformations.toPyTransformations()
+    override val singleRunTransformations: List<Transformation> = transformationsConfig
+        .singleTransformations.toPyTransformations()
+
+    private fun List<String>.toPyTransformations() = map {
         PyTransformations.valueOf(it).transformation
     }
 
@@ -55,8 +57,9 @@ class PyUnifier(
 
     companion object {
         val defaultTransformationsConfig = TransformationsConfig(
+            // TODO: update Kotlin and replace to entities
             repeatingTransformations = PyTransformations.values().map { it.name },
-            singleTransformations = listOf()
+            singleTransformations = emptyList()
         )
     }
 }
