@@ -53,6 +53,9 @@ class GraphTransformer<T>(
     }
 
     suspend fun add(submission: Submission) {
+        if (submission.code.length > CODE_LENGTH_LIMIT) {
+            return
+        }
         submissionsGraphContext.unifier.run {
             vertexByInitialCode.compute(submission) {
                 val unifiedSubmission = it.unify()
@@ -99,6 +102,10 @@ class GraphTransformer<T>(
     fun build(): SubmissionsGraph = SubmissionsGraph(graph).also {
         vertexByInitialCode.clear()
         vertexByUnifiedCode.clear()
+    }
+
+    companion object {
+        const val CODE_LENGTH_LIMIT = 10000
     }
 }
 

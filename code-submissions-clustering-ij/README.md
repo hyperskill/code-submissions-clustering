@@ -31,5 +31,12 @@ Use `ij-code-server` Gradle task:
 
 or use `Run IJ server` run configuration in IntelliJ IDEA.
 
+You can configure transformations to run in [`code-submissions-clustering-ij/src/main/resources/transformations-config.json`](src/main/resources/transformations-config.json)
+or specify another transformations config as follows:
+
+```
+./gradlew :code-submissions-clustering-ij:ij-code-server -Pport=8000 -Planguage=PYTHON -PtransformationsConfig=/path/to/config.json
+```
+
 GRPC server starts inside application and listens to unification and distance calculation
 requests on the specified port (default: 8000).

@@ -3,6 +3,10 @@ package org.jetbrains.research.code.submissions.clustering.server
 import com.intellij.openapi.application.ApplicationStarter
 import com.xenomachina.argparser.ArgParser
 import com.xenomachina.argparser.default
+import kotlinx.serialization.ExperimentalSerializationApi
+import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.decodeFromStream
+import org.jetbrains.research.code.submissions.clustering.impl.unifiers.TransformationsConfig
 import mu.KotlinLogging
 import org.jetbrains.research.code.submissions.clustering.model.Language
 import java.nio.file.Paths
@@ -14,12 +18,13 @@ class CodeServerStarter : ApplicationStarter {
     private var portId: Int = BASE_PORT
     override val commandName: String = "ij-code-server"
     private lateinit var lang: Language
+    private lateinit var transformationsCfg: TransformationsConfig
 
     override fun main(args: List<String>) {
         try {
             parseArgs(args.toMutableList())
             logger.info("Starting IntelliJ Code Server on port=$portId")
-            val server = CodeServerImpl(portId, lang)
+            val server = CodeServerImpl(portId, lang, transformationsCfg)
             server.start()
         } catch (ex: Throwable) {
             logger.error { ex.stackTraceToString() }
@@ -29,11 +34,13 @@ class CodeServerStarter : ApplicationStarter {
         }
     }
 
+    @OptIn(ExperimentalSerializationApi::class)
     private fun parseArgs(args: MutableList<String>) {
         val parser = ArgParser(args.drop(1).toTypedArray())
         parser.parseInto(CodeServerStarter::CodeServerStarterArgs).apply {
             lang = Language.valueOf(Paths.get(language).toString())
             portId = Paths.get(port).toString().toInt()
+            transformationsCfg = Json.decodeFromStream(Paths.get(transformationsConfig).toFile().inputStream())
         }
     }
 
@@ -45,6 +52,10 @@ class CodeServerStarter : ApplicationStarter {
         val language by parser.storing(
             "-l", "--language",
             help = "Programming language of code submissions"
+        )
+        val transformationsConfig by parser.storing(
+            "-c", "--transformationsConfig",
+            help = "Path to .json file configuring code transformations"
         )
     }
 

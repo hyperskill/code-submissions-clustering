@@ -31,7 +31,7 @@ class AbstractGraphBuilderOptions : OptionGroup(
         "-c", "--config",
         help = "Path to IJ code server config file"
     ).file(mustExist = true).default(
-        File("../code-submissions-clustering-ij/src/main/resources/config.json")
+        File("../code-submissions-clustering-ij/src/main/resources/server-config.json")
     )
 }
 

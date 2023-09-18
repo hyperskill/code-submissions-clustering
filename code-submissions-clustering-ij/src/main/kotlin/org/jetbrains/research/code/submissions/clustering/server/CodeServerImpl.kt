@@ -10,13 +10,17 @@ import org.jetbrains.research.code.submissions.clustering.SubmissionsEdge
 import org.jetbrains.research.code.submissions.clustering.SubmissionsWeight
 import org.jetbrains.research.code.submissions.clustering.impl.context.gumtree.GumTreeGraphContextBuilder
 import org.jetbrains.research.code.submissions.clustering.impl.distance.gumtree.GumTreeDistanceMeasurerByPsi
+import org.jetbrains.research.code.submissions.clustering.impl.unifiers.TransformationsConfig
 import org.jetbrains.research.code.submissions.clustering.model.Language
 import org.jetbrains.research.code.submissions.clustering.model.Submission
 import org.jetbrains.research.code.submissions.clustering.model.SubmissionInfo
 
-class CodeServerImpl(private val port: Int, language: Language) {
+class CodeServerImpl(private val port: Int, language: Language, transformationsConfig: TransformationsConfig) {
     private val logger = KotlinLogging.logger { Unit }
-    private val graphContext = GumTreeGraphContextBuilder().setLanguage(language).buildContext()
+    private val graphContext = GumTreeGraphContextBuilder()
+        .setLanguage(language)
+        .configureTransformations(transformationsConfig)
+        .buildContext()
     private val requestChannel = Channel<CodeServerRequest>()
     private val responseChannel = Channel<CodeServerResponse>()
     val server: Server = ServerBuilder

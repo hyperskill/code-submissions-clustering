@@ -65,10 +65,16 @@ tasks {
         val port: String? by project
         val language: String? by project
         val logsDir: String? by project
+        val transformationsConfig: String? by project
+
+        val pathToTransformationsConfig = transformationsConfig
+            ?: "${project.projectDir}/src/main/resources/transformations-config.json"
+
         setLogsDir(logsDir ?: project.parent!!.projectDir.toString())
         setArgs {
             port?.let { add("--port=$it") }
             language?.let { add("--language=$it") }
+            add("--transformationsConfig=$pathToTransformationsConfig")
         }
     }
 }

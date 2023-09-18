@@ -10,9 +10,9 @@ from src.utils.logger_utils import set_logger
 from src.utils.run_process_utils import run_in_subprocess
 
 PROJECT_ROOT = Path(__file__).parent.parent.parent.parent
-PATH_TO_DOCKERFILE = PROJECT_ROOT / 'code-submissions-clustering-ij' / 'Dockerfile'
-PATH_TO_CONFIG = \
-    PROJECT_ROOT / 'code-submissions-clustering-ij' / 'src' / 'main' / 'resources' / 'config.json'
+IJ_ROOT = PROJECT_ROOT / 'code-submissions-clustering-ij'
+PATH_TO_DOCKERFILE = IJ_ROOT / 'Dockerfile'
+PATH_TO_CONFIG = IJ_ROOT / 'src' / 'main' / 'resources' / 'server-config.json'
 IMAGE_NAME = 'ij-server:latest'
 BASE_PORT = 50051
 TIMEOUT_SEC = 1
